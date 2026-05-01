@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8"/>
+<title>Relatório de patrulha · Sentinela</title>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  body { background: #E8EAE5; padding: 24px 0; margin: 0; }
+  .toolbar {
+    max-width: 210mm; margin: 0 auto 18px; display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .toolbar .title { flex: 1; font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+  .toolbar button {
+    background: var(--brand-green); color: #FFF; border: none; border-radius: 6px;
+    padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .toolbar button.secondary { background: var(--surface-2); color: var(--fg); border: 1px solid var(--border); }
+
+  .paper {
+    width: 210mm; min-height: 297mm; margin: 0 auto; background: #FFFFFF; color: #0F2A20;
+    box-shadow: 0 8px 32px rgba(15,42,32,0.18); padding: 18mm 16mm;
+    font-family: var(--font-ui); font-size: 11px; line-height: 1.55; box-sizing: border-box;
+  }
+
+  .head { display: flex; align-items: flex-start; gap: 14px; padding-bottom: 14px; border-bottom: 2px solid #0F2A20; }
+  .head img { height: 60px; }
+  .head .org { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: #5A6D63; }
+  .head .doc { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: #0F2A20; line-height: 1.1; margin: 4px 0; }
+  .head .meta { font-size: 11px; color: #3A5044; }
+  .head .ref { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: #C9A24B; text-align: right; }
+  .head .ref .lbl { font-size: 9px; font-family: var(--font-mono); color: #5A6D63; letter-spacing: 0.04em; }
+
+  .section { margin-top: 16px; page-break-inside: avoid; }
+  .section .num {
+    width: 22px; height: 22px; border-radius: 4px; background: #1F4D3A; color: #FFF;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700; margin-right: 8px;
+  }
+  .section h2 {
+    font-family: var(--font-display); font-size: 13px; font-weight: 700; color: #0F2A20;
+    text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 6px;
+    display: flex; align-items: center;
+  }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field .lbl { font-size: 9px; font-weight: 700; color: #5A6D63; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+  .field .val { font-size: 11.5px; color: #0F2A20; padding: 6px 0; border-bottom: 1px solid #E8E4D2; }
+  .field .val.mono { font-family: var(--font-mono); font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11px; }
+  th { padding: 6px 10px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #5A6D63; border-bottom: 1px solid #C8C2A8; background: #F2F0E8; }
+  td { padding: 8px 10px; border-bottom: 1px solid #E8E4D2; vertical-align: top; }
+
+  .obs { background: #F2F0E8; border-left: 3px solid #C9A24B; padding: 10px 14px; font-size: 11px; color: #3A5044; line-height: 1.6; }
+
+  .signatures { margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .sig { text-align: center; }
+  .sig .line { font-family: cursive; font-size: 22px; color: #0F2A20; border-bottom: 1px solid #0F2A20; padding: 14px 20px 2px; }
+  .sig .name { font-size: 10px; color: #5A6D63; margin-top: 4px; font-weight: 600; }
+
+  .foot { margin-top: 22px; padding-top: 12px; border-top: 1px solid #C8C2A8; font-size: 10px; color: #7A847E; display: flex; justify-content: space-between; }
+
+  .plate {
+    display: inline-flex; align-items: center; height: 22px; background: #FFF; border: 1.5px solid #0F2A20;
+    border-radius: 3px; overflow: hidden; font-family: var(--font-mono); font-weight: 700; font-size: 13px;
+  }
+  .plate .eu { width: 18px; height: 100%; background: #0033A0; color: #FFD600; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+  .plate .num { padding: 0 10px; letter-spacing: 0.1em; color: #0F2A20; }
+
+  .stat-row { display: flex; gap: 14px; margin: 6px 0 4px; flex-wrap: wrap; }
+  .stat { background: #F2F0E8; border: 1px solid #E8E4D2; border-radius: 6px; padding: 8px 14px; min-width: 110px; }
+  .stat .lbl { font-size: 9px; color: #5A6D63; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+  .stat .val { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: #0F2A20; line-height: 1.1; margin-top: 2px; }
+  .stat .sub { font-size: 9px; color: #7A847E; margin-top: 2px; }
+
+  .ev { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .ev .h { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: #1F4D3A; min-width: 50px; padding-top: 2px; }
+  .ev .b { flex: 1; }
+  .ev .t { font-weight: 600; color: #0F2A20; }
+  .ev .d { font-size: 10px; color: #5A6D63; margin-top: 2px; }
+  .ev .tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; margin-left: 6px; vertical-align: middle; }
+
+  @media print {
+    body { background: #FFF; padding: 0; }
+    .toolbar { display: none; }
+    .paper { box-shadow: none; padding: 14mm 12mm; width: 100%; }
+    @page { size: A4; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="title">Relatório de patrulha — pré-visualização</div>
+  <select id="patSelect" class="form-input" style="width: 280px"></select>
+  <button onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
+  <button class="secondary" onclick="history.back()">← Voltar</button>
+</div>
+
+<div id="paper" class="paper">
+  <div class="head">
+    <img src="assets/sentinela-shield.svg" alt=""/>
+    <div style="flex:1">
+      <div class="org">Guarda Nacional Republicana · Comando Territorial de Vila Real</div>
+      <div class="doc">Relatório de patrulha</div>
+      <div class="meta">
+        <b>Posto:</b> Vila Real · <b>Indicativo:</b> <span id="r-indicativo"></span>
+      </div>
+    </div>
+    <div class="ref">
+      <div class="lbl">REL · Nº</div>
+      <div id="r-num"></div>
+      <div class="lbl" style="margin-top:6px"><span id="r-data"></span></div>
+    </div>
+  </div>
+
+  <!-- 1. Identificação -->
+  <div class="section">
+    <h2><span class="num">1</span> Identificação</h2>
+    <div class="grid">
+      <div class="field"><div class="lbl">Indicativo</div><div class="val mono" id="f-indicativo"></div></div>
+      <div class="field"><div class="lbl">Viatura</div><div class="val" id="f-viatura"></div></div>
+      <div class="field"><div class="lbl">Matrícula</div><div class="val"><span class="plate"><span class="eu">P</span><span class="num" id="f-matricula"></span></span></div></div>
+      <div class="field"><div class="lbl">Patrulheiros</div><div class="val" id="f-militares"></div></div>
+    </div>
+  </div>
+
+  <!-- 2. Tempos -->
+  <div class="section">
+    <h2><span class="num">2</span> Tempos de serviço</h2>
+    <div class="grid">
+      <div class="field"><div class="lbl">Aberta em</div><div class="val mono" id="f-aberta"></div></div>
+      <div class="field"><div class="lbl">Fechada em</div><div class="val mono" id="f-fechada"></div></div>
+      <div class="field"><div class="lbl">Duração</div><div class="val mono" id="f-duracao"></div></div>
+      <div class="field"><div class="lbl">Sector / zona</div><div class="val" id="f-sector"></div></div>
+    </div>
+  </div>
+
+  <!-- 3. KM e combustível -->
+  <div class="section">
+    <h2><span class="num">3</span> Quilómetros e combustível</h2>
+    <div class="stat-row">
+      <div class="stat"><div class="lbl">KM Inicial</div><div class="val" id="f-kmi"></div></div>
+      <div class="stat"><div class="lbl">KM Final</div><div class="val" id="f-kmf"></div></div>
+      <div class="stat"><div class="lbl">Percorridos</div><div class="val" id="f-kmp"></div><div class="sub">quilómetros</div></div>
+      <div class="stat"><div class="lbl">Combustível</div><div class="val" id="f-comb"></div><div class="sub" id="f-comb-sub"></div></div>
+    </div>
+  </div>
+
+  <!-- 4. Ocorrências -->
+  <div class="section">
+    <h2><span class="num">4</span> Ocorrências e leituras ANPR</h2>
+    <div id="f-ocorrencias"></div>
+  </div>
+
+  <!-- 5. Observações -->
+  <div class="section">
+    <h2><span class="num">5</span> Observações do militar responsável</h2>
+    <div class="obs" id="f-obs"></div>
+  </div>
+
+  <!-- Signatures -->
+  <div class="signatures">
+    <div class="sig">
+      <div class="line" id="sig-pat">—</div>
+      <div class="name">Militar responsável da patrulha</div>
+    </div>
+    <div class="sig">
+      <div class="line">Costa Ribeiro</div>
+      <div class="name">Sarg. Costa Ribeiro · Cmdt. do Posto Territorial de Vila Real</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div>Documento de uso interno · não difundir.</div>
+    <div>Sentinela · v2026.04 · gerado em <span id="f-gerado"></span></div>
+  </div>
+</div>
+
+<script>
+/* Sentinela — Mock data shared between mobile and PC */
+
+window.SENTINELA_DATA = {
+  posto: {
+    nome: "Posto Territorial de Vila Real",
+    destacamento: "Destacamento Territorial de Vila Real",
+    comando: "Comando Territorial de Vila Real",
+    morada: "Av. da Igreja, 5000-001 Vila Real",
+  },
+
+  militarAtual: {
+    id: "m_silva",
+    nim: "1873542",
+    posto: "Cabo",
+    postoAbrev: "Cb.",
+    nome: "Silva",
+    nomeCompleto: "João Pedro Silva",
+    foto: null,
+    indicativo: "VRL-21",
+    secao: "Patrulha Territorial",
+  },
+
+  militares: [
+    { id: "m_costa",    nim: "1654211", posto: "Sargento",    postoAbrev: "Sarg.",    nome: "Costa Ribeiro",  secao: "Cmdt. Posto",  estado: "servico",  indicativo: "—",     anoIngresso: 1999, diasFerias: 27 },
+    { id: "m_marques",  nim: "1701229", posto: "Sargento",    postoAbrev: "Sarg.",    nome: "Helena Marques", secao: "Cmdt. Adj.",   estado: "servico",  indicativo: "—",     anoIngresso: 2001, diasFerias: 27 },
+    { id: "m_almeida",  nim: "1769214", posto: "Cabo-chefe",  postoAbrev: "Cb.-Ch.",  nome: "Vítor Almeida",  secao: "Cmdt. 2.º",   estado: "servico",  indicativo: "—",     anoIngresso: 2003, diasFerias: 26 },
+    { id: "m_torres",   nim: "1812047", posto: "Cabo",        postoAbrev: "Cb.",      nome: "Pedro Torres",   secao: "Investigação", estado: "folga",    indicativo: "—",     anoIngresso: 2004, diasFerias: 25 },
+    { id: "m_silva",    nim: "1873542", posto: "Cabo",        postoAbrev: "Cb.",      nome: "João Silva",     secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-21", anoIngresso: 2005, diasFerias: 25 },
+    { id: "m_pereira",  nim: "1748930", posto: "Cabo",        postoAbrev: "Cb.",      nome: "Hugo Pereira",   secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-23", anoIngresso: 2007, diasFerias: 24 },
+    { id: "m_santos",   nim: "1922104", posto: "Cabo",        postoAbrev: "Cb.",      nome: "Marta Santos",   secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-22", anoIngresso: 2008, diasFerias: 24 },
+    { id: "m_lopes",    nim: "1845003", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Rui Lopes",      secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-21", anoIngresso: 2006, diasFerias: 24 },
+    { id: "m_rocha",    nim: "1885514", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Miguel Rocha",   secao: "Trânsito",    estado: "servico",  indicativo: "—",     anoIngresso: 2009, diasFerias: 23 },
+    { id: "m_braga",    nim: "1934455", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Diogo Braga",    secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-23", anoIngresso: 2010, diasFerias: 23 },
+    { id: "m_vieira",   nim: "2003108", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Sofia Vieira",   secao: "Patrulha",    estado: "folga",    indicativo: "—",     anoIngresso: 2011, diasFerias: 23 },
+    { id: "m_dias",     nim: "1991872", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Ana Dias",       secao: "Patrulha",    estado: "folga",    indicativo: "—",     anoIngresso: 2012, diasFerias: 23 },
+    { id: "m_fonseca",  nim: "1899321", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Inês Fonseca",   secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-22", anoIngresso: 2013, diasFerias: 22 },
+    { id: "m_carvalho", nim: "1965003", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Tiago Carvalho", secao: "Patrulha",    estado: "folga",    indicativo: "—",     anoIngresso: 2018, diasFerias: 22 },
+    { id: "m_neves",    nim: "2014778", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Carla Neves",    secao: "Patrulha",    estado: "servico",  indicativo: "—",     anoIngresso: 2020, diasFerias: 22 },
+  ],
+
+  viaturas: [
+    { id: "v1", matricula: "MA-21-58", marca: "Mercedes", modelo: "Vito",      indicativo: "VRL-21", km: 184326, combustivel: 78, estado: "patrulha", militares: ["m_silva", "m_lopes"] },
+    { id: "v2", matricula: "MA-44-09", marca: "VW",       modelo: "T-Roc",     indicativo: "VRL-22", km: 92118,  combustivel: 42, estado: "patrulha", militares: ["m_santos", "m_fonseca"] },
+    { id: "v3", matricula: "MA-77-12", marca: "Peugeot",  modelo: "Partner",   indicativo: "VRL-23", km: 211440, combustivel: 18, estado: "patrulha", militares: ["m_pereira", "m_braga"] },
+    { id: "v4", matricula: "MA-12-77", marca: "Peugeot",  modelo: "508",       indicativo: "VRL-30", km: 67220,  combustivel: 95, estado: "disponivel", militares: [] },
+    { id: "v5", matricula: "MA-66-31", marca: "Land Rover", modelo: "Defender", indicativo: "VRL-40", km: 142880, combustivel: 60, estado: "disponivel", militares: [] },
+    { id: "v6", matricula: "MA-09-44", marca: "Renault",  modelo: "Mégane",    indicativo: "VRL-50", km: 198003, combustivel: 33, estado: "manutencao", militares: [] },
+    { id: "v7", matricula: "MA-55-88", marca: "Toyota",   modelo: "Hilux",     indicativo: "VRL-60", km: 224119, combustivel: 70, estado: "disponivel", militares: [] },
+  ],
+
+  alertasANPR: [
+    { id: "a1", matricula: "12-AB-34", motivo: "Viatura furtada",         severidade: "critico", local: "Av. Carvalho Araújo", km: 184318, hora: "14:32", militar: "Cb. Silva", indicativo: "VRL-21", origem: "BNDV — Aveiro 2024-08-14", confirmado: false },
+    { id: "a2", matricula: "57-DT-91", motivo: "Sem seguro válido",       severidade: "aviso",   local: "EN2, km 14",          km: 92102,  hora: "14:18", militar: "Cb. Santos", indicativo: "VRL-22", origem: "ASF — desde 2026-01-12", confirmado: true },
+    { id: "a3", matricula: "44-PV-22", motivo: "Inspeção caducada",       severidade: "aviso",   local: "R. da República",     km: 211412, hora: "13:55", militar: "Gd. Braga",  indicativo: "VRL-23", origem: "IMT — caducou 2025-11-30", confirmado: true },
+    { id: "a4", matricula: "98-XR-04", motivo: "Mandado de detenção",     severidade: "critico", local: "A24, saída 18",       km: 184290, hora: "13:20", militar: "Cb. Silva",  indicativo: "VRL-21", origem: "MP Vila Real",         confirmado: true },
+    { id: "a5", matricula: "33-LM-67", motivo: "Cancelada — abate",       severidade: "info",    local: "Rotunda do Cidral",   km: 92085,  hora: "12:48", militar: "Gd. Fonseca",indicativo: "VRL-22", origem: "IMT 2025-09",          confirmado: true },
+  ],
+
+  ordensServico: [
+    { id: "os1", titulo: "OS 045/2026 — Operação STOP", autor: "Sarg. Costa Ribeiro", data: "28/04/2026", paginas: 3, novo: true },
+    { id: "os2", titulo: "OS 044/2026 — Reforço noturno",                autor: "Sarg. Costa Ribeiro", data: "27/04/2026", paginas: 2, novo: true },
+    { id: "os3", titulo: "OS 043/2026 — Festa de S. Marcos (segurança)", autor: "Cb.-Ch. Almeida",     data: "24/04/2026", paginas: 5, novo: false },
+    { id: "os4", titulo: "OS 042/2026 — Patrulhamento escolas",          autor: "Sarg. Costa Ribeiro", data: "20/04/2026", paginas: 2, novo: false },
+    { id: "os5", titulo: "Diretiva 09/2026 — Procedimentos ANPR",        autor: "Comando Territorial", data: "15/04/2026", paginas: 8, novo: false },
+  ],
+
+  diretivasPatrulha: [
+    { id: "d1", texto: "Reforçar presença na Av. Carvalho Araújo entre 22:00 e 02:00 (denúncias de ruído)", feito: false, prioridade: "alta" },
+    { id: "d2", texto: "Verificar viatura abandonada — Audi A4 cinzento, R. de Santa Iria",                  feito: true,  prioridade: "media" },
+    { id: "d3", texto: "Visita ao IPSS Lar S. Domingos antes das 18:00",                                       feito: false, prioridade: "media" },
+    { id: "d4", texto: "Atenção a Renault Clio preto 89-NM-22 — possível envolvimento em furto a estabelecimento", feito: false, prioridade: "alta" },
+    { id: "d5", texto: "Confirmar sinalética nova na rotunda do Cidral",                                      feito: false, prioridade: "baixa" },
+  ],
+
+  chatGrupos: [
+    { id: "c1", tipo: "posto",    nome: "Posto VRL — Geral",      ultimo: "Marques: Atenção ao Clio preto…", hora: "14:28", naoLidas: 3 },
+    { id: "c2", tipo: "patrulha", nome: "Em Patrulha — VRL-21/22/23", ultimo: "Santos: 57-DT-91 confirmado sem seguro", hora: "14:19", naoLidas: 0, ativo: true },
+    { id: "c3", tipo: "comando",  nome: "Cmdt. Posto",            ultimo: "Tu: A caminho do Cidral.",         hora: "14:02", naoLidas: 0 },
+    { id: "c4", tipo: "geral",    nome: "Anúncios — Comando Territorial", ultimo: "Operação STOP — ver OS 045", hora: "09:30", naoLidas: 1 },
+  ],
+
+  mensagensPatrulha: [
+    { de: "Cb. Santos", indicativo: "VRL-22", texto: "57-DT-91 confirmado sem seguro. Mando contraordenação.", hora: "14:19", proprio: false },
+    { de: "Cb. Silva",  indicativo: "VRL-21", texto: "Recebido. Continuo na zona da Av. Carvalho Araújo.",      hora: "14:21", proprio: true  },
+    { de: "Gd. Braga",  indicativo: "VRL-23", texto: "Sem novidade no IC5. Vou para o Cidral.",                  hora: "14:23", proprio: false },
+    { de: "Cb. Santos", indicativo: "VRL-22", texto: "Combustível em 42% — passo no posto às 15:00.",            hora: "14:25", proprio: false },
+  ],
+
+  briefing: {
+    data: "Ter, 28 abr 2026",
+    autor: "Sarg. Costa Ribeiro",
+    pontos: [
+      "Operação STOP em vigor das 22:00 às 02:00 — saídas A24 e EN2.",
+      "Atenção a Renault Clio preto 89-NM-22, possível envolvimento em furto.",
+      "Festas de S. Marcos: reforço pedestre no centro histórico após as 21:00.",
+      "VRL-23 com aviso de combustível baixo — abastecer antes das 15:00.",
+    ],
+  },
+
+  escala: {
+    semana: "Semana 18 — 27 abr a 03 mai",
+    dias: ["Seg 27","Ter 28","Qua 29","Qui 30","Sex 01","Sáb 02","Dom 03"],
+    linhas: [
+      { militar: "Sarg. Costa Ribeiro", turnos: ["08-20","08-20","08-20","FOLGA","08-20","FOLGA","FOLGA"] },
+      { militar: "Cb.-Ch. Almeida",     turnos: ["20-08","20-08","FOLGA","FOLGA","20-08","20-08","20-08"] },
+      { militar: "Cb. Silva",           turnos: ["08-20","08-20","08-20","08-20","FOLGA","FOLGA","08-20"] },
+      { militar: "Cb. Santos",          turnos: ["08-20","08-20","FOLGA","08-20","08-20","08-20","FOLGA"] },
+      { militar: "Cb. Pereira",         turnos: ["20-08","FOLGA","20-08","20-08","20-08","FOLGA","20-08"] },
+      { militar: "Gd. Lopes",           turnos: ["08-20","08-20","08-20","FOLGA","FOLGA","08-20","08-20"] },
+      { militar: "Gd. Fonseca",         turnos: ["08-20","08-20","FOLGA","08-20","08-20","FOLGA","08-20"] },
+      { militar: "Gd. Braga",           turnos: ["20-08","20-08","20-08","FOLGA","20-08","20-08","FOLGA"] },
+      { militar: "Gd. Neves",           turnos: ["FOLGA","08-20","08-20","08-20","08-20","08-20","FOLGA"] },
+      { militar: "Gd. Dias",            turnos: ["FOLGA","FOLGA","08-20","08-20","08-20","20-08","20-08"] },
+    ],
+  },
+};
+
+</script>
+<script>
+/* Sentinela — Shared State Store v3
+   Cross-device sync via BroadcastChannel + persistence via localStorage.
+   Single source of truth for both mobile.html and pc.html. */
+
+(function() {
+  const STORAGE_KEY = 'sentinela.state.v3';
+  const CHANNEL_NAME = 'sentinela.sync.v3';
+
+  /* ---------------- Initial state ---------------- */
+  const D = window.SENTINELA_DATA;
+
+  const initialState = {
+    /* Auth */
+    militarLogadoId: null, // null = login screen
+
+    /* Patrulha state */
+    patrulhaAtual: null, // { id, viaturaId, militares:[], kmInicial, combustivelInicial, abertaEm, parceiroId, equipamento:[] }
+    patrulhasHistorico: [
+      { id: 'p_001', viaturaId: 'v1', militares: ['m_silva', 'm_lopes'], kmInicial: 184142, kmFinal: 184326, combustivelInicial: 95, combustivelFinal: 78, abertaEm: '2026-04-28T08:00:00', fechadaEm: null, indicativo: 'VRL-21' },
+      { id: 'p_002', viaturaId: 'v2', militares: ['m_santos', 'm_fonseca'], kmInicial: 91987, kmFinal: 92118, combustivelInicial: 60, combustivelFinal: 42, abertaEm: '2026-04-28T08:00:00', fechadaEm: null, indicativo: 'VRL-22' },
+      { id: 'p_003', viaturaId: 'v3', militares: ['m_pereira', 'm_braga'], kmInicial: 211238, kmFinal: 211440, combustivelInicial: 50, combustivelFinal: 18, abertaEm: '2026-04-28T08:00:00', fechadaEm: null, indicativo: 'VRL-23' },
+      { id: 'p_h1',  viaturaId: 'v4', militares: ['m_silva','m_lopes'],   kmInicial: 67050, kmFinal: 67220, combustivelInicial: 100, combustivelFinal: 95, abertaEm: '2026-04-27T08:00:00', fechadaEm: '2026-04-27T20:12:00', indicativo: 'VRL-30' },
+    ],
+
+    /* ANPR alerts (live feed) */
+    alertas: D.alertasANPR.map(a => ({ ...a })),
+
+    /* Vehicles, militares, etc — copies so we can mutate */
+    viaturas: D.viaturas.map(v => ({ ...v })),
+    militares: D.militares.map(m => ({ ...m })),
+
+    /* Service orders */
+    ordens: D.ordensServico.map(o => ({ ...o, lidoPor: o.novo ? [] : ['m_silva'] })),
+
+    /* Directives for active patrol */
+    diretivas: D.diretivasPatrulha.map(d => ({ ...d })),
+
+    /* Chat threads */
+    chats: {
+      'c1': { id: 'c1', tipo: 'posto', nome: 'Posto VRL — Geral', mensagens: [
+        { de: 'm_marques', texto: 'Bom dia. Briefing das 08:00 disponível na OS 045.', hora: '08:02' },
+        { de: 'm_costa',   texto: 'Atenção ao Clio preto 89-NM-22 — ver alerta de ontem.', hora: '08:14' },
+        { de: 'm_almeida', texto: 'VRL-23 com aviso de combustível — abastecer antes das 15:00.', hora: '13:45' },
+        { de: 'm_marques', texto: 'Atenção ao Clio preto, possível envolvimento em furto a estabelecimento.', hora: '14:28' },
+      ]},
+      'c2': { id: 'c2', tipo: 'patrulha', nome: 'Em Patrulha — VRL-21/22/23', mensagens: [
+        { de: 'm_santos', texto: '57-DT-91 confirmado sem seguro. Mando contraordenação.', hora: '14:19' },
+        { de: 'm_silva',  texto: 'Recebido. Continuo na zona da Av. Carvalho Araújo.', hora: '14:21' },
+        { de: 'm_braga',  texto: 'Sem novidade no IC5. Vou para o Cidral.', hora: '14:23' },
+        { de: 'm_santos', texto: 'Combustível em 42% — passo no posto às 15:00.', hora: '14:25' },
+      ]},
+      'c3': { id: 'c3', tipo: 'comando', nome: 'Cmdt. Posto', mensagens: [
+        { de: 'm_costa', texto: 'Silva, podes passar pela Av. Carvalho Araújo? Houve denúncia.', hora: '13:58' },
+        { de: 'm_silva', texto: 'A caminho.', hora: '14:02' },
+      ]},
+      'c4': { id: 'c4', tipo: 'geral', nome: 'Anúncios — Comando Territorial', mensagens: [
+        { de: 'sistema', texto: 'Operação STOP — saídas A24 e EN2, 22:00–02:00. Ver OS 045.', hora: '09:30' },
+      ]},
+    },
+
+    /* Pânico */
+    panico: null, // { militarId, indicativo, lat, lng, desde, despachadoPor, reforcos:[] }
+
+    /* Auto de notícia (drafts + submitted) */
+    autos: [],
+
+    /* Notifications */
+    notificacoes: [
+      { id: 'n1', tipo: 'os', texto: 'Nova OS 045 — Operação STOP', hora: '08:02', lida: false },
+      { id: 'n2', tipo: 'chat', texto: 'Sarg. Marques no Posto Geral', hora: '14:28', lida: false },
+      { id: 'n3', tipo: 'briefing', texto: 'Briefing diário disponível', hora: '08:00', lida: true },
+    ],
+
+    /* Map state */
+    viaturasMapa: [
+      { id: 'VRL-21', viaturaId: 'v1', lat: 41.3006, lng: -7.7456, heading: 45, velocidade: 32, militar: 'Cb. Silva' },
+      { id: 'VRL-22', viaturaId: 'v2', lat: 41.2950, lng: -7.7390, heading: 180, velocidade: 0, militar: 'Cb. Santos' },
+      { id: 'VRL-23', viaturaId: 'v3', lat: 41.3088, lng: -7.7521, heading: 270, velocidade: 18, militar: 'Cb. Pereira' },
+    ],
+
+    /* UI */
+    tema: 'claro', // 'claro' | 'noturno'
+
+    /* Briefing diário (editável pelo Cmdt.) */
+    briefing: {
+      data: '28/04/2026',
+      cabecalho: 'Posto Territorial de Vila Real',
+      autor: 'Sarg. Costa Ribeiro',
+      meteo: 'Sol, 18°C max, 7°C min · vento fraco · sem precipitação',
+      efetivo: '15 militares · 8 ao serviço · 4 turno 08–20 · 4 turno 20–08 · 7 folga',
+      prioridades: [
+        'Operação STOP nas saídas A24 e EN2 — 22:00 às 02:00 (ver OS 045)',
+        'Vigilância reforçada Av. Carvalho Araújo — denúncia anónima Cidral',
+        'Apoio Festa S. Marcos — VRL-22 às 18:00 (Pç. do Município)',
+      ],
+      atencao: [
+        'Clio preto matrícula 89-NM-22 — possível envolvimento em furto',
+        'VRL-23 com aviso de combustível — abastecer antes das 15:00',
+      ],
+      patrulhas: [
+        { indicativo: 'VRL-21', militares: 'Cb. Silva / Sd. Lopes', sector: 'Centro / Carvalho Araújo', viatura: 'MA-21-58' },
+        { indicativo: 'VRL-22', militares: 'Cb. Santos / Sd. Fonseca', sector: 'EN2 / Mateus', viatura: 'MA-44-09' },
+        { indicativo: 'VRL-23', militares: 'Cb. Pereira / Sd. Braga', sector: 'A24 / Vilarinho', viatura: 'MA-77-12' },
+      ],
+      observacoes: 'Recordo a obrigatoriedade de envio de RDO até às 21:00. Atenção a denúncias anónimas — confirmar antes de actuar.',
+    },
+
+    /* Ocorrências registadas no terreno */
+    ocorrencias: [],
+
+    /* Rota GPS da patrulha atual [{lat, lng, ts}] */
+    rotaAtual: [],
+
+    /* Cronologia de eventos do turno */
+    eventos: [],
+
+    /* Posto info (editable by admin) */
+    posto: { ...D.posto },
+
+    /* Férias — marcação anual por ordem de antiguidade */
+    ferias: {
+      ano: 2026,
+      turnoMilitarId: 'm_costa', // first in seniority queue
+      periodos: [],   // [{id, militarId, inicio, fim, dias}]
+      concluidos: [], // militarIds who completed marking
+    },
+
+    /* Demo control */
+    ultimaActualizacao: Date.now(),
+  };
+
+  /* ---------------- Storage ---------------- */
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return JSON.parse(JSON.stringify(initialState));
+      const parsed = JSON.parse(raw);
+      // Merge to fill in any missing keys from new versions
+      return { ...initialState, ...parsed };
+    } catch (e) {
+      return JSON.parse(JSON.stringify(initialState));
+    }
+  }
+
+  function saveState(state) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {}
+  }
+
+  /* ---------------- Store ---------------- */
+  let state = loadState();
+  const listeners = new Set();
+
+  // BroadcastChannel for cross-tab/cross-device sync
+  let channel = null;
+  try {
+    channel = new BroadcastChannel(CHANNEL_NAME);
+    channel.onmessage = (ev) => {
+      if (ev.data && ev.data.type === 'state') {
+        state = ev.data.state;
+        listeners.forEach(fn => fn(state));
+      }
+    };
+  } catch (e) { /* not supported */ }
+
+  // Cross-window same-origin sync via storage events
+  window.addEventListener('storage', (ev) => {
+    if (ev.key === STORAGE_KEY && ev.newValue) {
+      try {
+        state = JSON.parse(ev.newValue);
+        listeners.forEach(fn => fn(state));
+      } catch (e) {}
+    }
+  });
+
+  function getState() { return state; }
+
+  function setState(updater) {
+    const next = typeof updater === 'function' ? updater(state) : updater;
+    state = { ...state, ...next, ultimaActualizacao: Date.now() };
+    saveState(state);
+    listeners.forEach(fn => fn(state));
+    if (channel) {
+      try { channel.postMessage({ type: 'state', state }); } catch (e) {}
+    }
+  }
+
+  function subscribe(fn) {
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  }
+
+  function reset() {
+    state = JSON.parse(JSON.stringify(initialState));
+    saveState(state);
+    listeners.forEach(fn => fn(state));
+    if (channel) {
+      try { channel.postMessage({ type: 'state', state }); } catch (e) {}
+    }
+  }
+
+  /* ---------------- Seniority helpers ---------------- */
+  const RANK_ORDER = { 'Sargento': 4, 'Cabo-chefe': 3, 'Cabo': 2, 'Guarda': 1 };
+  function ordemAntiguidade(militares) {
+    return [...militares].sort((a, b) => {
+      const ra = RANK_ORDER[a.posto] || 0, rb = RANK_ORDER[b.posto] || 0;
+      if (ra !== rb) return rb - ra;
+      return (a.anoIngresso || 9999) - (b.anoIngresso || 9999);
+    });
+  }
+
+  /* ---------------- Internal helpers ---------------- */
+  function logEvento(tipo, descricao, dados = {}) {
+    const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+    const ev = { id: 'ev_' + Date.now() + '_' + Math.random().toString(36).slice(2,5), tipo, descricao, hora, ts: Date.now(), dados };
+    setState(s => ({ eventos: [ev, ...s.eventos].slice(0, 300) }));
+  }
+
+  /* ---------------- Action helpers ---------------- */
+  const actions = {
+    login(militarId) {
+      setState({ militarLogadoId: militarId });
+    },
+    logout() {
+      setState({ militarLogadoId: null });
+    },
+    abrirPatrulha({ viaturaId, parceiroId, kmInicial, combustivelInicial, equipamento }) {
+      const v = state.viaturas.find(x => x.id === viaturaId);
+      const id = 'p_' + Date.now();
+      const patrulha = {
+        id, viaturaId, parceiroId,
+        militares: [state.militarLogadoId, parceiroId].filter(Boolean),
+        kmInicial: Number(kmInicial), combustivelInicial: Number(combustivelInicial),
+        equipamento, abertaEm: new Date().toISOString(),
+        indicativo: v ? v.indicativo : '—',
+      };
+      setState(s => ({ patrulhaAtual: patrulha, rotaAtual: [],
+        viaturas: s.viaturas.map(x => x.id === viaturaId ? { ...x, estado: 'patrulha' } : x),
+      }));
+      logEvento('patrulha_aberta', `Patrulha ${patrulha.indicativo} iniciada`, { indicativo: patrulha.indicativo, viaturaId });
+    },
+    fecharPatrulha({ kmFinal, combustivelFinal, observacoes }) {
+      const p = state.patrulhaAtual;
+      if (!p) return;
+      const rota = state.rotaAtual;
+      const fechada = { ...p, kmFinal: Number(kmFinal), combustivelFinal: Number(combustivelFinal), observacoes, fechadaEm: new Date().toISOString(), rota };
+      setState(s => ({
+        patrulhaAtual: null, rotaAtual: [],
+        patrulhasHistorico: [fechada, ...s.patrulhasHistorico],
+        viaturas: s.viaturas.map(x => x.id === p.viaturaId ? { ...x, estado: 'disponivel', km: Number(kmFinal), combustivel: Number(combustivelFinal) } : x),
+      }));
+      logEvento('patrulha_fechada', `Patrulha ${p.indicativo} encerrada — ${Math.max(0, Number(kmFinal) - p.kmInicial)} km percorridos`, { indicativo: p.indicativo });
+    },
+    addAlerta(alerta) {
+      const id = 'a_' + Date.now();
+      const a = { id, hora: new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }), confirmado: false, ...alerta };
+      setState(s => ({ alertas: [a, ...s.alertas] }));
+      logEvento('alerta_anpr', `Alerta ANPR — ${alerta.matricula} — ${alerta.motivo}`, { matricula: alerta.matricula, severidade: alerta.severidade });
+      return a;
+    },
+    confirmarAlerta(alertaId) {
+      const a = state.alertas.find(x => x.id === alertaId);
+      setState(s => ({ alertas: s.alertas.map(x => x.id === alertaId ? { ...x, confirmado: true } : x) }));
+      if (a) logEvento('alerta_confirmado', `Alerta confirmado — ${a.matricula}`, { alertaId });
+    },
+    addOcorrencia(dados) {
+      const numero = 'OC-2026-' + String(state.ocorrencias.length + 1).padStart(4, '0');
+      const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      const oc = { id: 'oc_' + Date.now(), numero, hora, ts: Date.now(), militarId: state.militarLogadoId, ...dados };
+      setState(s => ({ ocorrencias: [oc, ...s.ocorrencias] }));
+      logEvento('ocorrencia', `Ocorrência ${numero} registada — ${dados.tipo}`, { numero, tipo: dados.tipo });
+      return oc;
+    },
+    addPontoRota({ lat, lng }) {
+      setState(s => ({ rotaAtual: [...s.rotaAtual, { lat, lng, ts: Date.now() }].slice(-150) }));
+    },
+    enviarMensagem(chatId, texto) {
+      const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      setState(s => ({
+        chats: { ...s.chats, [chatId]: { ...s.chats[chatId], mensagens: [...s.chats[chatId].mensagens, { de: s.militarLogadoId, texto, hora }] } }
+      }));
+    },
+    marcarOSLida(osId) {
+      const mid = state.militarLogadoId;
+      setState(s => ({
+        ordens: s.ordens.map(o => o.id === osId ? { ...o, novo: false, lidoPor: [...new Set([...(o.lidoPor||[]), mid])] } : o),
+      }));
+    },
+    enviarOS(os) {
+      setState(s => ({ ordens: [{ ...os, id: 'os_' + Date.now(), data: new Date().toLocaleDateString('pt-PT'), novo: true, lidoPor: [] }, ...s.ordens] }));
+    },
+    enviarMensagemLogged(chatId, texto) {
+      const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      setState(s => ({
+        chats: { ...s.chats, [chatId]: { ...s.chats[chatId], mensagens: [...s.chats[chatId].mensagens, { de: s.militarLogadoId, texto, hora }] } }
+      }));
+      logEvento('mensagem', `Mensagem enviada em "${state.chats[chatId]?.nome}"`, { chatId });
+    },
+    activarPanico(coords) {
+      const m = state.militares.find(x => x.id === state.militarLogadoId);
+      // Use real GPS coords if provided, otherwise fall back to Vila Real centre
+      const lat = (coords && coords.lat != null) ? coords.lat : 41.3006 + (Math.random() - 0.5) * 0.005;
+      const lng = (coords && coords.lng != null) ? coords.lng : -7.7456 + (Math.random() - 0.5) * 0.005;
+      setState({
+        panico: {
+          militarId: state.militarLogadoId,
+          indicativo: m ? m.indicativo : '—',
+          militarNome: m ? `${m.postoAbrev} ${m.nome}` : '—',
+          lat, lng,
+          gpsReal: !!(coords && coords.lat != null),
+          desde: new Date().toISOString(),
+          reforcos: [],
+        }
+      });
+      logEvento('panico_ativo', `PEDIDO DE REFORÇO — ${m ? m.indicativo : '—'}`, { lat, lng });
+    },
+    despacharReforco(indicativo) {
+      setState(s => ({
+        panico: s.panico ? { ...s.panico, reforcos: [...new Set([...(s.panico.reforcos||[]), indicativo])] } : null,
+      }));
+    },
+    cancelarPanico() {
+      logEvento('panico_cancelado', 'Pedido de reforço cancelado', {});
+      setState({ panico: null });
+    },
+    submeterAuto(auto) {
+      setState(s => ({ autos: [{ ...auto, id: 'auto_' + Date.now(), data: new Date().toISOString() }, ...s.autos] }));
+    },
+    marcarNotificacaoLida(nId) {
+      setState(s => ({ notificacoes: s.notificacoes.map(n => n.id === nId ? { ...n, lida: true } : n) }));
+    },
+    toggleDiretiva(dId) {
+      setState(s => ({ diretivas: s.diretivas.map(d => d.id === dId ? { ...d, feito: !d.feito } : d) }));
+    },
+    updatePosto(patch) {
+      setState(s => ({ posto: { ...s.posto, ...patch } }));
+    },
+    addMilitar(dados) {
+      const id = 'm_' + Date.now();
+      const m = { id, estado: 'servico', indicativo: '—', foto: null, ...dados };
+      setState(s => ({ militares: [...s.militares, m] }));
+      logEvento('militar_adicionado', `Novo militar adicionado: ${dados.nome}`, { id });
+      return m;
+    },
+    updateMilitar(id, patch) {
+      setState(s => ({ militares: s.militares.map(m => m.id === id ? { ...m, ...patch } : m) }));
+    },
+    addViatura(dados) {
+      const id = 'v_' + Date.now();
+      const v = { id, estado: 'disponivel', militares: [], ...dados };
+      setState(s => ({ viaturas: [...s.viaturas, v] }));
+      logEvento('viatura_adicionada', `Nova viatura: ${dados.matricula}`, { id });
+      return v;
+    },
+    updateViatura(id, patch) {
+      setState(s => ({ viaturas: s.viaturas.map(v => v.id === id ? { ...v, ...patch } : v) }));
+    },
+    resetFeriasAno(ano) {
+      const primeiroId = ordemAntiguidade(state.militares)[0]?.id || null;
+      setState(s => ({ ferias: { ano, turnoMilitarId: primeiroId, periodos: [], concluidos: [] } }));
+      logEvento('ferias_reset', `Marcação de férias reiniciada para ${ano}`, { ano });
+    },
+    setDiasFerias(militarId, dias) {
+      setState(s => ({ militares: s.militares.map(m => m.id === militarId ? { ...m, diasFerias: Number(dias) } : m) }));
+    },
+    adicionarPeriodoFerias({ militarId, inicio, fim }) {
+      const meusPeriodos = state.ferias.periodos.filter(p => p.militarId === militarId);
+      if (meusPeriodos.length >= 5) return null;
+      const d1 = new Date(inicio), d2 = new Date(fim);
+      const dias = Math.max(1, Math.round((d2 - d1) / (1000 * 60 * 60 * 24)) + 1);
+      const periodo = { id: 'fp_' + Date.now(), militarId, inicio, fim, dias };
+      setState(s => ({ ferias: { ...s.ferias, periodos: [...s.ferias.periodos, periodo] } }));
+      logEvento('ferias_periodo', `Período de férias adicionado — ${dias} dias`, { militarId, inicio, fim });
+      return periodo;
+    },
+    removerPeriodoFerias(periodoId) {
+      setState(s => ({ ferias: { ...s.ferias, periodos: s.ferias.periodos.filter(p => p.id !== periodoId) } }));
+    },
+    concluirMarcacaoFerias(militarId) {
+      const fila = ordemAntiguidade(state.militares).map(m => m.id);
+      const concluidos = [...new Set([...state.ferias.concluidos, militarId])];
+      const proxIdx = fila.indexOf(militarId) + 1;
+      const proximo = fila.slice(proxIdx).find(id => !concluidos.includes(id)) || null;
+      setState(s => ({ ferias: { ...s.ferias, concluidos, turnoMilitarId: proximo } }));
+      if (proximo) {
+        const atual = state.militares.find(m => m.id === militarId);
+        const proxMilitar = state.militares.find(m => m.id === proximo);
+        const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+        const texto = `${atual ? `${atual.postoAbrev} ${atual.nome}` : '—'} concluiu a marcação de férias. ${proxMilitar ? `${proxMilitar.postoAbrev} ${proxMilitar.nome}` : '—'}, é agora a sua vez de marcar.`;
+        setState(s => ({
+          notificacoes: [{ id: 'n_f_' + Date.now(), tipo: 'ferias', texto: 'Férias 2026 — é a sua vez de marcar', hora, lida: false }, ...s.notificacoes],
+          chats: { ...s.chats, 'c1': { ...s.chats['c1'], mensagens: [...s.chats['c1'].mensagens, { de: 'sistema', texto, hora }] } },
+        }));
+        logEvento('ferias_turno', `Férias: ${proxMilitar ? `${proxMilitar.postoAbrev} ${proxMilitar.nome}` : '—'} pode agora marcar`, { militarId: proximo });
+      }
+    },
+    setTema(tema) {
+      setState({ tema });
+    },
+    updateBriefing(patch) {
+      setState(s => ({ briefing: { ...s.briefing, ...patch } }));
+    },
+    reset,
+  };
+
+  /* ---------------- React hook ---------------- */
+  function useStore(selector) {
+    const [, setTick] = React.useState(0);
+    React.useEffect(() => {
+      return subscribe(() => setTick(t => t + 1));
+    }, []);
+    return selector ? selector(state) : state;
+  }
+
+  window.SentinelaStore = { getState, setState, subscribe, useStore, actions, reset, ordemAntiguidade };
+})();
+
+</script>
+<script>
+function fmtData(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+function diffHoras(a, b) {
+  if (!a || !b) return '—';
+  const ms = new Date(b) - new Date(a);
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  return `${h}h ${m.toString().padStart(2, '0')}min`;
+}
+
+function render(patrulha) {
+  const D = window.SENTINELA_DATA;
+  const s = window.SentinelaStore.getState();
+
+  const v = s.viaturas.find(x => x.id === patrulha.viaturaId);
+  const milNomes = (patrulha.militares || []).map(id => {
+    const m = s.militares.find(x => x.id === id);
+    return m ? `${m.postoAbrev} ${m.nome}` : id;
+  }).join(' · ');
+
+  // Sector heuristic — find from briefing if matches indicativo
+  const sec = (s.briefing.patrulhas.find(p => p.indicativo === patrulha.indicativo) || {}).sector || '—';
+
+  document.getElementById('r-indicativo').textContent = patrulha.indicativo;
+  document.getElementById('r-num').textContent = patrulha.id.slice(-6).toUpperCase();
+  document.getElementById('r-data').textContent = new Date(patrulha.abertaEm).toLocaleDateString('pt-PT');
+
+  document.getElementById('f-indicativo').textContent = patrulha.indicativo;
+  document.getElementById('f-viatura').textContent = v ? `${v.marca} ${v.modelo}` : '—';
+  document.getElementById('f-matricula').textContent = v ? v.matricula : '—';
+  document.getElementById('f-militares').textContent = milNomes;
+  document.getElementById('sig-pat').textContent = milNomes.split('·')[0]?.trim().split(' ').slice(1).join(' ') || '—';
+
+  document.getElementById('f-aberta').textContent = fmtData(patrulha.abertaEm);
+  document.getElementById('f-fechada').textContent = patrulha.fechadaEm ? fmtData(patrulha.fechadaEm) : '— (em curso)';
+  document.getElementById('f-duracao').textContent = patrulha.fechadaEm ? diffHoras(patrulha.abertaEm, patrulha.fechadaEm) : '—';
+  document.getElementById('f-sector').textContent = sec;
+
+  document.getElementById('f-kmi').textContent = patrulha.kmInicial.toLocaleString('pt-PT');
+  document.getElementById('f-kmf').textContent = (patrulha.kmFinal != null ? patrulha.kmFinal : '—').toLocaleString ? patrulha.kmFinal.toLocaleString('pt-PT') : (patrulha.kmFinal ?? '—');
+  document.getElementById('f-kmp').textContent = patrulha.kmFinal != null ? (patrulha.kmFinal - patrulha.kmInicial) : '—';
+  const cF = patrulha.combustivelFinal != null ? patrulha.combustivelFinal : '—';
+  document.getElementById('f-comb').textContent = patrulha.combustivelInicial + ' → ' + cF + (cF !== '—' ? '%' : '');
+  document.getElementById('f-comb-sub').textContent = patrulha.combustivelFinal != null ? `consumo ${patrulha.combustivelInicial - patrulha.combustivelFinal}%` : '';
+
+  // Filter alerts confirmed by this patrol
+  const alertas = (s.alertas || []).filter(a => a.indicativo === patrulha.indicativo);
+  const ocE = document.getElementById('f-ocorrencias');
+  if (alertas.length === 0) {
+    ocE.innerHTML = '<div style="font-size:11px; color:#5A6D63; padding:8px 0;">Sem ocorrências registadas durante a patrulha.</div>';
+  } else {
+    ocE.innerHTML = alertas.map(a => {
+      const cor = a.severidade === 'critico' ? '#C7322B' : a.severidade === 'aviso' ? '#D88A2A' : '#2E5C8A';
+      const bg  = a.severidade === 'critico' ? '#FBE8E6' : a.severidade === 'aviso' ? '#FCEFD9' : '#E1ECF6';
+      return `
+        <div class="ev">
+          <div class="h">${a.hora}</div>
+          <div class="b">
+            <div class="t">${a.motivo}
+              <span class="tag" style="background:${bg};color:${cor}">${a.severidade}</span>
+              ${a.confirmado ? '<span class="tag" style="background:#E1F1E5;color:#2F7D4A">confirmado</span>' : ''}
+            </div>
+            <div class="d">Matrícula <b>${a.matricula}</b> · ${a.local} · origem: ${a.origem}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  document.getElementById('f-obs').textContent = patrulha.observacoes && patrulha.observacoes.trim() ? patrulha.observacoes : 'Patrulha decorreu sem incidentes a registar fora do que está acima.';
+  document.getElementById('f-gerado').textContent = new Date().toLocaleString('pt-PT');
+}
+
+// Build selector
+const s = window.SentinelaStore.getState();
+const sel = document.getElementById('patSelect');
+const opts = [...(s.patrulhaAtual ? [s.patrulhaAtual] : []), ...s.patrulhasHistorico];
+opts.forEach(p => {
+  const o = document.createElement('option');
+  o.value = p.id;
+  o.textContent = `${p.indicativo} · ${new Date(p.abertaEm).toLocaleDateString('pt-PT')} ${p.fechadaEm ? '(fechada)' : '(em curso)'}`;
+  sel.appendChild(o);
+});
+
+const params = new URLSearchParams(location.search);
+const initial = params.get('p') || (opts[0] && opts[0].id);
+if (initial) {
+  sel.value = initial;
+  const p = opts.find(x => x.id === initial);
+  if (p) render(p);
+}
+sel.addEventListener('change', () => {
+  const p = opts.find(x => x.id === sel.value);
+  if (p) render(p);
+});
+</script>
+</body>
+</html>

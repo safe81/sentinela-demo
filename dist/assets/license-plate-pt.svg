@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 24" width="80" height="24">
+  <rect x="0.5" y="0.5" width="79" height="23" rx="2" fill="#FFFFFF" stroke="#20251F" stroke-width="1"></rect>
+  <rect x="0.5" y="0.5" width="11" height="23" rx="2" fill="#003399"></rect>
+  <text x="6" y="14" text-anchor="middle" font-family="&#39;Inter Tight&#39;, sans-serif" font-size="6" font-weight="700" fill="#FFCC00">P</text>
+  <text x="46" y="17" text-anchor="middle" font-family="&#39;JetBrains Mono&#39;, monospace" font-size="13" font-weight="700" fill="#20251F" letter-spacing="0.08em">12-AB-34</text>
+</svg>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8"/>
+<title>Sentinela — Comando (PC)</title>
+<meta name="viewport" content="width=1400"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  html, body { margin: 0; height: 100%; background: var(--bg); font-family: var(--font-sans); color: var(--fg); }
+  #root { height: 100vh; display: flex; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.js?v=3"></script>
+<script src="store.js?v=3"></script>
+<script type="text/babel" src="primitives.jsx"></script>
+<script type="text/babel" src="app_pc/Dashboard.jsx"></script>
+<script type="text/babel" src="app_pc/Briefing.jsx"></script>
+<script type="text/babel" src="app_pc/PatrulhaRDS.jsx"></script>
+<script type="text/babel" src="app_pc/Other.jsx"></script>
+<script type="text/babel" src="app_pc/Estatisticas.jsx"></script>
+<script type="text/babel" src="app_pc/Cronologia.jsx"></script>
+<script type="text/babel" src="app_pc/FeriasPC.jsx"></script>
+<script type="text/babel" src="app_pc/AdminPC.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// Aplica o tema ao <html> e mantém em sync
+const useTheme = () => {
+  const tema = window.SentinelaStore.useStore(s => s.tema);
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', tema === 'noturno' ? 'dark' : 'light');
+  }, [tema]);
+  return tema;
+};
+
+const ThemeToggle = () => {
+  const tema = window.SentinelaStore.useStore(s => s.tema);
+  return (
+    <button
+      onClick={() => window.SentinelaStore.actions.setTema(tema === 'noturno' ? 'claro' : 'noturno')}
+      title={tema === 'noturno' ? 'Modo dia' : 'Modo ronda noturna'}
+      style={{
+        background: tema === 'noturno' ? 'rgba(201,162,75,0.18)' : 'var(--surface-2)',
+        border: '1px solid var(--border)', borderRadius: 6,
+        padding: '6px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+        fontSize: 11, fontWeight: 600, color: 'var(--fg)',
+      }}>
+      <Icon name={tema === 'noturno' ? 'moon' : 'sun'} size={14}/>
+      {tema === 'noturno' ? 'Ronda noturna' : 'Dia'}
+    </button>
+  );
+};
+
+const titles = {
+  dashboard: ['Dashboard', 'Visão geral · Posto Territorial Vila Real'],
+  briefing:  ['Briefing diário', 'Preparação do serviço de hoje'],
+  mapa:      ['Mapa em tempo real', 'Posições GPS · viaturas e patrulhas'],
+  alertas:   ['Alertas ANPR', 'Leituras de matrículas e correspondências BNDV'],
+  patrulhas: ['Patrulhas', 'Histórico e patrulhas em curso'],
+  viaturas:  ['Viaturas', 'Frota do Posto Territorial Vila Real'],
+  militares: ['Militares', 'Efetivo do posto'],
+  ordens:    ['Ordens de serviço', 'Difusão de OS para o efetivo'],
+  escalas:   ['Escalas', 'Planeamento semanal · turnos'],
+  chat:         ['Mensagens', 'Comunicações operacionais'],
+  estatisticas: ['Estatísticas', 'KPIs e indicadores de desempenho operacional — maio 2026'],
+  cronologia:   ['Cronologia de turno', 'Linha temporal de todos os eventos registados'],
+  ocorrencias:  ['Ocorrências', 'Registos submetidos no terreno pelo efetivo'],
+  ferias:       ['Férias', 'Marcação anual por ordem de antiguidade — 2026'],
+  admin:        ['Administração', 'Configuração do posto, efectivo, viaturas e sistema'],
+};
+
+const App = () => {
+  useTheme();
+  const [active, setActive] = useState('dashboard');
+  const [t, sub] = titles[active] || titles.dashboard;
+  return (
+    <>
+      <PCSidebar active={active} setActive={setActive}/>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        <PCTopbar title={t} subtitle={sub} extra={<ThemeToggle/>}/>
+        {active === 'dashboard' && <DashboardView/>}
+        {active === 'briefing' && <BriefingView/>}
+        {active === 'mapa' && <MapaView/>}
+        {active === 'alertas' && <AlertasView/>}
+        {active === 'patrulhas' && <PatrulhasView/>}
+        {active === 'viaturas' && <ViaturasView/>}
+        {active === 'militares' && <MilitaresView/>}
+        {active === 'ordens' && <OSView/>}
+        {active === 'escalas' && <EscalasView/>}
+        {active === 'chat' && <ChatView/>}
+        {active === 'estatisticas' && <EstatisticasView/>}
+        {active === 'cronologia'   && <CronologiaView/>}
+        {active === 'ocorrencias'  && <OcorrenciasView/>}
+        {active === 'ferias'       && <FeriasView/>}
+        {active === 'admin'        && <AdminView/>}
+      </div>
+    </>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

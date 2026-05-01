@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8"/>
+<title>Relatório de patrulha · Sentinela</title>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  body { background: #E8EAE5; padding: 24px 0; margin: 0; }
+  .toolbar {
+    max-width: 210mm; margin: 0 auto 18px; display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .toolbar .title { flex: 1; font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+  .toolbar button {
+    background: var(--brand-green); color: #FFF; border: none; border-radius: 6px;
+    padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .toolbar button.secondary { background: var(--surface-2); color: var(--fg); border: 1px solid var(--border); }
+
+  .paper {
+    width: 210mm; min-height: 297mm; margin: 0 auto; background: #FFFFFF; color: #0F2A20;
+    box-shadow: 0 8px 32px rgba(15,42,32,0.18); padding: 18mm 16mm;
+    font-family: var(--font-ui); font-size: 11px; line-height: 1.55; box-sizing: border-box;
+  }
+
+  .head { display: flex; align-items: flex-start; gap: 14px; padding-bottom: 14px; border-bottom: 2px solid #0F2A20; }
+  .head img { height: 60px; }
+  .head .org { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: #5A6D63; }
+  .head .doc { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: #0F2A20; line-height: 1.1; margin: 4px 0; }
+  .head .meta { font-size: 11px; color: #3A5044; }
+  .head .ref { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: #C9A24B; text-align: right; }
+  .head .ref .lbl { font-size: 9px; font-family: var(--font-mono); color: #5A6D63; letter-spacing: 0.04em; }
+
+  .section { margin-top: 16px; page-break-inside: avoid; }
+  .section .num {
+    width: 22px; height: 22px; border-radius: 4px; background: #1F4D3A; color: #FFF;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700; margin-right: 8px;
+  }
+  .section h2 {
+    font-family: var(--font-display); font-size: 13px; font-weight: 700; color: #0F2A20;
+    text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 6px;
+    display: flex; align-items: center;
+  }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field .lbl { font-size: 9px; font-weight: 700; color: #5A6D63; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+  .field .val { font-size: 11.5px; color: #0F2A20; padding: 6px 0; border-bottom: 1px solid #E8E4D2; }
+  .field .val.mono { font-family: var(--font-mono); font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11px; }
+  th { padding: 6px 10px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #5A6D63; border-bottom: 1px solid #C8C2A8; background: #F2F0E8; }
+  td { padding: 8px 10px; border-bottom: 1px solid #E8E4D2; vertical-align: top; }
+
+  .obs { background: #F2F0E8; border-left: 3px solid #C9A24B; padding: 10px 14px; font-size: 11px; color: #3A5044; line-height: 1.6; }
+
+  .signatures { margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .sig { text-align: center; }
+  .sig .line { font-family: cursive; font-size: 22px; color: #0F2A20; border-bottom: 1px solid #0F2A20; padding: 14px 20px 2px; }
+  .sig .name { font-size: 10px; color: #5A6D63; margin-top: 4px; font-weight: 600; }
+
+  .foot { margin-top: 22px; padding-top: 12px; border-top: 1px solid #C8C2A8; font-size: 10px; color: #7A847E; display: flex; justify-content: space-between; }
+
+  .plate {
+    display: inline-flex; align-items: center; height: 22px; background: #FFF; border: 1.5px solid #0F2A20;
+    border-radius: 3px; overflow: hidden; font-family: var(--font-mono); font-weight: 700; font-size: 13px;
+  }
+  .plate .eu { width: 18px; height: 100%; background: #0033A0; color: #FFD600; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+  .plate .num { padding: 0 10px; letter-spacing: 0.1em; color: #0F2A20; }
+
+  .stat-row { display: flex; gap: 14px; margin: 6px 0 4px; flex-wrap: wrap; }
+  .stat { background: #F2F0E8; border: 1px solid #E8E4D2; border-radius: 6px; padding: 8px 14px; min-width: 110px; }
+  .stat .lbl { font-size: 9px; color: #5A6D63; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+  .stat .val { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: #0F2A20; line-height: 1.1; margin-top: 2px; }
+  .stat .sub { font-size: 9px; color: #7A847E; margin-top: 2px; }
+
+  .ev { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .ev .h { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: #1F4D3A; min-width: 50px; padding-top: 2px; }
+  .ev .b { flex: 1; }
+  .ev .t { font-weight: 600; color: #0F2A20; }
+  .ev .d { font-size: 10px; color: #5A6D63; margin-top: 2px; }
+  .ev .tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; margin-left: 6px; vertical-align: middle; }
+
+  @media print {
+    body { background: #FFF; padding: 0; }
+    .toolbar { display: none; }
+    .paper { box-shadow: none; padding: 14mm 12mm; width: 100%; }
+    @page { size: A4; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="title">Relatório de patrulha — pré-visualização</div>
+  <select id="patSelect" class="form-input" style="width: 280px"></select>
+  <button onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
+  <button class="secondary" onclick="history.back()">← Voltar</button>
+</div>
+
+<div id="paper" class="paper">
+  <div class="head">
+    <img src="assets/sentinela-shield.svg" alt=""/>
+    <div style="flex:1">
+      <div class="org">Guarda Nacional Republicana · Comando Territorial de Vila Real</div>
+      <div class="doc">Relatório de patrulha</div>
+      <div class="meta">
+        <b>Posto:</b> Vila Real · <b>Indicativo:</b> <span id="r-indicativo"></span>
+      </div>
+    </div>
+    <div class="ref">
+      <div class="lbl">REL · Nº</div>
+      <div id="r-num"></div>
+      <div class="lbl" style="margin-top:6px"><span id="r-data"></span></div>
+    </div>
+  </div>
+
+  <!-- 1. Identificação -->
+  <div class="section">
+    <h2><span class="num">1</span> Identificação</h2>
+    <div class="grid">
+      <div class="field"><div class="lbl">Indicativo</div><div class="val mono" id="f-indicativo"></div></div>
+      <div class="field"><div class="lbl">Viatura</div><div class="val" id="f-viatura"></div></div>
+      <div class="field"><div class="lbl">Matrícula</div><div class="val"><span class="plate"><span class="eu">P</span><span class="num" id="f-matricula"></span></span></div></div>
+      <div class="field"><div class="lbl">Patrulheiros</div><div class="val" id="f-militares"></div></div>
+    </div>
+  </div>
+
+  <!-- 2. Tempos -->
+  <div class="section">
+    <h2><span class="num">2</span> Tempos de serviço</h2>
+    <div class="grid">
+      <div class="field"><div class="lbl">Aberta em</div><div class="val mono" id="f-aberta"></div></div>
+      <div class="field"><div class="lbl">Fechada em</div><div class="val mono" id="f-fechada"></div></div>
+      <div class="field"><div class="lbl">Duração</div><div class="val mono" id="f-duracao"></div></div>
+      <div class="field"><div class="lbl">Sector / zona</div><div class="val" id="f-sector"></div></div>
+    </div>
+  </div>
+
+  <!-- 3. KM e combustível -->
+  <div class="section">
+    <h2><span class="num">3</span> Quilómetros e combustível</h2>
+    <div class="stat-row">
+      <div class="stat"><div class="lbl">KM Inicial</div><div class="val" id="f-kmi"></div></div>
+      <div class="stat"><div class="lbl">KM Final</div><div class="val" id="f-kmf"></div></div>
+      <div class="stat"><div class="lbl">Percorridos</div><div class="val" id="f-kmp"></div><div class="sub">quilómetros</div></div>
+      <div class="stat"><div class="lbl">Combustível</div><div class="val" id="f-comb"></div><div class="sub" id="f-comb-sub"></div></div>
+    </div>
+  </div>
+
+  <!-- 4. Ocorrências -->
+  <div class="section">
+    <h2><span class="num">4</span> Ocorrências e leituras ANPR</h2>
+    <div id="f-ocorrencias"></div>
+  </div>
+
+  <!-- 5. Observações -->
+  <div class="section">
+    <h2><span class="num">5</span> Observações do militar responsável</h2>
+    <div class="obs" id="f-obs"></div>
+  </div>
+
+  <!-- Signatures -->
+  <div class="signatures">
+    <div class="sig">
+      <div class="line" id="sig-pat">—</div>
+      <div class="name">Militar responsável da patrulha</div>
+    </div>
+    <div class="sig">
+      <div class="line">Costa Ribeiro</div>
+      <div class="name">Sarg. Costa Ribeiro · Cmdt. do Posto Territorial de Vila Real</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div>Documento de uso interno · não difundir.</div>
+    <div>Sentinela · v2026.04 · gerado em <span id="f-gerado"></span></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="store.js"></script>
+<script>
+function fmtData(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+function diffHoras(a, b) {
+  if (!a || !b) return '—';
+  const ms = new Date(b) - new Date(a);
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  return `${h}h ${m.toString().padStart(2, '0')}min`;
+}
+
+function render(patrulha) {
+  const D = window.SENTINELA_DATA;
+  const s = window.SentinelaStore.getState();
+
+  const v = s.viaturas.find(x => x.id === patrulha.viaturaId);
+  const milNomes = (patrulha.militares || []).map(id => {
+    const m = s.militares.find(x => x.id === id);
+    return m ? `${m.postoAbrev} ${m.nome}` : id;
+  }).join(' · ');
+
+  // Sector heuristic — find from briefing if matches indicativo
+  const sec = (s.briefing.patrulhas.find(p => p.indicativo === patrulha.indicativo) || {}).sector || '—';
+
+  document.getElementById('r-indicativo').textContent = patrulha.indicativo;
+  document.getElementById('r-num').textContent = patrulha.id.slice(-6).toUpperCase();
+  document.getElementById('r-data').textContent = new Date(patrulha.abertaEm).toLocaleDateString('pt-PT');
+
+  document.getElementById('f-indicativo').textContent = patrulha.indicativo;
+  document.getElementById('f-viatura').textContent = v ? `${v.marca} ${v.modelo}` : '—';
+  document.getElementById('f-matricula').textContent = v ? v.matricula : '—';
+  document.getElementById('f-militares').textContent = milNomes;
+  document.getElementById('sig-pat').textContent = milNomes.split('·')[0]?.trim().split(' ').slice(1).join(' ') || '—';
+
+  document.getElementById('f-aberta').textContent = fmtData(patrulha.abertaEm);
+  document.getElementById('f-fechada').textContent = patrulha.fechadaEm ? fmtData(patrulha.fechadaEm) : '— (em curso)';
+  document.getElementById('f-duracao').textContent = patrulha.fechadaEm ? diffHoras(patrulha.abertaEm, patrulha.fechadaEm) : '—';
+  document.getElementById('f-sector').textContent = sec;
+
+  document.getElementById('f-kmi').textContent = patrulha.kmInicial.toLocaleString('pt-PT');
+  document.getElementById('f-kmf').textContent = (patrulha.kmFinal != null ? patrulha.kmFinal : '—').toLocaleString ? patrulha.kmFinal.toLocaleString('pt-PT') : (patrulha.kmFinal ?? '—');
+  document.getElementById('f-kmp').textContent = patrulha.kmFinal != null ? (patrulha.kmFinal - patrulha.kmInicial) : '—';
+  const cF = patrulha.combustivelFinal != null ? patrulha.combustivelFinal : '—';
+  document.getElementById('f-comb').textContent = patrulha.combustivelInicial + ' → ' + cF + (cF !== '—' ? '%' : '');
+  document.getElementById('f-comb-sub').textContent = patrulha.combustivelFinal != null ? `consumo ${patrulha.combustivelInicial - patrulha.combustivelFinal}%` : '';
+
+  // Filter alerts confirmed by this patrol
+  const alertas = (s.alertas || []).filter(a => a.indicativo === patrulha.indicativo);
+  const ocE = document.getElementById('f-ocorrencias');
+  if (alertas.length === 0) {
+    ocE.innerHTML = '<div style="font-size:11px; color:#5A6D63; padding:8px 0;">Sem ocorrências registadas durante a patrulha.</div>';
+  } else {
+    ocE.innerHTML = alertas.map(a => {
+      const cor = a.severidade === 'critico' ? '#C7322B' : a.severidade === 'aviso' ? '#D88A2A' : '#2E5C8A';
+      const bg  = a.severidade === 'critico' ? '#FBE8E6' : a.severidade === 'aviso' ? '#FCEFD9' : '#E1ECF6';
+      return `
+        <div class="ev">
+          <div class="h">${a.hora}</div>
+          <div class="b">
+            <div class="t">${a.motivo}
+              <span class="tag" style="background:${bg};color:${cor}">${a.severidade}</span>
+              ${a.confirmado ? '<span class="tag" style="background:#E1F1E5;color:#2F7D4A">confirmado</span>' : ''}
+            </div>
+            <div class="d">Matrícula <b>${a.matricula}</b> · ${a.local} · origem: ${a.origem}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  document.getElementById('f-obs').textContent = patrulha.observacoes && patrulha.observacoes.trim() ? patrulha.observacoes : 'Patrulha decorreu sem incidentes a registar fora do que está acima.';
+  document.getElementById('f-gerado').textContent = new Date().toLocaleString('pt-PT');
+}
+
+// Build selector
+const s = window.SentinelaStore.getState();
+const sel = document.getElementById('patSelect');
+const opts = [...(s.patrulhaAtual ? [s.patrulhaAtual] : []), ...s.patrulhasHistorico];
+opts.forEach(p => {
+  const o = document.createElement('option');
+  o.value = p.id;
+  o.textContent = `${p.indicativo} · ${new Date(p.abertaEm).toLocaleDateString('pt-PT')} ${p.fechadaEm ? '(fechada)' : '(em curso)'}`;
+  sel.appendChild(o);
+});
+
+const params = new URLSearchParams(location.search);
+const initial = params.get('p') || (opts[0] && opts[0].id);
+if (initial) {
+  sel.value = initial;
+  const p = opts.find(x => x.id === initial);
+  if (p) render(p);
+}
+sel.addEventListener('change', () => {
+  const p = opts.find(x => x.id === sel.value);
+  if (p) render(p);
+});
+</script>
+</body>
+</html>

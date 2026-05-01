@@ -1,0 +1,3239 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sentinela Mobile — GNR</title>
+<meta name="theme-color" content="#1F4D3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sentinela">
+<link rel="apple-touch-icon" href="assets/sentinela-shield.svg">
+<style>
+/* ==========================================================================
+   Sentinela Design System — Tokens
+   Cores institucionais (verde GNR-inspired) + tipografia + spacing + etc.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* ─── BRAND ──────────────────────────────────────────────────────────── */
+  --brand-green:        #1F4D3A;   /* Verde Sentinela (primário) */
+  --brand-green-hover:  #1A4231;
+  --brand-green-deep:   #0F2A20;   /* Verde profundo (headers, sidebars) */
+  --brand-green-soft:   #2D6B52;   /* Verde médio (chips ativos) */
+  --brand-gold:         #C9A24B;   /* Dourado institucional */
+  --brand-gold-soft:    #E8D9A8;
+  --brand-gold-deep:    #8C6F2C;
+
+  /* ─── SEMANTIC ───────────────────────────────────────────────────────── */
+  --danger:        #C7322B;        /* Vermelho operacional — furto, mandado */
+  --danger-soft:   #FBE8E6;
+  --danger-deep:   #8E1F1A;
+  --warning:       #D88A2A;        /* Âmbar — sem seguro, inspeção caducada */
+  --warning-soft:  #FCEFD9;
+  --warning-deep:  #9C5C12;
+  --info:          #2E5C8A;        /* Azul informativo */
+  --info-soft:     #E1ECF6;
+  --info-deep:     #1B3D5E;
+  --success:       #2F7D4A;        /* Verde positivo (separado do verde marca) */
+  --success-soft:  #E1F1E5;
+
+  /* ─── NEUTRAL SCALE (slate, levemente azulada) ───────────────────────── */
+  --slate-50:  #F7F8F7;
+  --slate-100: #EFF1EF;
+  --slate-200: #E2E5E2;
+  --slate-300: #C9CDC9;
+  --slate-400: #9BA29B;
+  --slate-500: #6E756E;
+  --slate-600: #4D544D;
+  --slate-700: #353A35;
+  --slate-800: #20251F;
+  --slate-900: #131814;
+
+  /* ─── SURFACES — modo claro (default) ────────────────────────────────── */
+  --bg:           #F4F2EC;          /* Off-white quente */
+  --surface:      #FFFFFF;
+  --surface-2:    #F7F8F7;          /* Cards num bg */
+  --surface-3:    #EFF1EF;          /* Hover de surface-2 */
+  --surface-inv:  var(--brand-green-deep);
+
+  --fg:           var(--slate-900);
+  --fg-muted:     var(--slate-600);
+  --fg-soft:      var(--slate-500);
+  --fg-on-brand:  #FFFFFF;
+  --fg-on-gold:   #1A1208;
+
+  --border:       #E2E5E2;
+  --border-strong:#C9CDC9;
+  --border-on-brand: rgba(255,255,255,0.16);
+
+  --focus-ring:   var(--brand-gold);
+
+  /* ─── SHADOWS ────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(15,42,32,0.06);
+  --shadow-md: 0 4px 12px rgba(15,42,32,0.08), 0 1px 2px rgba(15,42,32,0.04);
+  --shadow-lg: 0 12px 32px rgba(15,42,32,0.12);
+  --shadow-glow-danger: 0 0 0 3px rgba(199,50,43,0.18);
+  --shadow-glow-warning: 0 0 0 3px rgba(216,138,42,0.20);
+
+  /* ─── RADII ──────────────────────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  /* ─── SPACING (4px scale) ────────────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ─── MOTION ─────────────────────────────────────────────────────────── */
+  --motion-fast:    120ms;
+  --motion-base:    200ms;
+  --motion-modal:   320ms;
+  --ease-out:       cubic-bezier(0.2, 0, 0, 1);
+  --ease-in:        cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out:    cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ─── TYPOGRAPHY ─────────────────────────────────────────────────────── */
+  --font-display: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Type scale */
+  --t-display-size:   40px;
+  --t-display-line:   48px;
+  --t-display-weight: 700;
+  --t-display-tracking: -0.02em;
+
+  --t-h1-size:   32px;
+  --t-h1-line:   40px;
+  --t-h1-weight: 600;
+  --t-h1-tracking: -0.015em;
+
+  --t-h2-size:   22px;
+  --t-h2-line:   28px;
+  --t-h2-weight: 600;
+  --t-h2-tracking: -0.01em;
+
+  --t-h3-size:   17px;
+  --t-h3-line:   24px;
+  --t-h3-weight: 600;
+  --t-h3-tracking: -0.005em;
+
+  --t-body-size:   15px;
+  --t-body-line:   22px;
+  --t-body-weight: 400;
+
+  --t-body-sm-size:   13px;
+  --t-body-sm-line:   18px;
+
+  --t-caption-size:   12px;
+  --t-caption-line:   16px;
+  --t-caption-weight: 500;
+  --t-caption-tracking: 0.02em;
+
+  --t-overline-size:   11px;
+  --t-overline-line:   14px;
+  --t-overline-weight: 600;
+  --t-overline-tracking: 0.08em;
+
+  --t-mono-size:   14px;
+  --t-mono-line:   20px;
+}
+
+/* ═══ DARK MODE ═══════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg:           #0E1A14;          /* Verde-noite */
+  --surface:      #14241C;
+  --surface-2:    #1A2D24;
+  --surface-3:    #22382D;
+  --surface-inv:  #F4F2EC;
+
+  --fg:           #ECEEEC;
+  --fg-muted:     #A8B0AA;
+  --fg-soft:      #7A847E;
+  --fg-on-brand:  #FFFFFF;
+
+  --border:       #243A2F;
+  --border-strong:#34503F;
+  --border-on-brand: rgba(255,255,255,0.10);
+
+  --brand-green-hover: #2A6048;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.32);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.24);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.50);
+
+  --danger-soft:  #3A1815;
+  --warning-soft: #3A2812;
+  --info-soft:    #15263A;
+  --success-soft: #142A1C;
+}
+
+/* ═══ BASE ═══════════════════════════════════════════════════════════════ */
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: var(--t-body-size);
+  line-height: var(--t-body-line);
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ═══ TYPE UTILITIES ═════════════════════════════════════════════════════ */
+.t-display { font-family: var(--font-display); font-size: var(--t-display-size); line-height: var(--t-display-line); font-weight: var(--t-display-weight); letter-spacing: var(--t-display-tracking); }
+.t-h1      { font-family: var(--font-display); font-size: var(--t-h1-size); line-height: var(--t-h1-line); font-weight: var(--t-h1-weight); letter-spacing: var(--t-h1-tracking); }
+.t-h2      { font-family: var(--font-display); font-size: var(--t-h2-size); line-height: var(--t-h2-line); font-weight: var(--t-h2-weight); letter-spacing: var(--t-h2-tracking); }
+.t-h3      { font-family: var(--font-ui); font-size: var(--t-h3-size); line-height: var(--t-h3-line); font-weight: var(--t-h3-weight); letter-spacing: var(--t-h3-tracking); }
+.t-body    { font-family: var(--font-ui); font-size: var(--t-body-size); line-height: var(--t-body-line); font-weight: var(--t-body-weight); }
+.t-body-sm { font-family: var(--font-ui); font-size: var(--t-body-sm-size); line-height: var(--t-body-sm-line); font-weight: 400; }
+.t-caption { font-family: var(--font-ui); font-size: var(--t-caption-size); line-height: var(--t-caption-line); font-weight: var(--t-caption-weight); letter-spacing: var(--t-caption-tracking); color: var(--fg-muted); }
+.t-overline{ font-family: var(--font-ui); font-size: var(--t-overline-size); line-height: var(--t-overline-line); font-weight: var(--t-overline-weight); letter-spacing: var(--t-overline-tracking); text-transform: uppercase; color: var(--fg-muted); }
+.t-mono    { font-family: var(--font-mono); font-size: var(--t-mono-size); line-height: var(--t-mono-line); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+h1 { font-family: var(--font-display); font-size: var(--t-h1-size); line-height: var(--t-h1-line); font-weight: var(--t-h1-weight); letter-spacing: var(--t-h1-tracking); margin: 0; }
+h2 { font-family: var(--font-display); font-size: var(--t-h2-size); line-height: var(--t-h2-line); font-weight: var(--t-h2-weight); letter-spacing: var(--t-h2-tracking); margin: 0; }
+h3 { font-family: var(--font-ui); font-size: var(--t-h3-size); line-height: var(--t-h3-line); font-weight: var(--t-h3-weight); margin: 0; }
+p  { margin: 0; }
+
+/* tabular numbers everywhere by default for operational data */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ═══ FOCUS ═══════════════════════════════════════════════════════════════ */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ═══ SCROLLBAR (subtle) ════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
+
+
+/* Form inputs */
+.form-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: var(--font-ui);
+  color: var(--fg);
+  outline: none;
+  box-sizing: border-box;
+}
+.form-input:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 3px rgba(31,77,58,0.10);
+}
+.form-input.mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+textarea.form-input {
+  resize: vertical;
+  font-family: var(--font-ui);
+}
+
+</style>
+<style>
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(ellipse at 30% 0%, rgba(31,77,58,0.12), transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(201,162,75,0.08), transparent 50%),
+      var(--bg);
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; gap: 24px;
+    overflow: auto;
+  }
+
+  .stage-label {
+    position: fixed; top: 14px; left: 18px; z-index: 100;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .stage-label img { height: 22px; }
+  .stage-label .pill {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg-muted);
+  }
+  .reset-btn {
+    position: fixed; top: 14px; right: 18px; z-index: 100;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    color: var(--fg-muted); cursor: pointer;
+  }
+  .reset-btn:hover { color: var(--fg); border-color: var(--border-strong); }
+
+  .phone-frame {
+    width: 380px; height: 780px; background: #0a0d0c;
+    border-radius: 44px; padding: 12px; flex-shrink: 0;
+    box-shadow: 0 24px 60px rgba(15,42,32,0.20), 0 4px 12px rgba(15,42,32,0.10);
+    position: relative; border: 1.5px solid #2a3a35;
+  }
+  .phone-screen {
+    width: 100%; height: 100%; background: var(--bg); border-radius: 32px; overflow: hidden;
+    display: flex; flex-direction: column; position: relative;
+  }
+  .phone-statusbar {
+    height: 28px; background: var(--brand-green-deep); color: #FFF;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 22px; font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .phone-notch {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 90px; height: 22px; background: #0a0d0c; border-radius: 16px; z-index: 5;
+  }
+  .phone-home-indicator {
+    position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 4px; background: #FFF; opacity: 0.4; border-radius: 4px; z-index: 5;
+  }
+  .phone-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  .side-panel {
+    width: 280px; max-height: 780px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 18px; box-shadow: var(--shadow-md);
+  }
+  .side-panel h2 { font-family: var(--font-display); font-size: 14px; margin: 0 0 8px; }
+  .side-panel p  { margin: 0 0 12px; font-size: 12px; color: var(--fg-muted); line-height: 18px; }
+  .side-panel .links { display: flex; flex-direction: column; gap: 6px; }
+  .side-panel a {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    padding: 8px 12px; border-radius: 8px; text-decoration: none;
+    font-size: 12px; font-weight: 600; color: var(--fg);
+  }
+  .side-panel a:hover { border-color: var(--brand-green); color: var(--brand-green); }
+  .scenario-list { display: flex; flex-direction: column; gap: 4px; }
+  .scenario-list button {
+    text-align: left; background: var(--surface-2); border: 1px solid var(--border);
+    padding: 8px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; color: var(--fg);
+  }
+  .scenario-list button:hover { border-color: var(--brand-gold); }
+
+  @media (max-width: 720px) {
+    body { padding: 0; }
+    .stage-label, .reset-btn, .side-panel { display: none; }
+    .phone-frame { width: 100vw; height: 100vh; border-radius: 0; padding: 0; border: none; }
+    .phone-screen { border-radius: 0; }
+    .phone-notch, .phone-home-indicator { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage-label">
+  <img src="assets/sentinela-wordmark.svg" alt="Sentinela" id="wordmark"/>
+  <span class="pill">Mobile · Posto Vila Real</span>
+</div>
+<button class="reset-btn" onclick="window.SentinelaStore.actions.reset(); location.reload();">↻ Reset demo</button>
+
+<div class="phone-frame" data-screen-label="Mobile">
+  <div class="phone-notch"></div>
+  <div class="phone-screen">
+    <div class="phone-statusbar">
+      <span id="statusTime">14:32</span>
+      <span style="display:flex; align-items:center; gap:8px;">
+        <span id="statusInd">VRL-21</span>
+        <span>●●●●</span>
+        <span>4G</span>
+        <span>87%</span>
+      </span>
+    </div>
+    <div class="phone-content" id="mobileRoot"></div>
+  </div>
+  <div class="phone-home-indicator"></div>
+</div>
+
+<div class="side-panel" id="sidePanel">
+  <h2>Sentinela — App móvel</h2>
+  <p>Aplicação de patrulha para a GNR. Esta é a vista do telemóvel do militar de serviço — abre patrulha, vê alertas ANPR em tempo real, comunica com o posto.</p>
+
+  <div class="links">
+    <a href="pc.html">→ Abrir vista PC (despacho)</a>
+    <a href="index.html">↩ Hub (mobile + PC)</a>
+  </div>
+
+  <h2 style="margin-top: 18px">Cenários demo</h2>
+  <div class="scenario-list">
+    <button onclick="scenario('alerta-critico')">⚠ Receber alerta crítico (viatura furtada)</button>
+    <button onclick="scenario('alerta-aviso')">⚠ Receber aviso (sem seguro)</button>
+    <button onclick="scenario('os-nova')">✉ Receber nova OS</button>
+    <button onclick="scenario('mensagem')">💬 Receber mensagem do posto</button>
+    <button onclick="scenario('panico-cancela')">🛑 Cancelar pânico ativo</button>
+    <button onclick="scenario('toggle-tema')">🌙 Alternar tema (ronda noturna)</button>
+  </div>
+
+  <p style="margin-top: 14px; font-size: 10px;">Sincroniza com pc.html via BroadcastChannel + localStorage. Abre as duas janelas lado a lado.</p>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script>
+/* Sentinela — Mock data shared between mobile and PC */
+
+window.SENTINELA_DATA = {
+  posto: {
+    nome: "Posto Territorial de Vila Real",
+    destacamento: "Destacamento Territorial de Vila Real",
+    comando: "Comando Territorial de Vila Real",
+    morada: "Av. da Igreja, 5000-001 Vila Real",
+  },
+
+  militarAtual: {
+    id: "m_silva",
+    nim: "1873542",
+    posto: "Cabo",
+    postoAbrev: "Cb.",
+    nome: "Silva",
+    nomeCompleto: "João Pedro Silva",
+    foto: null,
+    indicativo: "VRL-21",
+    secao: "Patrulha Territorial",
+  },
+
+  militares: [
+    { id: "m_costa",    nim: "1654211", posto: "Sargento",    postoAbrev: "Sarg.",    nome: "Costa Ribeiro",  secao: "Cmdt. Posto",  estado: "servico",  indicativo: "—",     anoIngresso: 1999, diasFerias: 27 },
+    { id: "m_marques",  nim: "1701229", posto: "Sargento",    postoAbrev: "Sarg.",    nome: "Helena Marques", secao: "Cmdt. Adj.",   estado: "servico",  indicativo: "—",     anoIngresso: 2001, diasFerias: 27 },
+    { id: "m_almeida",  nim: "1769214", posto: "Cabo-chefe",  postoAbrev: "Cb.-Ch.",  nome: "Vítor Almeida",  secao: "Cmdt. 2.º",   estado: "servico",  indicativo: "—",     anoIngresso: 2003, diasFerias: 26 },
+    { id: "m_torres",   nim: "1812047", posto: "Cabo",        postoAbrev: "Cb.",      nome: "Pedro Torres",   secao: "Investigação", estado: "folga",    indicativo: "—",     anoIngresso: 2004, diasFerias: 25 },
+    { id: "m_silva",    nim: "1873542", posto: "Cabo",        postoAbrev: "Cb.",      nome: "João Silva",     secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-21", anoIngresso: 2005, diasFerias: 25 },
+    { id: "m_pereira",  nim: "1748930", posto: "Cabo",        postoAbrev: "Cb.",      nome: "Hugo Pereira",   secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-23", anoIngresso: 2007, diasFerias: 24 },
+    { id: "m_santos",   nim: "1922104", posto: "Cabo",        postoAbrev: "Cb.",      nome: "Marta Santos",   secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-22", anoIngresso: 2008, diasFerias: 24 },
+    { id: "m_lopes",    nim: "1845003", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Rui Lopes",      secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-21", anoIngresso: 2006, diasFerias: 24 },
+    { id: "m_rocha",    nim: "1885514", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Miguel Rocha",   secao: "Trânsito",    estado: "servico",  indicativo: "—",     anoIngresso: 2009, diasFerias: 23 },
+    { id: "m_braga",    nim: "1934455", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Diogo Braga",    secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-23", anoIngresso: 2010, diasFerias: 23 },
+    { id: "m_vieira",   nim: "2003108", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Sofia Vieira",   secao: "Patrulha",    estado: "folga",    indicativo: "—",     anoIngresso: 2011, diasFerias: 23 },
+    { id: "m_dias",     nim: "1991872", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Ana Dias",       secao: "Patrulha",    estado: "folga",    indicativo: "—",     anoIngresso: 2012, diasFerias: 23 },
+    { id: "m_fonseca",  nim: "1899321", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Inês Fonseca",   secao: "Patrulha",    estado: "patrulha", indicativo: "VRL-22", anoIngresso: 2013, diasFerias: 22 },
+    { id: "m_carvalho", nim: "1965003", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Tiago Carvalho", secao: "Patrulha",    estado: "folga",    indicativo: "—",     anoIngresso: 2018, diasFerias: 22 },
+    { id: "m_neves",    nim: "2014778", posto: "Guarda",      postoAbrev: "Gd.",      nome: "Carla Neves",    secao: "Patrulha",    estado: "servico",  indicativo: "—",     anoIngresso: 2020, diasFerias: 22 },
+  ],
+
+  viaturas: [
+    { id: "v1", matricula: "MA-21-58", marca: "Mercedes", modelo: "Vito",      indicativo: "VRL-21", km: 184326, combustivel: 78, estado: "patrulha", militares: ["m_silva", "m_lopes"] },
+    { id: "v2", matricula: "MA-44-09", marca: "VW",       modelo: "T-Roc",     indicativo: "VRL-22", km: 92118,  combustivel: 42, estado: "patrulha", militares: ["m_santos", "m_fonseca"] },
+    { id: "v3", matricula: "MA-77-12", marca: "Peugeot",  modelo: "Partner",   indicativo: "VRL-23", km: 211440, combustivel: 18, estado: "patrulha", militares: ["m_pereira", "m_braga"] },
+    { id: "v4", matricula: "MA-12-77", marca: "Peugeot",  modelo: "508",       indicativo: "VRL-30", km: 67220,  combustivel: 95, estado: "disponivel", militares: [] },
+    { id: "v5", matricula: "MA-66-31", marca: "Land Rover", modelo: "Defender", indicativo: "VRL-40", km: 142880, combustivel: 60, estado: "disponivel", militares: [] },
+    { id: "v6", matricula: "MA-09-44", marca: "Renault",  modelo: "Mégane",    indicativo: "VRL-50", km: 198003, combustivel: 33, estado: "manutencao", militares: [] },
+    { id: "v7", matricula: "MA-55-88", marca: "Toyota",   modelo: "Hilux",     indicativo: "VRL-60", km: 224119, combustivel: 70, estado: "disponivel", militares: [] },
+  ],
+
+  alertasANPR: [
+    { id: "a1", matricula: "12-AB-34", motivo: "Viatura furtada",         severidade: "critico", local: "Av. Carvalho Araújo", km: 184318, hora: "14:32", militar: "Cb. Silva", indicativo: "VRL-21", origem: "BNDV — Aveiro 2024-08-14", confirmado: false },
+    { id: "a2", matricula: "57-DT-91", motivo: "Sem seguro válido",       severidade: "aviso",   local: "EN2, km 14",          km: 92102,  hora: "14:18", militar: "Cb. Santos", indicativo: "VRL-22", origem: "ASF — desde 2026-01-12", confirmado: true },
+    { id: "a3", matricula: "44-PV-22", motivo: "Inspeção caducada",       severidade: "aviso",   local: "R. da República",     km: 211412, hora: "13:55", militar: "Gd. Braga",  indicativo: "VRL-23", origem: "IMT — caducou 2025-11-30", confirmado: true },
+    { id: "a4", matricula: "98-XR-04", motivo: "Mandado de detenção",     severidade: "critico", local: "A24, saída 18",       km: 184290, hora: "13:20", militar: "Cb. Silva",  indicativo: "VRL-21", origem: "MP Vila Real",         confirmado: true },
+    { id: "a5", matricula: "33-LM-67", motivo: "Cancelada — abate",       severidade: "info",    local: "Rotunda do Cidral",   km: 92085,  hora: "12:48", militar: "Gd. Fonseca",indicativo: "VRL-22", origem: "IMT 2025-09",          confirmado: true },
+  ],
+
+  ordensServico: [
+    { id: "os1", titulo: "OS 045/2026 — Operação STOP", autor: "Sarg. Costa Ribeiro", data: "28/04/2026", paginas: 3, novo: true },
+    { id: "os2", titulo: "OS 044/2026 — Reforço noturno",                autor: "Sarg. Costa Ribeiro", data: "27/04/2026", paginas: 2, novo: true },
+    { id: "os3", titulo: "OS 043/2026 — Festa de S. Marcos (segurança)", autor: "Cb.-Ch. Almeida",     data: "24/04/2026", paginas: 5, novo: false },
+    { id: "os4", titulo: "OS 042/2026 — Patrulhamento escolas",          autor: "Sarg. Costa Ribeiro", data: "20/04/2026", paginas: 2, novo: false },
+    { id: "os5", titulo: "Diretiva 09/2026 — Procedimentos ANPR",        autor: "Comando Territorial", data: "15/04/2026", paginas: 8, novo: false },
+  ],
+
+  diretivasPatrulha: [
+    { id: "d1", texto: "Reforçar presença na Av. Carvalho Araújo entre 22:00 e 02:00 (denúncias de ruído)", feito: false, prioridade: "alta" },
+    { id: "d2", texto: "Verificar viatura abandonada — Audi A4 cinzento, R. de Santa Iria",                  feito: true,  prioridade: "media" },
+    { id: "d3", texto: "Visita ao IPSS Lar S. Domingos antes das 18:00",                                       feito: false, prioridade: "media" },
+    { id: "d4", texto: "Atenção a Renault Clio preto 89-NM-22 — possível envolvimento em furto a estabelecimento", feito: false, prioridade: "alta" },
+    { id: "d5", texto: "Confirmar sinalética nova na rotunda do Cidral",                                      feito: false, prioridade: "baixa" },
+  ],
+
+  chatGrupos: [
+    { id: "c1", tipo: "posto",    nome: "Posto VRL — Geral",      ultimo: "Marques: Atenção ao Clio preto…", hora: "14:28", naoLidas: 3 },
+    { id: "c2", tipo: "patrulha", nome: "Em Patrulha — VRL-21/22/23", ultimo: "Santos: 57-DT-91 confirmado sem seguro", hora: "14:19", naoLidas: 0, ativo: true },
+    { id: "c3", tipo: "comando",  nome: "Cmdt. Posto",            ultimo: "Tu: A caminho do Cidral.",         hora: "14:02", naoLidas: 0 },
+    { id: "c4", tipo: "geral",    nome: "Anúncios — Comando Territorial", ultimo: "Operação STOP — ver OS 045", hora: "09:30", naoLidas: 1 },
+  ],
+
+  mensagensPatrulha: [
+    { de: "Cb. Santos", indicativo: "VRL-22", texto: "57-DT-91 confirmado sem seguro. Mando contraordenação.", hora: "14:19", proprio: false },
+    { de: "Cb. Silva",  indicativo: "VRL-21", texto: "Recebido. Continuo na zona da Av. Carvalho Araújo.",      hora: "14:21", proprio: true  },
+    { de: "Gd. Braga",  indicativo: "VRL-23", texto: "Sem novidade no IC5. Vou para o Cidral.",                  hora: "14:23", proprio: false },
+    { de: "Cb. Santos", indicativo: "VRL-22", texto: "Combustível em 42% — passo no posto às 15:00.",            hora: "14:25", proprio: false },
+  ],
+
+  briefing: {
+    data: "Ter, 28 abr 2026",
+    autor: "Sarg. Costa Ribeiro",
+    pontos: [
+      "Operação STOP em vigor das 22:00 às 02:00 — saídas A24 e EN2.",
+      "Atenção a Renault Clio preto 89-NM-22, possível envolvimento em furto.",
+      "Festas de S. Marcos: reforço pedestre no centro histórico após as 21:00.",
+      "VRL-23 com aviso de combustível baixo — abastecer antes das 15:00.",
+    ],
+  },
+
+  escala: {
+    semana: "Semana 18 — 27 abr a 03 mai",
+    dias: ["Seg 27","Ter 28","Qua 29","Qui 30","Sex 01","Sáb 02","Dom 03"],
+    linhas: [
+      { militar: "Sarg. Costa Ribeiro", turnos: ["08-20","08-20","08-20","FOLGA","08-20","FOLGA","FOLGA"] },
+      { militar: "Cb.-Ch. Almeida",     turnos: ["20-08","20-08","FOLGA","FOLGA","20-08","20-08","20-08"] },
+      { militar: "Cb. Silva",           turnos: ["08-20","08-20","08-20","08-20","FOLGA","FOLGA","08-20"] },
+      { militar: "Cb. Santos",          turnos: ["08-20","08-20","FOLGA","08-20","08-20","08-20","FOLGA"] },
+      { militar: "Cb. Pereira",         turnos: ["20-08","FOLGA","20-08","20-08","20-08","FOLGA","20-08"] },
+      { militar: "Gd. Lopes",           turnos: ["08-20","08-20","08-20","FOLGA","FOLGA","08-20","08-20"] },
+      { militar: "Gd. Fonseca",         turnos: ["08-20","08-20","FOLGA","08-20","08-20","FOLGA","08-20"] },
+      { militar: "Gd. Braga",           turnos: ["20-08","20-08","20-08","FOLGA","20-08","20-08","FOLGA"] },
+      { militar: "Gd. Neves",           turnos: ["FOLGA","08-20","08-20","08-20","08-20","08-20","FOLGA"] },
+      { militar: "Gd. Dias",            turnos: ["FOLGA","FOLGA","08-20","08-20","08-20","20-08","20-08"] },
+    ],
+  },
+};
+
+</script>
+<script>
+/* Sentinela — Shared State Store v3
+   Cross-device sync via BroadcastChannel + persistence via localStorage.
+   Single source of truth for both mobile.html and pc.html. */
+
+(function() {
+  const STORAGE_KEY = 'sentinela.state.v3';
+  const CHANNEL_NAME = 'sentinela.sync.v3';
+
+  /* ---------------- Initial state ---------------- */
+  const D = window.SENTINELA_DATA;
+
+  const initialState = {
+    /* Auth */
+    militarLogadoId: null, // null = login screen
+
+    /* Patrulha state */
+    patrulhaAtual: null, // { id, viaturaId, militares:[], kmInicial, combustivelInicial, abertaEm, parceiroId, equipamento:[] }
+    patrulhasHistorico: [
+      { id: 'p_001', viaturaId: 'v1', militares: ['m_silva', 'm_lopes'], kmInicial: 184142, kmFinal: 184326, combustivelInicial: 95, combustivelFinal: 78, abertaEm: '2026-04-28T08:00:00', fechadaEm: null, indicativo: 'VRL-21' },
+      { id: 'p_002', viaturaId: 'v2', militares: ['m_santos', 'm_fonseca'], kmInicial: 91987, kmFinal: 92118, combustivelInicial: 60, combustivelFinal: 42, abertaEm: '2026-04-28T08:00:00', fechadaEm: null, indicativo: 'VRL-22' },
+      { id: 'p_003', viaturaId: 'v3', militares: ['m_pereira', 'm_braga'], kmInicial: 211238, kmFinal: 211440, combustivelInicial: 50, combustivelFinal: 18, abertaEm: '2026-04-28T08:00:00', fechadaEm: null, indicativo: 'VRL-23' },
+      { id: 'p_h1',  viaturaId: 'v4', militares: ['m_silva','m_lopes'],   kmInicial: 67050, kmFinal: 67220, combustivelInicial: 100, combustivelFinal: 95, abertaEm: '2026-04-27T08:00:00', fechadaEm: '2026-04-27T20:12:00', indicativo: 'VRL-30' },
+    ],
+
+    /* ANPR alerts (live feed) */
+    alertas: D.alertasANPR.map(a => ({ ...a })),
+
+    /* Vehicles, militares, etc — copies so we can mutate */
+    viaturas: D.viaturas.map(v => ({ ...v })),
+    militares: D.militares.map(m => ({ ...m })),
+
+    /* Service orders */
+    ordens: D.ordensServico.map(o => ({ ...o, lidoPor: o.novo ? [] : ['m_silva'] })),
+
+    /* Directives for active patrol */
+    diretivas: D.diretivasPatrulha.map(d => ({ ...d })),
+
+    /* Chat threads */
+    chats: {
+      'c1': { id: 'c1', tipo: 'posto', nome: 'Posto VRL — Geral', mensagens: [
+        { de: 'm_marques', texto: 'Bom dia. Briefing das 08:00 disponível na OS 045.', hora: '08:02' },
+        { de: 'm_costa',   texto: 'Atenção ao Clio preto 89-NM-22 — ver alerta de ontem.', hora: '08:14' },
+        { de: 'm_almeida', texto: 'VRL-23 com aviso de combustível — abastecer antes das 15:00.', hora: '13:45' },
+        { de: 'm_marques', texto: 'Atenção ao Clio preto, possível envolvimento em furto a estabelecimento.', hora: '14:28' },
+      ]},
+      'c2': { id: 'c2', tipo: 'patrulha', nome: 'Em Patrulha — VRL-21/22/23', mensagens: [
+        { de: 'm_santos', texto: '57-DT-91 confirmado sem seguro. Mando contraordenação.', hora: '14:19' },
+        { de: 'm_silva',  texto: 'Recebido. Continuo na zona da Av. Carvalho Araújo.', hora: '14:21' },
+        { de: 'm_braga',  texto: 'Sem novidade no IC5. Vou para o Cidral.', hora: '14:23' },
+        { de: 'm_santos', texto: 'Combustível em 42% — passo no posto às 15:00.', hora: '14:25' },
+      ]},
+      'c3': { id: 'c3', tipo: 'comando', nome: 'Cmdt. Posto', mensagens: [
+        { de: 'm_costa', texto: 'Silva, podes passar pela Av. Carvalho Araújo? Houve denúncia.', hora: '13:58' },
+        { de: 'm_silva', texto: 'A caminho.', hora: '14:02' },
+      ]},
+      'c4': { id: 'c4', tipo: 'geral', nome: 'Anúncios — Comando Territorial', mensagens: [
+        { de: 'sistema', texto: 'Operação STOP — saídas A24 e EN2, 22:00–02:00. Ver OS 045.', hora: '09:30' },
+      ]},
+    },
+
+    /* Pânico */
+    panico: null, // { militarId, indicativo, lat, lng, desde, despachadoPor, reforcos:[] }
+
+    /* Auto de notícia (drafts + submitted) */
+    autos: [],
+
+    /* Notifications */
+    notificacoes: [
+      { id: 'n1', tipo: 'os', texto: 'Nova OS 045 — Operação STOP', hora: '08:02', lida: false },
+      { id: 'n2', tipo: 'chat', texto: 'Sarg. Marques no Posto Geral', hora: '14:28', lida: false },
+      { id: 'n3', tipo: 'briefing', texto: 'Briefing diário disponível', hora: '08:00', lida: true },
+    ],
+
+    /* Map state */
+    viaturasMapa: [
+      { id: 'VRL-21', viaturaId: 'v1', lat: 41.3006, lng: -7.7456, heading: 45, velocidade: 32, militar: 'Cb. Silva' },
+      { id: 'VRL-22', viaturaId: 'v2', lat: 41.2950, lng: -7.7390, heading: 180, velocidade: 0, militar: 'Cb. Santos' },
+      { id: 'VRL-23', viaturaId: 'v3', lat: 41.3088, lng: -7.7521, heading: 270, velocidade: 18, militar: 'Cb. Pereira' },
+    ],
+
+    /* UI */
+    tema: 'claro', // 'claro' | 'noturno'
+
+    /* Briefing diário (editável pelo Cmdt.) */
+    briefing: {
+      data: '28/04/2026',
+      cabecalho: 'Posto Territorial de Vila Real',
+      autor: 'Sarg. Costa Ribeiro',
+      meteo: 'Sol, 18°C max, 7°C min · vento fraco · sem precipitação',
+      efetivo: '15 militares · 8 ao serviço · 4 turno 08–20 · 4 turno 20–08 · 7 folga',
+      prioridades: [
+        'Operação STOP nas saídas A24 e EN2 — 22:00 às 02:00 (ver OS 045)',
+        'Vigilância reforçada Av. Carvalho Araújo — denúncia anónima Cidral',
+        'Apoio Festa S. Marcos — VRL-22 às 18:00 (Pç. do Município)',
+      ],
+      atencao: [
+        'Clio preto matrícula 89-NM-22 — possível envolvimento em furto',
+        'VRL-23 com aviso de combustível — abastecer antes das 15:00',
+      ],
+      patrulhas: [
+        { indicativo: 'VRL-21', militares: 'Cb. Silva / Sd. Lopes', sector: 'Centro / Carvalho Araújo', viatura: 'MA-21-58' },
+        { indicativo: 'VRL-22', militares: 'Cb. Santos / Sd. Fonseca', sector: 'EN2 / Mateus', viatura: 'MA-44-09' },
+        { indicativo: 'VRL-23', militares: 'Cb. Pereira / Sd. Braga', sector: 'A24 / Vilarinho', viatura: 'MA-77-12' },
+      ],
+      observacoes: 'Recordo a obrigatoriedade de envio de RDO até às 21:00. Atenção a denúncias anónimas — confirmar antes de actuar.',
+    },
+
+    /* Ocorrências registadas no terreno */
+    ocorrencias: [],
+
+    /* Rota GPS da patrulha atual [{lat, lng, ts}] */
+    rotaAtual: [],
+
+    /* Cronologia de eventos do turno */
+    eventos: [],
+
+    /* Posto info (editable by admin) */
+    posto: { ...D.posto },
+
+    /* Férias — marcação anual por ordem de antiguidade */
+    ferias: {
+      ano: 2026,
+      turnoMilitarId: 'm_costa', // first in seniority queue
+      periodos: [],   // [{id, militarId, inicio, fim, dias}]
+      concluidos: [], // militarIds who completed marking
+    },
+
+    /* Demo control */
+    ultimaActualizacao: Date.now(),
+  };
+
+  /* ---------------- Storage ---------------- */
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return JSON.parse(JSON.stringify(initialState));
+      const parsed = JSON.parse(raw);
+      // Merge to fill in any missing keys from new versions
+      return { ...initialState, ...parsed };
+    } catch (e) {
+      return JSON.parse(JSON.stringify(initialState));
+    }
+  }
+
+  function saveState(state) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {}
+  }
+
+  /* ---------------- Store ---------------- */
+  let state = loadState();
+  const listeners = new Set();
+
+  // BroadcastChannel for cross-tab/cross-device sync
+  let channel = null;
+  try {
+    channel = new BroadcastChannel(CHANNEL_NAME);
+    channel.onmessage = (ev) => {
+      if (ev.data && ev.data.type === 'state') {
+        state = ev.data.state;
+        listeners.forEach(fn => fn(state));
+      }
+    };
+  } catch (e) { /* not supported */ }
+
+  // Cross-window same-origin sync via storage events
+  window.addEventListener('storage', (ev) => {
+    if (ev.key === STORAGE_KEY && ev.newValue) {
+      try {
+        state = JSON.parse(ev.newValue);
+        listeners.forEach(fn => fn(state));
+      } catch (e) {}
+    }
+  });
+
+  function getState() { return state; }
+
+  function setState(updater) {
+    const next = typeof updater === 'function' ? updater(state) : updater;
+    state = { ...state, ...next, ultimaActualizacao: Date.now() };
+    saveState(state);
+    listeners.forEach(fn => fn(state));
+    if (channel) {
+      try { channel.postMessage({ type: 'state', state }); } catch (e) {}
+    }
+  }
+
+  function subscribe(fn) {
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  }
+
+  function reset() {
+    state = JSON.parse(JSON.stringify(initialState));
+    saveState(state);
+    listeners.forEach(fn => fn(state));
+    if (channel) {
+      try { channel.postMessage({ type: 'state', state }); } catch (e) {}
+    }
+  }
+
+  /* ---------------- Seniority helpers ---------------- */
+  const RANK_ORDER = { 'Sargento': 4, 'Cabo-chefe': 3, 'Cabo': 2, 'Guarda': 1 };
+  function ordemAntiguidade(militares) {
+    return [...militares].sort((a, b) => {
+      const ra = RANK_ORDER[a.posto] || 0, rb = RANK_ORDER[b.posto] || 0;
+      if (ra !== rb) return rb - ra;
+      return (a.anoIngresso || 9999) - (b.anoIngresso || 9999);
+    });
+  }
+
+  /* ---------------- Internal helpers ---------------- */
+  function logEvento(tipo, descricao, dados = {}) {
+    const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+    const ev = { id: 'ev_' + Date.now() + '_' + Math.random().toString(36).slice(2,5), tipo, descricao, hora, ts: Date.now(), dados };
+    setState(s => ({ eventos: [ev, ...s.eventos].slice(0, 300) }));
+  }
+
+  /* ---------------- Action helpers ---------------- */
+  const actions = {
+    login(militarId) {
+      setState({ militarLogadoId: militarId });
+    },
+    logout() {
+      setState({ militarLogadoId: null });
+    },
+    abrirPatrulha({ viaturaId, parceiroId, kmInicial, combustivelInicial, equipamento }) {
+      const v = state.viaturas.find(x => x.id === viaturaId);
+      const id = 'p_' + Date.now();
+      const patrulha = {
+        id, viaturaId, parceiroId,
+        militares: [state.militarLogadoId, parceiroId].filter(Boolean),
+        kmInicial: Number(kmInicial), combustivelInicial: Number(combustivelInicial),
+        equipamento, abertaEm: new Date().toISOString(),
+        indicativo: v ? v.indicativo : '—',
+      };
+      setState(s => ({ patrulhaAtual: patrulha, rotaAtual: [],
+        viaturas: s.viaturas.map(x => x.id === viaturaId ? { ...x, estado: 'patrulha' } : x),
+      }));
+      logEvento('patrulha_aberta', `Patrulha ${patrulha.indicativo} iniciada`, { indicativo: patrulha.indicativo, viaturaId });
+    },
+    fecharPatrulha({ kmFinal, combustivelFinal, observacoes }) {
+      const p = state.patrulhaAtual;
+      if (!p) return;
+      const rota = state.rotaAtual;
+      const fechada = { ...p, kmFinal: Number(kmFinal), combustivelFinal: Number(combustivelFinal), observacoes, fechadaEm: new Date().toISOString(), rota };
+      setState(s => ({
+        patrulhaAtual: null, rotaAtual: [],
+        patrulhasHistorico: [fechada, ...s.patrulhasHistorico],
+        viaturas: s.viaturas.map(x => x.id === p.viaturaId ? { ...x, estado: 'disponivel', km: Number(kmFinal), combustivel: Number(combustivelFinal) } : x),
+      }));
+      logEvento('patrulha_fechada', `Patrulha ${p.indicativo} encerrada — ${Math.max(0, Number(kmFinal) - p.kmInicial)} km percorridos`, { indicativo: p.indicativo });
+    },
+    addAlerta(alerta) {
+      const id = 'a_' + Date.now();
+      const a = { id, hora: new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }), confirmado: false, ...alerta };
+      setState(s => ({ alertas: [a, ...s.alertas] }));
+      logEvento('alerta_anpr', `Alerta ANPR — ${alerta.matricula} — ${alerta.motivo}`, { matricula: alerta.matricula, severidade: alerta.severidade });
+      return a;
+    },
+    confirmarAlerta(alertaId) {
+      const a = state.alertas.find(x => x.id === alertaId);
+      setState(s => ({ alertas: s.alertas.map(x => x.id === alertaId ? { ...x, confirmado: true } : x) }));
+      if (a) logEvento('alerta_confirmado', `Alerta confirmado — ${a.matricula}`, { alertaId });
+    },
+    addOcorrencia(dados) {
+      const numero = 'OC-2026-' + String(state.ocorrencias.length + 1).padStart(4, '0');
+      const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      const oc = { id: 'oc_' + Date.now(), numero, hora, ts: Date.now(), militarId: state.militarLogadoId, ...dados };
+      setState(s => ({ ocorrencias: [oc, ...s.ocorrencias] }));
+      logEvento('ocorrencia', `Ocorrência ${numero} registada — ${dados.tipo}`, { numero, tipo: dados.tipo });
+      return oc;
+    },
+    addPontoRota({ lat, lng }) {
+      setState(s => ({ rotaAtual: [...s.rotaAtual, { lat, lng, ts: Date.now() }].slice(-150) }));
+    },
+    enviarMensagem(chatId, texto) {
+      const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      setState(s => ({
+        chats: { ...s.chats, [chatId]: { ...s.chats[chatId], mensagens: [...s.chats[chatId].mensagens, { de: s.militarLogadoId, texto, hora }] } }
+      }));
+    },
+    marcarOSLida(osId) {
+      const mid = state.militarLogadoId;
+      setState(s => ({
+        ordens: s.ordens.map(o => o.id === osId ? { ...o, novo: false, lidoPor: [...new Set([...(o.lidoPor||[]), mid])] } : o),
+      }));
+    },
+    enviarOS(os) {
+      setState(s => ({ ordens: [{ ...os, id: 'os_' + Date.now(), data: new Date().toLocaleDateString('pt-PT'), novo: true, lidoPor: [] }, ...s.ordens] }));
+    },
+    enviarMensagemLogged(chatId, texto) {
+      const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      setState(s => ({
+        chats: { ...s.chats, [chatId]: { ...s.chats[chatId], mensagens: [...s.chats[chatId].mensagens, { de: s.militarLogadoId, texto, hora }] } }
+      }));
+      logEvento('mensagem', `Mensagem enviada em "${state.chats[chatId]?.nome}"`, { chatId });
+    },
+    activarPanico(coords) {
+      const m = state.militares.find(x => x.id === state.militarLogadoId);
+      // Use real GPS coords if provided, otherwise fall back to Vila Real centre
+      const lat = (coords && coords.lat != null) ? coords.lat : 41.3006 + (Math.random() - 0.5) * 0.005;
+      const lng = (coords && coords.lng != null) ? coords.lng : -7.7456 + (Math.random() - 0.5) * 0.005;
+      setState({
+        panico: {
+          militarId: state.militarLogadoId,
+          indicativo: m ? m.indicativo : '—',
+          militarNome: m ? `${m.postoAbrev} ${m.nome}` : '—',
+          lat, lng,
+          gpsReal: !!(coords && coords.lat != null),
+          desde: new Date().toISOString(),
+          reforcos: [],
+        }
+      });
+      logEvento('panico_ativo', `PEDIDO DE REFORÇO — ${m ? m.indicativo : '—'}`, { lat, lng });
+    },
+    despacharReforco(indicativo) {
+      setState(s => ({
+        panico: s.panico ? { ...s.panico, reforcos: [...new Set([...(s.panico.reforcos||[]), indicativo])] } : null,
+      }));
+    },
+    cancelarPanico() {
+      logEvento('panico_cancelado', 'Pedido de reforço cancelado', {});
+      setState({ panico: null });
+    },
+    submeterAuto(auto) {
+      setState(s => ({ autos: [{ ...auto, id: 'auto_' + Date.now(), data: new Date().toISOString() }, ...s.autos] }));
+    },
+    marcarNotificacaoLida(nId) {
+      setState(s => ({ notificacoes: s.notificacoes.map(n => n.id === nId ? { ...n, lida: true } : n) }));
+    },
+    toggleDiretiva(dId) {
+      setState(s => ({ diretivas: s.diretivas.map(d => d.id === dId ? { ...d, feito: !d.feito } : d) }));
+    },
+    updatePosto(patch) {
+      setState(s => ({ posto: { ...s.posto, ...patch } }));
+    },
+    addMilitar(dados) {
+      const id = 'm_' + Date.now();
+      const m = { id, estado: 'servico', indicativo: '—', foto: null, ...dados };
+      setState(s => ({ militares: [...s.militares, m] }));
+      logEvento('militar_adicionado', `Novo militar adicionado: ${dados.nome}`, { id });
+      return m;
+    },
+    updateMilitar(id, patch) {
+      setState(s => ({ militares: s.militares.map(m => m.id === id ? { ...m, ...patch } : m) }));
+    },
+    addViatura(dados) {
+      const id = 'v_' + Date.now();
+      const v = { id, estado: 'disponivel', militares: [], ...dados };
+      setState(s => ({ viaturas: [...s.viaturas, v] }));
+      logEvento('viatura_adicionada', `Nova viatura: ${dados.matricula}`, { id });
+      return v;
+    },
+    updateViatura(id, patch) {
+      setState(s => ({ viaturas: s.viaturas.map(v => v.id === id ? { ...v, ...patch } : v) }));
+    },
+    resetFeriasAno(ano) {
+      const primeiroId = ordemAntiguidade(state.militares)[0]?.id || null;
+      setState(s => ({ ferias: { ano, turnoMilitarId: primeiroId, periodos: [], concluidos: [] } }));
+      logEvento('ferias_reset', `Marcação de férias reiniciada para ${ano}`, { ano });
+    },
+    setDiasFerias(militarId, dias) {
+      setState(s => ({ militares: s.militares.map(m => m.id === militarId ? { ...m, diasFerias: Number(dias) } : m) }));
+    },
+    adicionarPeriodoFerias({ militarId, inicio, fim }) {
+      const meusPeriodos = state.ferias.periodos.filter(p => p.militarId === militarId);
+      if (meusPeriodos.length >= 5) return null;
+      const d1 = new Date(inicio), d2 = new Date(fim);
+      const dias = Math.max(1, Math.round((d2 - d1) / (1000 * 60 * 60 * 24)) + 1);
+      const periodo = { id: 'fp_' + Date.now(), militarId, inicio, fim, dias };
+      setState(s => ({ ferias: { ...s.ferias, periodos: [...s.ferias.periodos, periodo] } }));
+      logEvento('ferias_periodo', `Período de férias adicionado — ${dias} dias`, { militarId, inicio, fim });
+      return periodo;
+    },
+    removerPeriodoFerias(periodoId) {
+      setState(s => ({ ferias: { ...s.ferias, periodos: s.ferias.periodos.filter(p => p.id !== periodoId) } }));
+    },
+    concluirMarcacaoFerias(militarId) {
+      const fila = ordemAntiguidade(state.militares).map(m => m.id);
+      const concluidos = [...new Set([...state.ferias.concluidos, militarId])];
+      const proxIdx = fila.indexOf(militarId) + 1;
+      const proximo = fila.slice(proxIdx).find(id => !concluidos.includes(id)) || null;
+      setState(s => ({ ferias: { ...s.ferias, concluidos, turnoMilitarId: proximo } }));
+      if (proximo) {
+        const atual = state.militares.find(m => m.id === militarId);
+        const proxMilitar = state.militares.find(m => m.id === proximo);
+        const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+        const texto = `${atual ? `${atual.postoAbrev} ${atual.nome}` : '—'} concluiu a marcação de férias. ${proxMilitar ? `${proxMilitar.postoAbrev} ${proxMilitar.nome}` : '—'}, é agora a sua vez de marcar.`;
+        setState(s => ({
+          notificacoes: [{ id: 'n_f_' + Date.now(), tipo: 'ferias', texto: 'Férias 2026 — é a sua vez de marcar', hora, lida: false }, ...s.notificacoes],
+          chats: { ...s.chats, 'c1': { ...s.chats['c1'], mensagens: [...s.chats['c1'].mensagens, { de: 'sistema', texto, hora }] } },
+        }));
+        logEvento('ferias_turno', `Férias: ${proxMilitar ? `${proxMilitar.postoAbrev} ${proxMilitar.nome}` : '—'} pode agora marcar`, { militarId: proximo });
+      }
+    },
+    setTema(tema) {
+      setState({ tema });
+    },
+    updateBriefing(patch) {
+      setState(s => ({ briefing: { ...s.briefing, ...patch } }));
+    },
+    reset,
+  };
+
+  /* ---------------- React hook ---------------- */
+  function useStore(selector) {
+    const [, setTick] = React.useState(0);
+    React.useEffect(() => {
+      return subscribe(() => setTick(t => t + 1));
+    }, []);
+    return selector ? selector(state) : state;
+  }
+
+  window.SentinelaStore = { getState, setState, subscribe, useStore, actions, reset, ordemAntiguidade };
+})();
+
+</script>
+<script type="text/babel">
+/* Sentinela — shared UI primitives (icons + small components) */
+
+/* Lucide icons (subset, drawn inline for stability) */
+const Icon = ({ name, size = 20, stroke = 1.75, ...rest }) => {
+  const paths = {
+    'scan-line':       <><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M3 12h18"/></>,
+    'shield':          <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></>,
+    'shield-check':    <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></>,
+    'car':             <><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9L18.4 5.5C18.1 4.6 17.2 4 16.3 4H7.7c-.9 0-1.8.6-2.1 1.5L3.5 11.1C2.7 11.3 2 12.1 2 13v3c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 17h8"/></>,
+    'user':            <><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></>,
+    'users':           <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>,
+    'file-text':       <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></>,
+    'clipboard-list':  <><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></>,
+    'message-circle':  <><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></>,
+    'book-user':       <><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><circle cx="12" cy="8" r="2"/><path d="M15 13a3 3 0 1 0-6 0"/></>,
+    'map':             <><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></>,
+    'map-pin':         <><path d="M20 10c0 7-8 12-8 12s-8-5-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></>,
+    'siren':            <><path d="M7 18v-6a5 5 0 1 1 10 0v6"/><path d="M5 21a1 1 0 0 0 1-1v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1a1 1 0 0 0 1 1Z"/><path d="M21 12h1"/><path d="M18.5 4.5 18 5"/><path d="M2 12h1"/><path d="M12 2v1"/><path d="m4.929 4.929.707.707"/></>,
+    'fuel':            <><line x1="3" y1="22" x2="15" y2="22"/><line x1="4" y1="9" x2="14" y2="9"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/></>,
+    'gauge':           <><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></>,
+    'alert-triangle':  <><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></>,
+    'alert-octagon':   <><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></>,
+    'check':           <><polyline points="20 6 9 17 4 12"/></>,
+    'check-square':    <><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></>,
+    'square':          <><rect x="3" y="3" width="18" height="18" rx="2"/></>,
+    'x':               <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>,
+    'plus':            <><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>,
+    'search':          <><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>,
+    'send':            <><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></>,
+    'paperclip':       <><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></>,
+    'arrow-up':        <><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></>,
+    'arrow-down':      <><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></>,
+    'arrow-right':     <><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></>,
+    'arrow-left':      <><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></>,
+    'chevron-right':   <><polyline points="9 18 15 12 9 6"/></>,
+    'chevron-down':    <><polyline points="6 9 12 15 18 9"/></>,
+    'menu':            <><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></>,
+    'bell':            <><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></>,
+    'phone':           <><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></>,
+    'mail':            <><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></>,
+    'log-out':         <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></>,
+    'home':            <><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></>,
+    'list':            <><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></>,
+    'calendar':        <><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></>,
+    'clock':           <><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></>,
+    'upload':          <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></>,
+    'download':        <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></>,
+    'wifi-off':        <><line x1="2" y1="2" x2="22" y2="22"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M2 8.82a15 15 0 0 1 4.17-2.65"/><path d="M10.66 5c4.01-.36 8.14.9 11.34 3.76"/><path d="M16.85 11.25a10 10 0 0 1 2.22 1.68"/><path d="M5 13a10 10 0 0 1 5.24-2.76"/><line x1="12" y1="20" x2="12.01" y2="20"/></>,
+    'video':           <><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></>,
+    'image':           <><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></>,
+    'settings':        <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.14.68.36.94.66"/></>,
+    'flag':            <><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></>,
+    'database':        <><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></>,
+    'briefcase':       <><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></>,
+    'activity':        <><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></>,
+    'play':            <><polygon points="6 4 20 12 6 20 6 4"/></>,
+    'pause':           <><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></>,
+    'radio':           <><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></>,
+    'scan':            <><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></>,
+    'star':            <><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 21.5 12 17.5 5.5 21.5 7 14.5 2 9.5 9 9 12 2"/></>,
+    'clipboard':       <><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></>,
+    'lock':            <><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>,
+    'info':            <><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></>,
+    'help-circle':     <><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></>,
+    'message-square':  <><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></>,
+    'eye':             <><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></>,
+    'edit':            <><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></>,
+    'maximize':        <><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></>,
+    'minimize':        <><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></>,
+    'refresh-cw':      <><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></>,
+    'filter':          <><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></>,
+    'more-vertical':   <><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></>,
+    'navigation':      <><polygon points="3 11 22 2 13 21 11 13 3 11"/></>,
+    'moon':            <><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></>,
+    'sun':             <><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></>,
+    'printer':         <><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></>,
+    'briefcase':       <><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></>,
+    'megaphone':       <><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></>,
+    'cloud-sun':       <><path d="M12 2v2M5.22 5.22l1.42 1.42M2 13h2M20 13h2M17.36 6.64l1.42-1.42M16 13a4 4 0 1 0-8 0"/><path d="M13 17H7a4 4 0 0 1 0-8 5.5 5.5 0 0 1 10.78-1H18a3 3 0 0 1 0 6h-1"/></>,
+    'camera':          <><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></>,
+  };
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" {...rest}>
+      {paths[name] || <circle cx="12" cy="12" r="9"/>}
+    </svg>
+  );
+};
+
+/* Avatar with initials on brand-green */
+const Avatar = ({ name, size = 32, role, style = {} }) => {
+  const initials = (name || '').split(' ').filter(Boolean).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: '50%',
+      background: 'var(--brand-green)', color: '#C9A24B',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: 'var(--font-display)', fontWeight: 700,
+      fontSize: size * 0.42, letterSpacing: '-0.02em',
+      flexShrink: 0,
+      ...style,
+    }}>{initials}</div>
+  );
+};
+
+/* License plate (PT format) */
+const Plate = ({ value, size = 'md' }) => {
+  const sizes = {
+    sm: { h: 20, fs: 11, padL: 16, padR: 8 },
+    md: { h: 26, fs: 14, padL: 20, padR: 10 },
+    lg: { h: 36, fs: 19, padL: 26, padR: 12 },
+  };
+  const s = sizes[size] || sizes.md;
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'stretch', height: s.h,
+      border: '1.5px solid #20251F', borderRadius: 3, overflow: 'hidden',
+      background: '#FFFFFF', fontFamily: 'var(--font-mono)', fontWeight: 700,
+      fontSize: s.fs, lineHeight: 1, letterSpacing: '0.06em',
+      flexShrink: 0,
+    }}>
+      <span style={{
+        background: '#003399', color: '#FFCC00', display: 'flex', alignItems: 'center',
+        justifyContent: 'center', width: s.padL, fontSize: s.fs * 0.55, fontWeight: 800,
+      }}>P</span>
+      <span style={{ display: 'flex', alignItems: 'center', padding: `0 ${s.padR}px`, color: '#20251F' }}>
+        {value}
+      </span>
+    </span>
+  );
+};
+
+/* Status dot */
+const StatusDot = ({ tone = 'success', size = 8 }) => {
+  const tones = {
+    success: 'var(--success)', warning: 'var(--warning)', danger: 'var(--danger)',
+    info: 'var(--info)', muted: 'var(--slate-400)', brand: 'var(--brand-green)',
+  };
+  return <span style={{ width: size, height: size, borderRadius: '50%', background: tones[tone], display: 'inline-block', flexShrink: 0 }}/>;
+};
+
+/* Badge */
+const Badge = ({ tone = 'neutral', children, size = 'md' }) => {
+  const tones = {
+    neutral: { bg: 'var(--slate-100)', fg: 'var(--slate-700)', bd: 'var(--border)' },
+    brand:   { bg: 'rgba(31,77,58,0.10)', fg: 'var(--brand-green)', bd: 'rgba(31,77,58,0.20)' },
+    danger:  { bg: 'var(--danger-soft)', fg: 'var(--danger-deep)', bd: 'rgba(199,50,43,0.22)' },
+    warning: { bg: 'var(--warning-soft)', fg: 'var(--warning-deep)', bd: 'rgba(216,138,42,0.22)' },
+    info:    { bg: 'var(--info-soft)', fg: 'var(--info-deep)', bd: 'rgba(46,92,138,0.22)' },
+    success: { bg: 'var(--success-soft)', fg: 'var(--success)', bd: 'rgba(47,125,74,0.22)' },
+    gold:    { bg: 'rgba(201,162,75,0.14)', fg: 'var(--brand-gold-deep)', bd: 'rgba(201,162,75,0.30)' },
+  };
+  const t = tones[tone] || tones.neutral;
+  const sizes = {
+    sm: { fs: 10, py: 2, px: 6, h: 18 },
+    md: { fs: 11, py: 3, px: 8, h: 22 },
+  };
+  const sz = sizes[size] || sizes.md;
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      height: sz.h, padding: `0 ${sz.px}px`,
+      background: t.bg, color: t.fg, border: `1px solid ${t.bd}`,
+      borderRadius: 'var(--radius-pill)',
+      fontFamily: 'var(--font-ui)', fontSize: sz.fs, fontWeight: 600,
+      letterSpacing: '0.02em', textTransform: 'uppercase', whiteSpace: 'nowrap',
+    }}>{children}</span>
+  );
+};
+
+/* Button */
+const Button = ({ tone = 'primary', size = 'md', children, icon, iconRight, ...rest }) => {
+  const tones = {
+    primary:   { bg: 'var(--brand-green)', fg: '#FFFFFF', bd: 'var(--brand-green)' },
+    secondary: { bg: 'var(--surface)', fg: 'var(--fg)', bd: 'var(--border-strong)' },
+    ghost:     { bg: 'transparent', fg: 'var(--fg)', bd: 'transparent' },
+    danger:    { bg: 'var(--danger)', fg: '#FFFFFF', bd: 'var(--danger)' },
+    gold:      { bg: 'var(--brand-gold)', fg: 'var(--fg-on-gold)', bd: 'var(--brand-gold)' },
+  };
+  const t = tones[tone] || tones.primary;
+  const sizes = {
+    sm: { h: 28, px: 10, fs: 12, gap: 6, ic: 14 },
+    md: { h: 36, px: 14, fs: 13, gap: 8, ic: 16 },
+    lg: { h: 44, px: 18, fs: 15, gap: 10, ic: 18 },
+  };
+  const sz = sizes[size] || sizes.md;
+  return (
+    <button {...rest} style={{
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: sz.gap,
+      height: sz.h, padding: `0 ${sz.px}px`, background: t.bg, color: t.fg,
+      border: `1px solid ${t.bd}`, borderRadius: 'var(--radius-md)',
+      fontFamily: 'var(--font-ui)', fontSize: sz.fs, fontWeight: 600,
+      cursor: 'pointer', letterSpacing: 0,
+      transition: `background var(--motion-fast) var(--ease-out), transform var(--motion-fast) var(--ease-out)`,
+      ...rest.style,
+    }} onMouseDown={e=>e.currentTarget.style.transform='scale(0.98)'}
+       onMouseUp={e=>e.currentTarget.style.transform=''}
+       onMouseLeave={e=>e.currentTarget.style.transform=''}>
+      {icon && <Icon name={icon} size={sz.ic}/>}
+      {children}
+      {iconRight && <Icon name={iconRight} size={sz.ic}/>}
+    </button>
+  );
+};
+
+Object.assign(window, { Icon, Avatar, Plate, StatusDot, Badge, Button });
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Login screen (escolher militar) */
+
+const LoginScreen = () => {
+  const { useStore, actions } = window.SentinelaStore;
+  const militares = useStore(s => s.militares);
+  const [filtro, setFiltro] = React.useState('');
+
+  const visiveis = militares.filter(m =>
+    m.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+    m.nim.includes(filtro)
+  );
+
+  return (
+    <div style={{
+      flex: 1, display: 'flex', flexDirection: 'column',
+      background: 'linear-gradient(180deg, var(--brand-green-deep) 0%, var(--brand-green) 50%, var(--bg) 50%)',
+    }}>
+      <div style={{ padding: '32px 22px 24px', textAlign: 'center', color: '#FFF' }}>
+        <img src="assets/sentinela-shield.svg" alt="" style={{ width: 56, height: 64, margin: '0 auto 12px' }}/>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, letterSpacing: '-0.01em' }}>SENTINELA</div>
+        <div style={{ fontSize: 11, color: '#C9A24B', fontWeight: 600, letterSpacing: '0.14em', marginTop: 2 }}>PLATAFORMA OPERACIONAL</div>
+        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 14 }}>Posto Territorial de Vila Real</div>
+      </div>
+
+      <div style={{
+        flex: 1, background: 'var(--bg)', borderTopLeftRadius: 20, borderTopRightRadius: 20,
+        padding: '18px 14px', overflowY: 'auto',
+      }}>
+        <div className="t-overline" style={{ marginBottom: 8 }}>ENTRAR — ESCOLHE O TEU PERFIL</div>
+
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 8,
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-pill)', padding: '8px 12px', marginBottom: 12,
+        }}>
+          <Icon name="search" size={16} style={{ color: 'var(--fg-soft)' }}/>
+          <input
+            value={filtro}
+            onChange={e => setFiltro(e.target.value)}
+            placeholder="Pesquisar nome ou NIM"
+            style={{ flex: 1, border: 'none', outline: 'none', fontSize: 13, background: 'transparent', color: 'var(--fg)' }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {visiveis.map(m => (
+            <button key={m.id} onClick={() => actions.login(m.id)} style={{
+              background: 'var(--surface)', border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-md)', padding: 10, textAlign: 'left',
+              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+            }}>
+              <Avatar name={m.nome} size={42}/>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>{m.postoAbrev} {m.nome}</div>
+                <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>NIM {m.nim} · {m.indicativo}</div>
+              </div>
+              <Icon name="chevron-right" size={16} style={{ color: 'var(--fg-soft)' }}/>
+            </button>
+          ))}
+        </div>
+
+        <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--fg-muted)', marginTop: 18 }}>
+          Versão demo · sem palavra-passe
+        </div>
+      </div>
+    </div>
+  );
+};
+
+window.LoginScreen = LoginScreen;
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Abertura e Fecho de Patrulha (full forms) */
+
+const AbrirPatrulhaScreen = ({ onBack, onDone }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const viaturas = useStore(s => s.viaturas).filter(v => v.estado === 'disponivel');
+  const militares = useStore(s => s.militares);
+  const meId = useStore(s => s.militarLogadoId);
+  const me = militares.find(m => m.id === meId);
+
+  const [step, setStep] = React.useState(1);
+  const [viaturaId, setViaturaId] = React.useState(null);
+  const [parceiroId, setParceiroId] = React.useState(null);
+  const [km, setKm] = React.useState('');
+  const [comb, setComb] = React.useState('');
+  const [equip, setEquip] = React.useState({
+    arma: true, colete: true, radio: true, taser: false, alcoolimetro: true, primeirosocorros: true,
+  });
+
+  const viatura = viaturas.find(v => v.id === viaturaId);
+
+  const ScreenHeader = ({ title }) => (
+    <div style={{
+      height: 52, background: 'var(--brand-green-deep)', color: '#FFF',
+      display: 'flex', alignItems: 'center', gap: 10, padding: '0 12px', flexShrink: 0,
+    }}>
+      <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+        <Icon name="arrow-left" size={20}/>
+      </button>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 14 }}>{title}</div>
+        <div style={{ fontSize: 10, color: '#C9A24B', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Passo {step} de 4</div>
+      </div>
+    </div>
+  );
+
+  // Step 1 — viatura
+  if (step === 1) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <ScreenHeader title="Escolher viatura"/>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="t-overline">VIATURAS DISPONÍVEIS</div>
+          {viaturas.map(v => (
+            <button key={v.id} onClick={() => { setViaturaId(v.id); setKm(String(v.km)); setComb(String(v.combustivel)); setStep(2); }} style={{
+              background: 'var(--surface)', border: '1px solid var(--border)',
+              borderLeft: '4px solid var(--success)',
+              borderRadius: 'var(--radius-md)', padding: 12, textAlign: 'left',
+              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+            }}>
+              <div style={{ width: 44, height: 44, background: 'var(--surface-2)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon name="car" size={22} style={{ color: 'var(--brand-green)' }}/>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
+                  <Plate value={v.matricula} size="sm"/>
+                  <Badge tone="brand" size="sm">{v.indicativo}</Badge>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--fg-muted)' }}>{v.marca} {v.modelo} · {v.km.toLocaleString('pt-PT')} km · {v.combustivel}%</div>
+              </div>
+              <Icon name="chevron-right" size={16} style={{ color: 'var(--fg-soft)' }}/>
+            </button>
+          ))}
+          {viaturas.length === 0 && (
+            <div style={{ background: 'var(--warning-soft)', color: 'var(--warning-deep)', padding: 14, borderRadius: 'var(--radius-md)', fontSize: 13 }}>
+              Sem viaturas disponíveis. Contacta o comando.
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Step 2 — parceiro
+  if (step === 2) {
+    const parceiros = militares.filter(m => m.id !== meId && m.estado !== 'patrulha');
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <ScreenHeader title="Escolher patrulheiro"/>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <button onClick={() => { setParceiroId(null); setStep(3); }} style={{
+            background: 'var(--surface-2)', border: '1px dashed var(--border-strong)',
+            borderRadius: 'var(--radius-md)', padding: 12, textAlign: 'left',
+            display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+          }}>
+            <Icon name="user" size={20} style={{ color: 'var(--fg-soft)' }}/>
+            <div style={{ flex: 1, fontSize: 13, color: 'var(--fg-muted)' }}>Sair sozinho (sem parceiro)</div>
+          </button>
+          <div className="t-overline" style={{ marginTop: 8 }}>DISPONÍVEIS</div>
+          {parceiros.map(m => (
+            <button key={m.id} onClick={() => { setParceiroId(m.id); setStep(3); }} style={{
+              background: 'var(--surface)', border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-md)', padding: 10, textAlign: 'left',
+              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+            }}>
+              <Avatar name={m.nome} size={38}/>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>{m.postoAbrev} {m.nome}</div>
+                <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>NIM {m.nim}</div>
+              </div>
+              <StatusDot tone={m.estado === 'servico' ? 'success' : 'muted'}/>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Step 3 — KM, combustível
+  if (step === 3) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <ScreenHeader title="Estado da viatura"/>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Plate value={viatura.matricula} size="sm"/>
+            <div style={{ fontSize: 12, color: 'var(--fg-muted)' }}>{viatura.marca} {viatura.modelo} · {viatura.indicativo}</div>
+          </div>
+
+          <FormField label="Quilómetros iniciais">
+            <input type="number" value={km} onChange={e => setKm(e.target.value)} className="form-input mono"/>
+          </FormField>
+          <FormField label="Combustível inicial (%)">
+            <input type="number" min="0" max="100" value={comb} onChange={e => setComb(e.target.value)} className="form-input mono"/>
+            <input type="range" min="0" max="100" value={comb} onChange={e => setComb(e.target.value)} style={{ width: '100%', marginTop: 6, accentColor: 'var(--brand-green)' }}/>
+          </FormField>
+
+          <Button tone="primary" size="lg" onClick={() => setStep(4)} style={{ width: '100%' }} icon="arrow-right">Continuar</Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 4 — equipamento
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <ScreenHeader title="Equipamento de patrulha"/>
+      <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className="t-overline" style={{ marginBottom: 4 }}>CONFIRMA O EQUIPAMENTO LEVADO</div>
+        {[
+          ['arma', 'Arma de serviço'],
+          ['colete', 'Colete balístico'],
+          ['radio', 'Rádio SIRESP'],
+          ['taser', 'Taser X26'],
+          ['alcoolimetro', 'Alcoolímetro'],
+          ['primeirosocorros', 'Primeiros socorros'],
+        ].map(([k, label]) => (
+          <button key={k} onClick={() => setEquip(e => ({ ...e, [k]: !e[k] }))} style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-md)', padding: 12, display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', textAlign: 'left',
+          }}>
+            <Icon name={equip[k] ? 'check-square' : 'square'} size={20} style={{ color: equip[k] ? 'var(--success)' : 'var(--fg-soft)' }}/>
+            <div style={{ flex: 1, fontSize: 13, fontWeight: 500 }}>{label}</div>
+          </button>
+        ))}
+        <div style={{ marginTop: 14, padding: 12, background: 'var(--info-soft)', color: 'var(--info-deep)', fontSize: 12, borderRadius: 'var(--radius-md)' }}>
+          <Icon name="alert-triangle" size={14} style={{ verticalAlign: 'text-bottom', marginRight: 6 }}/>
+          O comando do posto será notificado da abertura.
+        </div>
+        <Button tone="primary" size="lg" icon="shield" onClick={() => {
+          actions.abrirPatrulha({
+            viaturaId, parceiroId,
+            kmInicial: Number(km), combustivelInicial: Number(comb),
+            equipamento: Object.keys(equip).filter(k => equip[k]),
+          });
+          onDone();
+        }} style={{ width: '100%', marginTop: 8 }}>
+          Confirmar e iniciar patrulha
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+/* GPS tracking hook — runs while patrol is open */
+const useGPSTracking = (ativa) => {
+  React.useEffect(() => {
+    if (!ativa || !navigator.geolocation) return;
+    const watchId = navigator.geolocation.watchPosition(
+      pos => {
+        window.SentinelaStore.actions.addPontoRota({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 20000, timeout: 30000 }
+    );
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, [ativa]);
+};
+
+const FecharPatrulhaScreen = ({ onBack, onDone }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const patrulha = useStore(s => s.patrulhaAtual);
+  const viatura = useStore(s => s.viaturas).find(v => v.id === patrulha?.viaturaId);
+  const rotaAtual = useStore(s => s.rotaAtual);
+  const ocorrencias = useStore(s => s.ocorrencias);
+  const [km, setKm] = React.useState(String((patrulha?.kmInicial || 0) + 40));
+  const [comb, setComb] = React.useState(String(Math.max(0, (patrulha?.combustivelInicial || 50) - 18)));
+  const [obs, setObs] = React.useState('');
+  const [danos, setDanos] = React.useState(false);
+
+  // Start GPS tracking while patrol screen is open
+  useGPSTracking(!!patrulha);
+
+  if (!patrulha) {
+    return <div style={{ padding: 24 }}>Sem patrulha ativa.</div>;
+  }
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{
+        height: 52, background: 'var(--brand-green-deep)', color: '#FFF',
+        display: 'flex', alignItems: 'center', gap: 10, padding: '0 12px',
+      }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+          <Icon name="arrow-left" size={20}/>
+        </button>
+        <div style={{ flex: 1, fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Fechar patrulha</div>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: 12 }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
+            <Plate value={viatura?.matricula} size="sm"/>
+            <Badge tone="brand" size="sm">{patrulha.indicativo}</Badge>
+          </div>
+          <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>
+            Início: {new Date(patrulha.abertaEm).toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'})} · KM ini.: {patrulha.kmInicial.toLocaleString('pt-PT')} · Comb. ini.: {patrulha.combustivelInicial}%
+          </div>
+        </div>
+
+        <FormField label="Quilómetros finais">
+          <input type="number" value={km} onChange={e => setKm(e.target.value)} className="form-input mono"/>
+          <div style={{ fontSize: 11, color: 'var(--fg-muted)', marginTop: 4 }} className="t-mono">
+            Percorridos: {Math.max(0, Number(km) - patrulha.kmInicial)} km
+          </div>
+        </FormField>
+        <FormField label="Combustível final (%)">
+          <input type="range" min="0" max="100" value={comb} onChange={e => setComb(e.target.value)} style={{ width: '100%', accentColor: 'var(--brand-green)' }}/>
+          <div className="t-mono" style={{ fontSize: 13, fontWeight: 600 }}>{comb}%</div>
+        </FormField>
+        <FormField label="Houve danos na viatura?">
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => setDanos(false)} style={tabBtn(!danos)}>Não</button>
+            <button onClick={() => setDanos(true)} style={tabBtn(danos)}>Sim</button>
+          </div>
+        </FormField>
+        <FormField label="Observações">
+          <textarea value={obs} onChange={e => setObs(e.target.value)} placeholder="Notas sobre a patrulha…" className="form-input" style={{ minHeight: 80, fontFamily: 'var(--font-ui)' }}/>
+        </FormField>
+
+        {(rotaAtual.length > 0 || ocorrencias.length > 0) && (
+          <div style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '10px 12px', display: 'flex', gap: 16 }}>
+            {rotaAtual.length > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                <Icon name="map-pin" size={14} style={{ color: 'var(--brand-green)' }}/>
+                <span style={{ color: 'var(--fg-muted)' }}>{rotaAtual.length} pontos GPS gravados</span>
+              </div>
+            )}
+            {ocorrencias.filter(o => o.indicativo === patrulha.indicativo).length > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                <Icon name="clipboard-list" size={14} style={{ color: 'var(--brand-green)' }}/>
+                <span style={{ color: 'var(--fg-muted)' }}>{ocorrencias.filter(o => o.indicativo === patrulha.indicativo).length} ocorrências</span>
+              </div>
+            )}
+          </div>
+        )}
+        <Button tone="primary" size="lg" icon="check" onClick={() => {
+          actions.fecharPatrulha({ kmFinal: Number(km), combustivelFinal: Number(comb), observacoes: obs });
+          onDone();
+        }} style={{ width: '100%', marginTop: 4 }}>
+          Confirmar fecho · gerar relatório
+        </Button>
+        <button onClick={() => window.print()} style={{
+          background: 'transparent', border: 'none', color: 'var(--brand-green)',
+          fontSize: 12, fontWeight: 600, padding: 8, cursor: 'pointer',
+          textDecoration: 'underline', textUnderlineOffset: 3,
+        }}>
+          Imprimir relatório de turno →
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const tabBtn = (active) => ({
+  flex: 1,
+  background: active ? 'var(--brand-green)' : 'var(--surface)',
+  color: active ? '#FFF' : 'var(--fg)',
+  border: '1px solid ' + (active ? 'var(--brand-green)' : 'var(--border-strong)'),
+  borderRadius: 'var(--radius-md)', padding: '10px', cursor: 'pointer',
+  fontSize: 13, fontWeight: 600,
+});
+
+const FormField = ({ label, children }) => (
+  <div>
+    <div className="t-overline" style={{ marginBottom: 4 }}>{label}</div>
+    {children}
+  </div>
+);
+
+Object.assign(window, { AbrirPatrulhaScreen, FecharPatrulhaScreen, FormField });
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Registo rápido de ocorrência + ditado por voz */
+
+const useSpeechRecognition = (onResult) => {
+  const recRef = React.useRef(null);
+  const [ouvindo, setOuvindo] = React.useState(false);
+  const [suportado] = React.useState(() => !!(window.SpeechRecognition || window.webkitSpeechRecognition));
+
+  const iniciar = React.useCallback(() => {
+    if (!suportado) return;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = new SR();
+    rec.lang = 'pt-PT';
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    rec.onstart = () => setOuvindo(true);
+    rec.onend = () => setOuvindo(false);
+    rec.onerror = () => setOuvindo(false);
+    rec.onresult = (e) => {
+      const texto = e.results[0][0].transcript;
+      onResult(texto);
+    };
+    recRef.current = rec;
+    rec.start();
+  }, [suportado, onResult]);
+
+  const parar = React.useCallback(() => {
+    if (recRef.current) recRef.current.stop();
+  }, []);
+
+  return { ouvindo, suportado, iniciar, parar };
+};
+
+const MicButton = ({ onResult, size = 'normal' }) => {
+  const [texto, setTexto] = React.useState('');
+  const { ouvindo, suportado, iniciar, parar } = useSpeechRecognition(t => {
+    setTexto(t);
+    onResult(t);
+  });
+
+  if (!suportado) return null;
+
+  return (
+    <button
+      onMouseDown={iniciar} onMouseUp={parar} onTouchStart={iniciar} onTouchEnd={parar}
+      title="Manter premido para ditar"
+      style={{
+        background: ouvindo ? 'var(--danger)' : 'var(--brand-green)',
+        color: '#FFF', border: 'none',
+        borderRadius: size === 'sm' ? '50%' : 8,
+        width: size === 'sm' ? 34 : 42, height: size === 'sm' ? 34 : 42,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'pointer', flexShrink: 0,
+        animation: ouvindo ? 'micPulse 0.6s ease-in-out infinite alternate' : 'none',
+      }}>
+      <style>{`@keyframes micPulse{from{box-shadow:0 0 0 0 rgba(199,50,43,0.5)}to{box-shadow:0 0 0 8px rgba(199,50,43,0)}}`}</style>
+      <Icon name={ouvindo ? 'radio' : 'phone'} size={size === 'sm' ? 14 : 18}/>
+    </button>
+  );
+};
+
+const OcorrenciaModal = ({ alerta, onClose }) => {
+  const { actions } = window.SentinelaStore;
+  const [tipo, setTipo] = React.useState('contraordenacao');
+  const [notas, setNotas] = React.useState('');
+  const [acao, setAcao] = React.useState('auto_levantado');
+  const [submetido, setSubmetido] = React.useState(null);
+
+  const appendVoz = React.useCallback(t => {
+    setNotas(prev => prev ? prev + ' ' + t : t);
+  }, []);
+
+  const submeter = () => {
+    const oc = actions.addOcorrencia({
+      tipo,
+      notas,
+      acao,
+      matricula: alerta?.matricula,
+      alertaId: alerta?.id,
+      local: alerta?.local || '—',
+      indicativo: alerta?.indicativo || '—',
+    });
+    setSubmetido(oc);
+  };
+
+  if (submetido) {
+    return (
+      <div style={{
+        position: 'absolute', inset: 0, background: 'var(--bg)', zIndex: 50,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        padding: 24, gap: 16, textAlign: 'center',
+      }}>
+        <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(54,128,68,0.12)', color: 'var(--success)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Icon name="check" size={36}/>
+        </div>
+        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 20 }}>Ocorrência registada</div>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'var(--brand-green)', fontWeight: 600 }}>{submetido.numero}</div>
+        <div style={{ fontSize: 13, color: 'var(--fg-muted)', lineHeight: 1.6 }}>
+          Sincronizado com o posto · {submetido.hora}<br/>
+          Visível na Cronologia e Ocorrências
+        </div>
+        <button onClick={onClose} style={{
+          background: 'var(--brand-green)', color: '#FFF', border: 'none',
+          borderRadius: 10, padding: '12px 32px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+        }}>Concluído</button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg)', zIndex: 50, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', gap: 10, padding: '0 12px', flexShrink: 0 }}>
+        <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+          <Icon name="x" size={20}/>
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 14 }}>Registar ocorrência</div>
+          {alerta && <div style={{ fontSize: 10, color: '#C9A24B', fontWeight: 600 }}>Associada ao alerta: {alerta.matricula}</div>}
+        </div>
+        <Icon name="clipboard-list" size={18}/>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+        {alerta && (
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderLeft: '4px solid var(--warning)', borderRadius: 8, padding: '10px 12px' }}>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              <Plate value={alerta.matricula} size="sm"/>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 600 }}>{alerta.motivo}</div>
+                <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{alerta.local} · {alerta.hora}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div>
+          <div className="t-overline" style={{ marginBottom: 6 }}>TIPO DE OCORRÊNCIA</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+            {[
+              ['contraordenacao', 'Contraordenação'],
+              ['crime', 'Crime / SIIOP'],
+              ['avaria', 'Avaria / acidente'],
+              ['inspecao', 'Fiscalização'],
+              ['suspeito', 'Indivíduo suspeito'],
+              ['outro', 'Outro'],
+            ].map(([v, l]) => (
+              <button key={v} onClick={() => setTipo(v)} style={{
+                background: tipo === v ? 'var(--brand-green)' : 'var(--surface)',
+                color: tipo === v ? '#FFF' : 'var(--fg)',
+                border: '1px solid ' + (tipo === v ? 'var(--brand-green)' : 'var(--border)'),
+                borderRadius: 8, padding: '10px 8px', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+              }}>{l}</button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+            <div className="t-overline">NOTAS E DESCRIÇÃO</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'var(--fg-muted)' }}>
+              <Icon name="phone" size={11}/>
+              Manter premido para ditar
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+            <textarea
+              value={notas}
+              onChange={e => setNotas(e.target.value)}
+              placeholder="Descrição da ocorrência… Podes ditar por voz."
+              rows={4}
+              className="form-input"
+              style={{ flex: 1, fontFamily: 'var(--font-sans)', fontSize: 13, resize: 'none' }}
+            />
+            <MicButton onResult={appendVoz}/>
+          </div>
+        </div>
+
+        <div>
+          <div className="t-overline" style={{ marginBottom: 6 }}>AÇÃO TOMADA</div>
+          <select value={acao} onChange={e => setAcao(e.target.value)} className="form-input" style={{ fontSize: 13 }}>
+            <option value="auto_levantado">Auto de contraordenação levantado</option>
+            <option value="detencao">Detenção efetuada</option>
+            <option value="notificacao">Notificação / contacto</option>
+            <option value="comunicado_mp">Comunicado ao MP</option>
+            <option value="sem_acao">Sem ação (informação)</option>
+            <option value="reencaminhado">Reencaminhado para outro órgão</option>
+          </select>
+        </div>
+
+        <button onClick={submeter} style={{
+          background: 'var(--brand-green)', color: '#FFF', border: 'none',
+          borderRadius: 10, padding: '14px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 4,
+        }}>
+          <Icon name="send" size={16}/> Submeter ocorrência
+        </button>
+      </div>
+    </div>
+  );
+};
+
+Object.assign(window, { OcorrenciaModal, MicButton, useSpeechRecognition });
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Scanner ANPR (store-driven, câmera real) */
+
+const ScannerScreenV2 = () => {
+  const { useStore, actions } = window.SentinelaStore;
+  const alertas = useStore(s => s.alertas);
+  const me = useStore(s => s.militares.find(x => x.id === s.militarLogadoId));
+  const indicativo = useStore(s => s.patrulhaAtual?.indicativo) || me?.indicativo || '—';
+
+  const [scanned, setScanned] = React.useState(0);
+  const [running, setRunning] = React.useState(true);
+  const [alertaAtivo, setAlertaAtivo] = React.useState(null);
+  const [detalheVisivel, setDetalhe] = React.useState(false);
+  const [registarOcorrencia, setRegistarOcorrencia] = React.useState(false);
+  const [cameraAtiva, setCameraAtiva] = React.useState(false);
+  const [cameraErro, setCameraErro] = React.useState(null);
+  const videoRef = React.useRef(null);
+  const streamRef = React.useRef(null);
+
+  // Start camera
+  React.useEffect(() => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setCameraErro('Câmera não suportada neste dispositivo.');
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+    })
+    .then(stream => {
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setCameraAtiva(true);
+      }
+    })
+    .catch(() => setCameraErro('Acesso à câmera negado. A usar modo de simulação.'));
+
+    return () => {
+      if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
+    };
+  }, []);
+
+  // Pause/resume camera track when running toggles
+  React.useEffect(() => {
+    if (!streamRef.current) return;
+    streamRef.current.getVideoTracks().forEach(t => { t.enabled = running; });
+  }, [running]);
+
+  React.useEffect(() => {
+    if (!running) return;
+    const t = setInterval(() => setScanned(s => s + 1 + Math.floor(Math.random()*3)), 900);
+    return () => clearInterval(t);
+  }, [running]);
+
+  const simularAlerta = () => {
+    const cenarios = [
+      { matricula: '12-AB-34', motivo: 'Viatura furtada', severidade: 'critico', origem: 'BNDV — Aveiro 2024-08-14', local: 'Av. Carvalho Araújo' },
+      { matricula: '89-NM-22', motivo: 'Procurada — furto a estabelecimento', severidade: 'critico', origem: 'MP Vila Real', local: 'R. Direita' },
+      { matricula: '57-DT-91', motivo: 'Sem seguro válido', severidade: 'aviso', origem: 'ASF — desde 2026-01-12', local: 'EN2, km 14' },
+      { matricula: '44-PV-22', motivo: 'Inspeção caducada', severidade: 'aviso', origem: 'IMT — caducou 2025-11-30', local: 'R. da República' },
+    ];
+    const c = cenarios[Math.floor(Math.random() * cenarios.length)];
+    const a = actions.addAlerta({ ...c, militar: me ? `${me.postoAbrev} ${me.nome}` : '—', indicativo });
+    setAlertaAtivo(a);
+  };
+
+  const confirmar = () => {
+    actions.confirmarAlerta(alertaAtivo.id);
+    setDetalhe(false);
+    // Keep alertaAtivo so user can register occurrence
+  };
+
+  const tone = alertaAtivo?.severidade === 'critico' ? 'var(--danger)' : 'var(--warning)';
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, background: '#000', color: '#FFF', position: 'relative' }}>
+      {registarOcorrencia && (
+        <OcorrenciaModal alerta={alertaAtivo} onClose={() => { setRegistarOcorrencia(false); setAlertaAtivo(null); }}/>
+      )}
+      <div style={{ position: 'relative', height: 240, overflow: 'hidden', background: '#000' }}>
+
+        {/* Real camera feed */}
+        <video ref={videoRef} autoPlay playsInline muted
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+            display: cameraAtiva ? 'block' : 'none' }}/>
+
+        {/* Fallback simulated road view (shown when no camera) */}
+        {!cameraAtiva && (
+          <>
+            <div style={{ position: 'absolute', inset: 0,
+              background: `radial-gradient(ellipse at center bottom, rgba(80,90,85,0.4) 0%, transparent 60%),
+                           linear-gradient(180deg, #0a0d0c 0%, #1f2724 50%, #2a3530 100%)` }}/>
+            <svg width="100%" height="100%" viewBox="0 0 360 240" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0 }}>
+              <path d="M180 240 L100 60" stroke="#3a4a44" strokeWidth="2"/>
+              <path d="M180 240 L260 60" stroke="#3a4a44" strokeWidth="2"/>
+              <path d="M180 240 L180 60" stroke="#5a6e64" strokeWidth="3" strokeDasharray="14 10"/>
+            </svg>
+            {cameraErro && (
+              <div style={{ position: 'absolute', top: 8, left: 0, right: 0, textAlign: 'center',
+                fontSize: 10, color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-mono)' }}>
+                {cameraErro}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Scanning overlay — always on top */}
+        <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
+          width: 220, height: 64, border: '2px solid #C9A24B', borderRadius: 6,
+          boxShadow: '0 0 0 2000px rgba(0,0,0,0.45)' }}>
+          <div style={{ position: 'absolute', left: 0, right: 0, height: 2, background: '#C9A24B',
+            top: '50%', boxShadow: '0 0 12px #C9A24B', animation: running ? 'scanLine 2s ease-in-out infinite' : 'none' }}/>
+        </div>
+        <style>{`@keyframes scanLine{0%,100%{top:8%}50%{top:92%}}`}</style>
+
+        {/* Status bar */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0,
+          padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 14,
+          background: 'rgba(0,0,0,0.55)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: running ? '#7DD896' : '#A8B0AA' }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: running ? '#7DD896' : '#A8B0AA' }}/>
+            {running ? 'ATIVO' : 'PAUSADO'}
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: cameraAtiva ? '#A8D8B8' : '#A8B0AA', fontSize: 10 }}>
+            <Icon name="camera" size={11}/>
+            {cameraAtiva ? 'CÂMERA' : 'SIM'}
+          </span>
+          <span style={{ color: '#A8B0AA' }}>SCAN: <b style={{ color: '#FFF' }}>{scanned}</b></span>
+          <span style={{ color: '#A8B0AA', marginLeft: 'auto' }}>{indicativo}</span>
+        </div>
+      </div>
+
+      <div style={{ padding: 10, background: '#0a0d0c', display: 'flex', gap: 8 }}>
+        <button onClick={simularAlerta} style={{
+          flex: 1, background: 'var(--brand-gold)', color: '#1A1208', border: 'none',
+          borderRadius: 8, padding: '10px', fontWeight: 700, fontSize: 12, cursor: 'pointer',
+        }}>SIMULAR DETEÇÃO ANPR</button>
+        <button onClick={() => setRunning(r => !r)} style={{
+          background: 'transparent', border: '1px solid #C9A24B', color: '#C9A24B',
+          borderRadius: 8, padding: '0 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+        }}>{running ? 'Pausar' : 'Retomar'}</button>
+      </div>
+
+      {alertaAtivo && !detalheVisivel && (
+        <div style={{ margin: 10, background: tone, color: '#FFF', borderRadius: 'var(--radius-md)', flexShrink: 0,
+          animation: 'alertPulse 0.8s ease-in-out infinite alternate' }}>
+          <style>{`@keyframes alertPulse{from{box-shadow:0 0 0 0 rgba(199,50,43,0)}to{box-shadow:0 0 0 6px rgba(199,50,43,0.18)}}`}</style>
+          <div style={{ padding: '12px 14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+              <Icon name={alertaAtivo.severidade === 'critico' ? 'alert-octagon' : 'alert-triangle'} size={18}/>
+              <div style={{ fontWeight: 700, fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', flex: 1 }}>
+                {alertaAtivo.severidade === 'critico' ? 'ALERTA CRÍTICO' : 'AVISO'}
+              </div>
+              <span className="t-mono" style={{ fontSize: 11 }}>{alertaAtivo.hora}</span>
+            </div>
+            <div style={{ marginBottom: 8 }}><Plate value={alertaAtivo.matricula} size="lg"/></div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17, marginBottom: 4 }}>
+              {alertaAtivo.motivo.toUpperCase()}
+            </div>
+            <div style={{ fontSize: 12, opacity: 0.9, marginBottom: 10 }}>{alertaAtivo.origem}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <button onClick={() => setDetalhe(true)} style={{
+                background: 'rgba(255,255,255,0.15)', color: '#FFF', border: '1px solid rgba(255,255,255,0.3)',
+                borderRadius: 8, padding: 10, fontWeight: 600, fontSize: 13, cursor: 'pointer',
+              }}>Ver detalhes</button>
+              {alertaAtivo.confirmado ? (
+                <button onClick={() => setRegistarOcorrencia(true)} style={{
+                  background: '#C9A24B', color: '#1A1208', border: 'none',
+                  borderRadius: 8, padding: 10, fontWeight: 700, fontSize: 12, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                }}>
+                  <Icon name="clipboard-list" size={14}/> Registar ocorrência
+                </button>
+              ) : (
+                <button onClick={confirmar} style={{
+                  background: '#FFF', color: alertaAtivo.severidade === 'critico' ? 'var(--danger-deep)' : 'var(--warning-deep)',
+                  border: 'none', borderRadius: 8, padding: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer',
+                }}>Confirmar e atuar</button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {alertaAtivo && detalheVisivel && (
+        <div style={{ flex: 1, background: 'var(--bg)', color: 'var(--fg)', overflowY: 'auto' }}>
+          <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <button onClick={() => setDetalhe(false)} style={{ background: 'transparent', border: 'none', color: 'var(--fg-muted)', padding: 0, display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
+              <Icon name="arrow-left" size={14}/> Voltar ao alerta
+            </button>
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderLeft: `4px solid ${tone}`, borderRadius: 8, padding: 12 }}>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 8 }}>
+                <Plate value={alertaAtivo.matricula} size="lg"/>
+                <Badge tone={alertaAtivo.severidade === 'critico' ? 'danger' : 'warning'}>{alertaAtivo.severidade}</Badge>
+              </div>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18 }}>{alertaAtivo.motivo}</div>
+              <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginTop: 2 }}>{alertaAtivo.origem}</div>
+            </div>
+            <div className="t-overline">DETALHE BNDV</div>
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <DetailRow label="Marca/modelo" value="Renault Mégane"/>
+              <DetailRow label="Cor" value="Preto"/>
+              <DetailRow label="Ano" value="2018"/>
+              <DetailRow label="Combustível" value="Gasóleo"/>
+              <DetailRow label="Proprietário" value="Particular"/>
+              <DetailRow label="Furto comunicado" value="14/08/2024"/>
+              <DetailRow label="Local do furto" value="Aveiro"/>
+              <DetailRow label="Posto que registou" value="GNR Aveiro"/>
+            </div>
+            <div className="t-overline">ÚLTIMOS AVISTAMENTOS</div>
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+              {[
+                ['Hoje, 14:32', 'Av. Carvalho Araújo, Vila Real', 'VRL-21'],
+                ['Ontem, 22:14', 'A24, saída 18', 'VRL-23'],
+                ['25/04, 09:01', 'Régua, EN2', 'RGA-12'],
+              ].map((row, i) => (
+                <div key={i} style={{ padding: '10px 12px', borderTop: i ? '1px solid var(--border)' : 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <Icon name="map-pin" size={16} style={{ color: 'var(--fg-soft)' }}/>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600 }}>{row[1]}</div>
+                    <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{row[0]} · {row[2]}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {!alertaAtivo.confirmado && (
+                <Button tone="danger" size="lg" icon="siren" onClick={confirmar} style={{ width: '100%' }}>
+                  Atuar — confirmar SIIOP
+                </Button>
+              )}
+              <button onClick={() => setRegistarOcorrencia(true)} style={{
+                background: alertaAtivo.confirmado ? 'var(--brand-green)' : 'var(--surface)',
+                color: alertaAtivo.confirmado ? '#FFF' : 'var(--fg)',
+                border: '1px solid ' + (alertaAtivo.confirmado ? 'var(--brand-green)' : 'var(--border)'),
+                borderRadius: 10, padding: '12px', fontWeight: 700, fontSize: 13, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              }}>
+                <Icon name="clipboard-list" size={16}/> Registar ocorrência
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!alertaAtivo && (
+        <div style={{ flex: 1, background: 'var(--bg)', color: 'var(--fg)', overflowY: 'auto' }}>
+          <div style={{ padding: '12px 14px 6px' }} className="t-overline">HISTÓRICO RECENTE · {alertas.length}</div>
+          <div style={{ padding: '0 10px 14px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {alertas.slice(0, 8).map(h => (
+              <div key={h.id} style={{
+                background: 'var(--surface)', border: '1px solid var(--border)',
+                borderLeft: `4px solid ${h.severidade === 'critico' ? 'var(--danger)' : h.severidade === 'aviso' ? 'var(--warning)' : 'var(--info)'}`,
+                borderRadius: 8, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10,
+              }}>
+                <Plate value={h.matricula} size="sm"/>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>{h.motivo}</div>
+                  <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{h.hora} · {h.local}</div>
+                </div>
+                {h.confirmado && <Icon name="check" size={16} style={{ color: 'var(--success)' }}/>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DetailRow = ({ label, value }) => (
+  <div>
+    <div className="t-overline" style={{ fontSize: 9 }}>{label}</div>
+    <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{value}</div>
+  </div>
+);
+
+window.ScannerScreenV2 = ScannerScreenV2;
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Chat, Lista telefónica, Notificações, Perfil, Escalas, Briefing */
+
+const ChatListScreen = ({ onOpen, onBack }) => {
+  const { useStore } = window.SentinelaStore;
+  const chats = useStore(s => s.chats);
+  const D = window.SENTINELA_DATA;
+  const meta = Object.fromEntries(D.chatGrupos.map(g => [g.id, g]));
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+        <div style={{ flex: 1, fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Mensagens</div>
+        <Icon name="search" size={18}/>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)' }}>
+        {Object.values(chats).map(c => {
+          const m = meta[c.id] || {};
+          const last = c.mensagens[c.mensagens.length - 1];
+          const naoLidas = m.naoLidas || 0;
+          return (
+            <button key={c.id} onClick={() => onOpen(c.id)} style={{
+              width: '100%', background: 'var(--surface)', border: 'none', borderBottom: '1px solid var(--border)',
+              padding: '12px 14px', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+            }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: '50%',
+                background: c.tipo === 'posto' ? 'var(--brand-green)' : c.tipo === 'patrulha' ? 'var(--info)' : c.tipo === 'comando' ? 'var(--brand-gold)' : 'var(--fg-soft)',
+                color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <Icon name={c.tipo === 'patrulha' ? 'shield' : c.tipo === 'comando' ? 'star' : 'users'} size={18}/>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.nome}</span>
+                  <span className="t-mono" style={{ fontSize: 10, color: 'var(--fg-muted)' }}>{m.hora || (last ? last.hora : '')}</span>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--fg-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: 2 }}>
+                  {last ? `${last.texto}` : '—'}
+                </div>
+              </div>
+              {naoLidas > 0 && (
+                <span style={{ background: 'var(--danger)', color: '#FFF', fontSize: 11, fontWeight: 700, borderRadius: 999, padding: '2px 7px', minWidth: 22, textAlign: 'center' }}>{naoLidas}</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const ChatThreadScreen = ({ chatId, onBack }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const chat = useStore(s => s.chats[chatId]);
+  const me = useStore(s => s.militarLogadoId);
+  const militares = useStore(s => s.militares);
+  const [texto, setTexto] = React.useState('');
+  const scrollRef = React.useRef();
+
+  React.useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [chat?.mensagens.length]);
+
+  const labelDe = (id) => {
+    if (id === 'sistema') return 'Sistema';
+    const m = militares.find(x => x.id === id);
+    return m ? `${m.postoAbrev} ${m.nome.split(' ').slice(-1)[0]}` : id;
+  };
+  const indDe = (id) => {
+    const m = militares.find(x => x.id === id);
+    return m ? m.indicativo : '';
+  };
+
+  const enviar = () => {
+    if (!texto.trim()) return;
+    actions.enviarMensagem(chatId, texto.trim());
+    setTexto('');
+  };
+
+  if (!chat) return null;
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--surface-2)' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 600, fontSize: 13, fontFamily: 'var(--font-display)' }}>{chat.nome}</div>
+          <div style={{ fontSize: 10, color: '#C9A24B', fontWeight: 600 }}>{chat.mensagens.length} mensagens</div>
+        </div>
+        <Icon name="phone" size={18}/>
+      </div>
+      <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '12px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {chat.mensagens.map((m, i) => {
+          const proprio = m.de === me;
+          return (
+            <div key={i} style={{ display: 'flex', justifyContent: proprio ? 'flex-end' : 'flex-start' }}>
+              <div style={{
+                maxWidth: '78%', background: proprio ? 'var(--brand-green)' : 'var(--surface)',
+                color: proprio ? '#FFF' : 'var(--fg)',
+                border: proprio ? 'none' : '1px solid var(--border)',
+                borderRadius: 10, padding: '8px 12px',
+                borderTopRightRadius: proprio ? 2 : 10, borderTopLeftRadius: proprio ? 10 : 2,
+              }}>
+                {!proprio && (
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--brand-green-deep)', marginBottom: 2 }}>
+                    {labelDe(m.de)} {indDe(m.de) && <span style={{ color: 'var(--fg-muted)', fontFamily: 'var(--font-mono)', fontWeight: 500 }}>· {indDe(m.de)}</span>}
+                  </div>
+                )}
+                <div style={{ fontSize: 13, lineHeight: '18px' }}>{m.texto}</div>
+                <div className="t-mono" style={{ fontSize: 10, opacity: 0.7, textAlign: 'right', marginTop: 2 }}>{m.hora}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ padding: 8, background: 'var(--surface)', borderTop: '1px solid var(--border)', display: 'flex', gap: 8, alignItems: 'flex-end' }}>
+        <textarea value={texto} onChange={e => setTexto(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); } }}
+          placeholder="Mensagem…" rows={1} style={{
+            flex: 1, border: '1px solid var(--border)', borderRadius: 18, padding: '8px 12px',
+            fontSize: 13, fontFamily: 'inherit', resize: 'none', outline: 'none', background: 'var(--bg)', color: 'var(--fg)', maxHeight: 80,
+          }}/>
+        <MicButton onResult={t => setTexto(prev => prev ? prev + ' ' + t : t)} size="sm"/>
+        <button onClick={enviar} style={{
+          background: 'var(--brand-green)', color: '#FFF', border: 'none', borderRadius: '50%',
+          width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        }}>
+          <Icon name="send" size={16}/>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const ListaTelefonicaScreen = ({ onBack }) => {
+  const { useStore } = window.SentinelaStore;
+  const militares = useStore(s => s.militares);
+  const [filtro, setFiltro] = React.useState('');
+  const [aberto, setAberto] = React.useState(null);
+
+  const visiveis = militares.filter(m =>
+    m.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+    m.nim.includes(filtro) ||
+    m.secao.toLowerCase().includes(filtro.toLowerCase())
+  );
+
+  if (aberto) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--bg)' }}>
+        <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+          <button onClick={() => setAberto(null)} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+          <div style={{ flex: 1, fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Ficha do militar</div>
+        </div>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 16, display: 'flex', alignItems: 'center', gap: 14 }}>
+            <Avatar name={aberto.nome} size={64}/>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17 }}>{aberto.postoAbrev} {aberto.nome}</div>
+              <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>NIM {aberto.nim}</div>
+              <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginTop: 2 }}>{aberto.secao}</div>
+            </div>
+            <StatusDot tone={aberto.estado === 'patrulha' ? 'warning' : aberto.estado === 'servico' ? 'success' : 'muted'}/>
+          </div>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10 }}>
+            {[
+              ['phone', 'Telemóvel de serviço', '+351 939 ' + aberto.nim.slice(-6)],
+              ['radio', 'Indicativo rádio', aberto.indicativo === '—' ? 'Sem patrulha' : aberto.indicativo],
+              ['mail', 'Email', aberto.nome.toLowerCase().split(' ').slice(-1)[0] + '@gnr.pt'],
+              ['shield', 'Posto', 'Vila Real'],
+              ['calendar', 'Próximo turno', 'Hoje 20:00 — 08:00'],
+            ].map((row, i) => (
+              <div key={i} style={{ padding: '12px 14px', borderTop: i ? '1px solid var(--border)' : 'none', display: 'flex', alignItems: 'center', gap: 12 }}>
+                <Icon name={row[0]} size={16} style={{ color: 'var(--brand-green)' }}/>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{row[1]}</div>
+                  <div className="t-mono" style={{ fontSize: 13, fontWeight: 600 }}>{row[2]}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            <Button tone="primary" icon="phone">Ligar</Button>
+            <Button tone="secondary" icon="message-square">Mensagem</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+        <div style={{ flex: 1, fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Lista telefónica</div>
+      </div>
+      <div style={{ padding: '10px 12px', borderBottom: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface-2)', borderRadius: 999, padding: '8px 12px' }}>
+          <Icon name="search" size={16} style={{ color: 'var(--fg-soft)' }}/>
+          <input value={filtro} onChange={e => setFiltro(e.target.value)} placeholder="Pesquisar nome, NIM, secção" style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: 13, color: 'var(--fg)' }}/>
+        </div>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        {visiveis.map(m => (
+          <button key={m.id} onClick={() => setAberto(m)} style={{
+            width: '100%', background: 'var(--surface)', border: 'none', borderBottom: '1px solid var(--border)',
+            padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', textAlign: 'left',
+          }}>
+            <Avatar name={m.nome} size={38}/>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>{m.postoAbrev} {m.nome}</div>
+              <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{m.secao} · NIM {m.nim}</div>
+            </div>
+            <StatusDot tone={m.estado === 'patrulha' ? 'warning' : m.estado === 'servico' ? 'success' : 'muted'}/>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const NotificacoesScreen = ({ onBack }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const notificacoes = useStore(s => s.notificacoes);
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+        <div style={{ flex: 1, fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Notificações</div>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        {notificacoes.map(n => (
+          <button key={n.id} onClick={() => actions.marcarNotificacaoLida(n.id)} style={{
+            width: '100%', background: n.lida ? 'var(--surface)' : 'rgba(31,77,58,0.05)', border: 'none',
+            borderBottom: '1px solid var(--border)',
+            borderLeft: `3px solid ${n.lida ? 'transparent' : 'var(--brand-green)'}`,
+            padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', textAlign: 'left',
+          }}>
+            <div style={{ width: 36, height: 36, borderRadius: 8, background: 'var(--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand-green)' }}>
+              <Icon name={n.tipo === 'os' ? 'file-text' : n.tipo === 'chat' ? 'message-square' : 'bell'} size={16}/>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: n.lida ? 500 : 700 }}>{n.texto}</div>
+              <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{n.hora}</div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const PerfilScreen = ({ onBack }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const me = useStore(s => s.militares.find(x => x.id === s.militarLogadoId));
+  if (!me) return null;
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+        <div style={{ flex: 1, fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Perfil</div>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)' }}>
+        <div style={{ padding: '20px 14px', background: 'var(--brand-green-deep)', color: '#FFF', textAlign: 'center' }}>
+          <Avatar name={me.nome} size={80} style={{ margin: '0 auto 10px', border: '3px solid #C9A24B' }}/>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18 }}>{me.postoAbrev} {me.nome}</div>
+          <div className="t-mono" style={{ fontSize: 11, color: '#C9A24B', marginTop: 2 }}>NIM {me.nim} · {me.indicativo}</div>
+          <div style={{ fontSize: 12, opacity: 0.85 }}>{me.secao}</div>
+        </div>
+        <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 12 }}>
+            <div className="t-overline" style={{ marginBottom: 8 }}>ESTATÍSTICAS DO MÊS</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+              {[['18', 'Patrulhas'], ['42', 'Autos'], ['7', 'Ocorrências']].map(([n, l]) => (
+                <div key={l} style={{ textAlign: 'center' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 22, color: 'var(--brand-green)' }}>{n}</div>
+                  <div className="t-overline" style={{ fontSize: 9 }}>{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10 }}>
+            {[['user', 'Editar perfil'],['lock', 'Alterar palavra-passe'],['bell', 'Preferências de notificação'],['help-circle', 'Ajuda e contactos'],['info', 'Sobre o Sentinela']].map(([icon, label], i) => (
+              <div key={label} style={{ padding: '12px 14px', borderTop: i ? '1px solid var(--border)' : 'none', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}>
+                <Icon name={icon} size={16} style={{ color: 'var(--fg-soft)' }}/>
+                <div style={{ flex: 1, fontSize: 13 }}>{label}</div>
+                <Icon name="chevron-right" size={14} style={{ color: 'var(--fg-soft)' }}/>
+              </div>
+            ))}
+          </div>
+          <Button tone="danger" icon="log-out" onClick={() => actions.logout()} style={{ width: '100%' }}>Terminar sessão</Button>
+          <div style={{ textAlign: 'center', fontSize: 10, color: 'var(--fg-muted)', marginTop: 6 }} className="t-mono">Sentinela v2.4.1 · build 2026.04</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const EscalasScreen = ({ onBack }) => {
+  const D = window.SENTINELA_DATA;
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Escala de serviço</div>
+          <div style={{ fontSize: 10, color: '#C9A24B' }}>{D.escala.semana}</div>
+        </div>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto', padding: 12 }}>
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+            <thead>
+              <tr style={{ background: 'var(--surface-2)' }}>
+                <th style={{ padding: '8px 10px', textAlign: 'left', fontSize: 10, color: 'var(--fg-muted)', borderBottom: '1px solid var(--border)' }}>Militar</th>
+                {D.escala.dias.map(d => <th key={d} style={{ padding: '8px 4px', fontSize: 10, color: 'var(--fg-muted)', borderBottom: '1px solid var(--border)' }}>{d}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {D.escala.linhas.map(l => (
+                <tr key={l.militar} style={{ borderBottom: '1px solid var(--border)' }}>
+                  <td style={{ padding: '6px 10px', fontWeight: 600 }}>{l.militar}</td>
+                  {l.turnos.map((t, i) => (
+                    <td key={i} className="t-mono" style={{
+                      padding: '6px 2px', textAlign: 'center', fontSize: 10, fontWeight: 600,
+                      background: t === 'FOLGA' ? 'var(--surface-2)' : t === '20-08' ? 'rgba(46,92,138,0.10)' : 'rgba(31,77,58,0.08)',
+                      color: t === 'FOLGA' ? 'var(--fg-soft)' : t === '20-08' ? 'var(--info-deep)' : 'var(--brand-green)',
+                    }}>{t}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const BriefingScreen = ({ onBack }) => {
+  const D = window.SENTINELA_DATA;
+  const { useStore, actions } = window.SentinelaStore;
+  const diretivas = useStore(s => s.diretivas);
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Briefing diário</div>
+          <div style={{ fontSize: 10, color: '#C9A24B' }}>{D.briefing.data} · {D.briefing.autor}</div>
+        </div>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderLeft: '4px solid var(--brand-gold)', borderRadius: 8, padding: 12 }}>
+          <div className="t-overline" style={{ marginBottom: 8 }}>PONTOS DE BRIEFING</div>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {D.briefing.pontos.map((p, i) => (
+              <li key={i} style={{ display: 'flex', gap: 10 }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--brand-gold)' }}>{i+1}.</span>
+                <span style={{ fontSize: 13, lineHeight: '18px' }}>{p}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="t-overline">DIRETIVAS PARA ESTA PATRULHA</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {diretivas.map(d => (
+            <button key={d.id} onClick={() => actions.toggleDiretiva(d.id)} style={{
+              background: 'var(--surface)', border: '1px solid var(--border)',
+              borderLeft: `3px solid ${d.prioridade === 'alta' ? 'var(--danger)' : d.prioridade === 'media' ? 'var(--warning)' : 'var(--info)'}`,
+              borderRadius: 8, padding: 10, display: 'flex', gap: 10, alignItems: 'flex-start', cursor: 'pointer', textAlign: 'left',
+            }}>
+              <div style={{
+                width: 18, height: 18, borderRadius: 4, border: '2px solid var(--brand-green)',
+                background: d.feito ? 'var(--brand-green)' : 'transparent', flexShrink: 0, marginTop: 1,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {d.feito && <Icon name="check" size={12} style={{ color: '#FFF' }}/>}
+              </div>
+              <div style={{ fontSize: 12, lineHeight: '17px', textDecoration: d.feito ? 'line-through' : 'none', opacity: d.feito ? 0.6 : 1, flex: 1 }}>{d.texto}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+Object.assign(window, { ChatListScreen, ChatThreadScreen, ListaTelefonicaScreen, NotificacoesScreen, PerfilScreen, EscalasScreen, BriefingScreen });
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Pânico, Auto de Notícia, Ordens, Outros */
+
+const PanicoScreen = ({ onBack }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const panico = useStore(s => s.panico);
+  const me = useStore(s => s.militares.find(x => x.id === s.militarLogadoId));
+  const [confirming, setConfirming] = React.useState(false);
+  const [holdProgress, setHoldProgress] = React.useState(0);
+  const [gpsStatus, setGpsStatus] = React.useState(null); // null | 'a obter' | 'obtido' | 'sem gps'
+  const holdRef = React.useRef(null);
+
+  const activarComGPS = () => {
+    if (!navigator.geolocation) {
+      actions.activarPanico(null);
+      return;
+    }
+    setGpsStatus('a obter');
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        setGpsStatus('obtido');
+        actions.activarPanico({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      () => {
+        setGpsStatus('sem gps');
+        actions.activarPanico(null);
+      },
+      { timeout: 6000, enableHighAccuracy: true }
+    );
+  };
+
+  const startHold = () => {
+    holdRef.current = setInterval(() => {
+      setHoldProgress(p => {
+        if (p >= 100) {
+          clearInterval(holdRef.current);
+          activarComGPS();
+          return 100;
+        }
+        return p + 4;
+      });
+    }, 40);
+  };
+  const stopHold = () => {
+    clearInterval(holdRef.current);
+    if (holdProgress < 100) setHoldProgress(0);
+  };
+
+  if (panico) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--danger)', color: '#FFF' }}>
+        <div style={{ height: 52, display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10, background: 'rgba(0,0,0,0.2)' }}>
+          <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}>
+            <Icon name="arrow-left" size={20}/>
+          </button>
+          <div style={{ flex: 1, fontWeight: 700, fontSize: 14, fontFamily: 'var(--font-display)' }}>PEDIDO DE REFORÇO ATIVO</div>
+        </div>
+        <div style={{ flex: 1, padding: 18, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, textAlign: 'center' }}>
+          <div style={{ width: 96, height: 96, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'panicPulse 1s infinite' }}>
+            <Icon name="siren" size={56}/>
+          </div>
+          <style>{`@keyframes panicPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0.5)}50%{box-shadow:0 0 0 18px rgba(255,255,255,0)}}`}</style>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700 }}>Comando notificado</div>
+          <div style={{ fontSize: 13, opacity: 0.9, display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
+            <Icon name="map-pin" size={14}/>
+            {panico.lat != null
+              ? `${panico.lat.toFixed(5)}°N, ${Math.abs(panico.lng).toFixed(5)}°W${panico.gpsReal ? ' · GPS real' : ''}`
+              : 'Localização não disponível'}
+          </div>
+
+          <div style={{ width: '100%', background: 'rgba(0,0,0,0.2)', borderRadius: 8, padding: 14, marginTop: 8 }}>
+            <div className="t-overline" style={{ color: '#FFD9D6' }}>PATRULHAS A CAMINHO</div>
+            <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {(panico.reforcos.length ? panico.reforcos : ['VRL-22', 'VRL-23']).map(r => (
+                <div key={r} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13 }}>
+                  <Icon name="shield" size={16}/> <b>{r}</b>
+                  <span style={{ marginLeft: 'auto', fontSize: 11, opacity: 0.85 }} className="t-mono">a caminho</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ marginTop: 'auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <button onClick={() => actions.cancelarPanico()} style={{
+              width: '100%', background: '#FFF', color: 'var(--danger-deep)', border: 'none',
+              borderRadius: 8, padding: 14, fontWeight: 700, fontSize: 14, cursor: 'pointer',
+            }}>Cancelar pedido</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--bg)' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}>
+          <Icon name="arrow-left" size={20}/>
+        </button>
+        <div style={{ flex: 1, fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Pedir reforços</div>
+      </div>
+      <div style={{ flex: 1, padding: 22, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18, textAlign: 'center' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700 }}>Mantém premido para enviar</div>
+        <div style={{ fontSize: 13, color: 'var(--fg-muted)' }}>O comando do posto e as patrulhas próximas serão notificadas com a tua localização GPS.</div>
+
+        <button
+          onMouseDown={startHold} onMouseUp={stopHold} onMouseLeave={stopHold}
+          onTouchStart={startHold} onTouchEnd={stopHold}
+          style={{
+            width: 200, height: 200, borderRadius: '50%', background: 'var(--danger)',
+            color: '#FFF', border: '6px solid rgba(199,50,43,0.25)', cursor: 'pointer',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8,
+            position: 'relative', overflow: 'hidden',
+          }}>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: `${holdProgress}%`, background: 'rgba(0,0,0,0.2)' }}/>
+          <Icon name="siren" size={56} style={{ position: 'relative' }}/>
+          <div style={{ fontWeight: 700, fontSize: 14, letterSpacing: '0.08em', position: 'relative' }}>MANTÉM PREMIDO</div>
+        </button>
+
+        {gpsStatus === 'a obter' && (
+          <div style={{ background: 'var(--warning-soft)', color: 'var(--warning-deep)', padding: 10, borderRadius: 8, fontSize: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Icon name="map-pin" size={14}/> A obter localização GPS...
+          </div>
+        )}
+        <div style={{ background: 'var(--info-soft)', color: 'var(--info-deep)', padding: 12, borderRadius: 8, fontSize: 12, maxWidth: 320 }}>
+          Em caso de emergência médica, marca também 112.
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AutoNoticiaScreen = ({ onBack, onDone }) => {
+  const { actions } = window.SentinelaStore;
+  const [tipo, setTipo] = React.useState('contraordenacao');
+  const [matricula, setMat] = React.useState('');
+  const [interv, setInterv] = React.useState('');
+  const [descricao, setDesc] = React.useState('');
+  const [fotos, setFotos] = React.useState([]);
+  const [assinado, setAssinado] = React.useState(false);
+  const [step, setStep] = React.useState(1);
+
+  const Header = ({ title }) => (
+    <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+      <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 14 }}>{title}</div>
+        <div style={{ fontSize: 10, color: '#C9A24B', fontWeight: 600, letterSpacing: '0.06em' }}>PASSO {step}/3</div>
+      </div>
+    </div>
+  );
+
+  if (step === 1) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Header title="Auto de notícia"/>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <FormField label="Tipo de auto">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+              {[['contraordenacao', 'Contraordenação'],['crime','Crime'],['acidente','Acidente'],['outro','Outro']].map(([v,l]) => (
+                <button key={v} onClick={() => setTipo(v)} style={{
+                  background: tipo === v ? 'var(--brand-green)' : 'var(--surface)',
+                  color: tipo === v ? '#FFF' : 'var(--fg)',
+                  border: '1px solid ' + (tipo === v ? 'var(--brand-green)' : 'var(--border-strong)'),
+                  borderRadius: 8, padding: 10, cursor: 'pointer', fontSize: 12, fontWeight: 600,
+                }}>{l}</button>
+              ))}
+            </div>
+          </FormField>
+          <FormField label="Matrícula envolvida (opcional)">
+            <input value={matricula} onChange={e => setMat(e.target.value.toUpperCase())} placeholder="00-AA-00" className="form-input mono"/>
+          </FormField>
+          <FormField label="Local da ocorrência">
+            <input defaultValue="Av. Carvalho Araújo, Vila Real" className="form-input"/>
+          </FormField>
+          <FormField label="Data/hora">
+            <input defaultValue="28/04/2026 14:32" className="form-input mono"/>
+          </FormField>
+          <Button tone="primary" size="lg" onClick={() => setStep(2)} icon="arrow-right" style={{ width: '100%' }}>Continuar</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 2) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Header title="Intervenientes e descrição"/>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <FormField label="Identificação dos intervenientes">
+            <textarea value={interv} onChange={e => setInterv(e.target.value)} placeholder="Nome, NIF, morada…" className="form-input" style={{ minHeight: 70 }}/>
+          </FormField>
+          <FormField label="Descrição dos factos">
+            <textarea value={descricao} onChange={e => setDesc(e.target.value)} placeholder="Descrição circunstanciada…" className="form-input" style={{ minHeight: 120 }}/>
+          </FormField>
+          <FormField label="Fotos / evidências">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+              {fotos.map((_, i) => (
+                <div key={i} style={{ aspectRatio: '1', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="image" size={28} style={{ color: 'var(--fg-soft)' }}/>
+                </div>
+              ))}
+              <button onClick={() => setFotos(f => [...f, {}])} style={{
+                aspectRatio: '1', background: 'var(--surface)', border: '2px dashed var(--border-strong)',
+                borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--fg-soft)',
+              }}>
+                <Icon name="plus" size={24}/>
+              </button>
+            </div>
+          </FormField>
+          <Button tone="primary" size="lg" onClick={() => setStep(3)} icon="arrow-right" style={{ width: '100%' }}>Continuar</Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <Header title="Assinatura e submissão"/>
+      <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ background: 'var(--surface-2)', borderRadius: 8, padding: 12, fontSize: 12 }}>
+          <div className="t-overline" style={{ marginBottom: 6 }}>RESUMO</div>
+          <div><b>Tipo:</b> {tipo}</div>
+          {matricula && <div><b>Matrícula:</b> {matricula}</div>}
+          <div><b>Fotos:</b> {fotos.length}</div>
+        </div>
+        <FormField label="Assinatura digital">
+          <div onClick={() => setAssinado(!assinado)} style={{
+            height: 120, background: 'var(--surface)', border: '1px dashed var(--border-strong)',
+            borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+            color: assinado ? 'var(--success)' : 'var(--fg-soft)',
+          }}>
+            {assinado ? (
+              <div style={{ textAlign: 'center' }}>
+                <svg width="120" height="50" viewBox="0 0 120 50">
+                  <path d="M5 35 Q 15 5, 30 25 T 55 30 Q 70 15, 85 35 L 110 20" stroke="var(--brand-green)" strokeWidth="2" fill="none"/>
+                </svg>
+                <div style={{ fontSize: 11, fontWeight: 600 }}>Assinado</div>
+              </div>
+            ) : <span>Toca para assinar</span>}
+          </div>
+        </FormField>
+        <Button tone="primary" size="lg" icon="check" disabled={!assinado} onClick={() => {
+          actions.submeterAuto({ tipo, matricula, intervenientes: interv, descricao, fotos: fotos.length });
+          onDone();
+        }} style={{ width: '100%', opacity: assinado ? 1 : 0.5 }}>
+          Submeter auto
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const OrdensScreen = ({ onBack }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const ordens = useStore(s => s.ordens);
+  const [aberta, setAberta] = React.useState(null);
+
+  if (aberta) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+          <button onClick={() => setAberta(null)} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+          <div style={{ flex: 1, fontWeight: 600, fontSize: 13, fontFamily: 'var(--font-display)' }}>{aberta.titulo}</div>
+        </div>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, background: 'var(--bg)' }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 18, fontSize: 13, lineHeight: '20px' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, marginBottom: 4 }}>{aberta.titulo}</div>
+            <div style={{ fontSize: 11, color: 'var(--fg-muted)', marginBottom: 14 }}>{aberta.autor} · {aberta.data} · {aberta.paginas} páginas</div>
+            <p style={{ margin: '0 0 10px' }}>1. Em cumprimento de despacho do Comando Territorial, é determinada a realização de Operação STOP nas saídas da A24 e EN2, no período compreendido entre as 22:00 e as 02:00.</p>
+            <p style={{ margin: '0 0 10px' }}>2. Serão afetas as patrulhas VRL-21, VRL-22 e VRL-23, com reforço pedestre na zona do centro histórico.</p>
+            <p style={{ margin: '0 0 10px' }}>3. O foco operacional é a fiscalização de condução sob influência, documentos de viatura e seguro.</p>
+            <p style={{ margin: '0 0 10px' }}>4. Articulação com NICAV de Vila Real para os casos de presença de drogas.</p>
+            <p style={{ margin: 0, color: 'var(--fg-muted)' }}>— Sarg. Costa Ribeiro, Cmdt. Posto Territorial</p>
+          </div>
+          <Button tone="primary" size="lg" icon="check" onClick={() => { actions.marcarOSLida(aberta.id); setAberta(null); }} style={{ width: '100%', marginTop: 14 }}>
+            Confirmar leitura
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer' }}><Icon name="arrow-left" size={20}/></button>
+        <div style={{ flex: 1, fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Ordens de serviço</div>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {ordens.map(o => (
+          <button key={o.id} onClick={() => setAberta(o)} style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 8, padding: 12, textAlign: 'left', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 12,
+          }}>
+            <div style={{ width: 32, height: 40, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ fontSize: 8, fontWeight: 700, color: 'var(--danger-deep)' }}>PDF</div>
+              <div className="t-mono" style={{ fontSize: 9 }}>{o.paginas}p</div>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 13, fontWeight: 600 }}>{o.titulo}</span>
+                {o.novo && <Badge tone="danger" size="sm">NOVA</Badge>}
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{o.autor} · {o.data}</div>
+            </div>
+            <Icon name="chevron-right" size={16} style={{ color: 'var(--fg-soft)' }}/>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+Object.assign(window, { PanicoScreen, AutoNoticiaScreen, OrdensScreen });
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Marcação de férias por ordem de antiguidade */
+
+const FeriasScreen = ({ onBack }) => {
+  const { useStore, actions, ordemAntiguidade } = window.SentinelaStore;
+  const meuId = useStore(s => s.militarLogadoId);
+  const ferias = useStore(s => s.ferias);
+  const militares = useStore(s => s.militares);
+
+  const eu = militares.find(m => m.id === meuId);
+  const fila = ordemAntiguidade(militares);
+  const minhaPosicao = fila.findIndex(m => m.id === meuId) + 1;
+  const meusTurnoConcluido = ferias.concluidos.includes(meuId);
+  const meuTurnoAtivo = ferias.turnoMilitarId === meuId;
+  const meusPeriodos = ferias.periodos.filter(p => p.militarId === meuId);
+  const diasUsados = meusPeriodos.reduce((s, p) => s + p.dias, 0);
+  const diasTotais = eu ? eu.diasFerias : 0;
+  const diasRestantes = diasTotais - diasUsados;
+  const turnoAtualMilitar = militares.find(m => m.id === ferias.turnoMilitarId);
+
+  const [inicio, setInicio] = React.useState('');
+  const [fim, setFim] = React.useState('');
+  const [erro, setErro] = React.useState('');
+  const [concluido, setConcluido] = React.useState(false);
+
+  const formatDate = d => {
+    if (!d) return '—';
+    const [y, m, day] = d.split('-');
+    return `${day}/${m}/${y}`;
+  };
+
+  const adicionarPeriodo = () => {
+    setErro('');
+    if (!inicio || !fim) { setErro('Escolhe data de início e fim.'); return; }
+    if (new Date(fim) < new Date(inicio)) { setErro('A data de fim não pode ser anterior ao início.'); return; }
+    const dias = Math.round((new Date(fim) - new Date(inicio)) / 86400000) + 1;
+    if (diasUsados + dias > diasTotais) { setErro(`Excede os ${diasTotais} dias disponíveis (${diasRestantes} restantes).`); return; }
+    actions.adicionarPeriodoFerias({ militarId: meuId, inicio, fim });
+    setInicio('');
+    setFim('');
+  };
+
+  const concluirMarcacao = () => {
+    if (meusPeriodos.length === 0) { setErro('Adiciona pelo menos um período antes de concluir.'); return; }
+    actions.concluirMarcacaoFerias(meuId);
+    setConcluido(true);
+  };
+
+  const todasConcluidas = ferias.turnoMilitarId === null && ferias.concluidos.length > 0;
+  const quantosEmFrente = fila.slice(0, minhaPosicao - 1).filter(m => !ferias.concluidos.includes(m.id)).length;
+
+  const inputStyle = {
+    width: '100%', padding: '9px 10px', background: 'var(--bg)',
+    border: '1px solid var(--border)', borderRadius: 6, fontSize: 13,
+    color: 'var(--fg)', boxSizing: 'border-box', fontFamily: 'var(--font-sans)',
+  };
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ height: 56, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 14px', gap: 12, flexShrink: 0 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', cursor: 'pointer', padding: 4 }}>
+          <Icon name="arrow-left" size={20}/>
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16 }}>Férias {ferias.ano}</div>
+          <div style={{ fontSize: 11, color: '#C9A24B' }}>Marcação por antiguidade</div>
+        </div>
+        <div style={{ fontSize: 11, textAlign: 'right' }}>
+          <div style={{ fontWeight: 700 }}>{ferias.concluidos.length}/{militares.length}</div>
+          <div style={{ color: '#C9A24B' }}>concluídos</div>
+        </div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 14, background: 'var(--bg)' }}>
+
+        {/* Status banner */}
+        {todasConcluidas ? (
+          <div style={{ background: 'var(--success)', color: '#FFF', borderRadius: 10, padding: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Icon name="check-circle" size={24}/>
+            <div>
+              <div style={{ fontWeight: 700 }}>Marcação concluída</div>
+              <div style={{ fontSize: 11, opacity: 0.9 }}>Todos os militares marcaram as férias de {ferias.ano}.</div>
+            </div>
+          </div>
+        ) : meusTurnoConcluido ? (
+          <div style={{ background: 'rgba(54,128,68,0.10)', border: '1px solid var(--success)', borderRadius: 10, padding: 14, display: 'flex', alignItems: 'center', gap: 10, color: 'var(--success)' }}>
+            <Icon name="check-circle" size={20}/>
+            <div>
+              <div style={{ fontWeight: 700 }}>Marcação concluída</div>
+              <div style={{ fontSize: 11 }}>
+                {meusPeriodos.length} período{meusPeriodos.length !== 1 ? 's' : ''} · {diasUsados} dias marcados
+              </div>
+            </div>
+          </div>
+        ) : meuTurnoAtivo ? (
+          <div style={{ background: 'linear-gradient(135deg, #b8912a 0%, var(--brand-gold) 100%)', color: '#FFF', borderRadius: 10, padding: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 44, height: 44, background: 'rgba(255,255,255,0.20)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Icon name="calendar" size={22}/>
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 15 }}>É a sua vez!</div>
+              <div style={{ fontSize: 11, opacity: 0.9 }}>Posição {minhaPosicao}ª · até 5 períodos · {diasTotais} dias disponíveis</div>
+            </div>
+          </div>
+        ) : (
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 14 }}>
+            <div className="t-overline" style={{ marginBottom: 6 }}>A AGUARDAR</div>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>
+              {quantosEmFrente} militar{quantosEmFrente !== 1 ? 'es' : ''} à sua frente
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--fg-muted)', marginTop: 4 }}>
+              A marcar agora: {turnoAtualMilitar ? `${turnoAtualMilitar.postoAbrev} ${turnoAtualMilitar.nome}` : '—'} · A sua posição: {minhaPosicao}ª
+            </div>
+          </div>
+        )}
+
+        {/* Days summary bar */}
+        {(meuTurnoAtivo || meusTurnoConcluido) && (
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 12 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 12 }}>
+              <span style={{ fontWeight: 600 }}>{diasUsados} dias marcados</span>
+              <span style={{ color: 'var(--fg-muted)' }}>{diasRestantes} restantes de {diasTotais}</span>
+            </div>
+            <div style={{ height: 6, background: 'var(--border)', borderRadius: 3, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${Math.min((diasUsados / diasTotais) * 100, 100)}%`, background: 'var(--brand-green)', borderRadius: 3, transition: 'width 0.4s' }}/>
+            </div>
+          </div>
+        )}
+
+        {/* My periods */}
+        {meusPeriodos.length > 0 && (
+          <div>
+            <div className="t-overline" style={{ marginBottom: 8 }}>OS MEUS PERÍODOS</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {meusPeriodos.map((p, i) => (
+                <div key={p.id} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 6, background: 'rgba(31,77,58,0.08)', color: 'var(--brand-green)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700 }}>{i + 1}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600 }}>{formatDate(p.inicio)} – {formatDate(p.fim)}</div>
+                    <div style={{ fontSize: 10, color: 'var(--fg-muted)' }}>{p.dias} dia{p.dias !== 1 ? 's' : ''}</div>
+                  </div>
+                  {!meusTurnoConcluido && (
+                    <button onClick={() => actions.removerPeriodoFerias(p.id)} style={{ background: 'transparent', border: 'none', color: 'var(--danger)', cursor: 'pointer', padding: 4 }}>
+                      <Icon name="trash-2" size={14}/>
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Add period form */}
+        {meuTurnoAtivo && !meusTurnoConcluido && (
+          <div>
+            <div className="t-overline" style={{ marginBottom: 8 }}>NOVO PERÍODO ({meusPeriodos.length}/5)</div>
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--fg-muted)', display: 'block', marginBottom: 4 }}>INÍCIO</label>
+                  <input type="date" value={inicio} onChange={e => { setInicio(e.target.value); setErro(''); }}
+                    min="2026-01-01" max="2026-12-31" style={inputStyle}/>
+                </div>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--fg-muted)', display: 'block', marginBottom: 4 }}>FIM</label>
+                  <input type="date" value={fim} onChange={e => { setFim(e.target.value); setErro(''); }}
+                    min={inicio || '2026-01-01'} max="2026-12-31" style={inputStyle}/>
+                </div>
+              </div>
+              {erro && (
+                <div style={{ fontSize: 11, color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Icon name="alert-circle" size={13}/> {erro}
+                </div>
+              )}
+              <button onClick={adicionarPeriodo} disabled={meusPeriodos.length >= 5}
+                style={{ background: meusPeriodos.length >= 5 ? 'var(--border)' : 'var(--brand-green)', color: '#FFF', border: 'none', borderRadius: 8, padding: 11, fontWeight: 700, fontSize: 13, cursor: meusPeriodos.length >= 5 ? 'not-allowed' : 'pointer' }}>
+                {meusPeriodos.length >= 5 ? 'Máximo atingido (5/5)' : '+ Adicionar período'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Conclude button */}
+        {meuTurnoAtivo && !meusTurnoConcluido && (
+          <button onClick={concluirMarcacao} style={{
+            width: '100%', background: meusPeriodos.length > 0 ? 'var(--brand-gold)' : 'var(--surface)',
+            color: meusPeriodos.length > 0 ? '#FFF' : 'var(--fg-muted)',
+            border: meusPeriodos.length > 0 ? 'none' : '1px solid var(--border)',
+            borderRadius: 10, padding: '13px 14px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          }}>
+            <Icon name="check-circle" size={18}/>
+            Concluir marcação e passar ao seguinte
+          </button>
+        )}
+
+        {/* Queue overview */}
+        <div>
+          <div className="t-overline" style={{ marginBottom: 8 }}>ORDEM DE ANTIGUIDADE</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {fila.map((m, i) => {
+              const concluido = ferias.concluidos.includes(m.id);
+              const ativo = ferias.turnoMilitarId === m.id;
+              const sou = m.id === meuId;
+              return (
+                <div key={m.id} style={{
+                  background: sou ? 'rgba(201,162,75,0.07)' : 'var(--surface)',
+                  border: `1px solid ${sou ? 'var(--brand-gold)' : ativo ? 'var(--brand-green)' : 'var(--border)'}`,
+                  borderRadius: 8, padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8,
+                }}>
+                  <span className="t-mono" style={{ fontSize: 10, color: 'var(--fg-muted)', width: 20, textAlign: 'right' }}>{i + 1}.</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <span style={{ fontSize: 12, fontWeight: sou ? 700 : 600, color: sou ? 'var(--brand-gold)' : 'var(--fg)' }}>
+                      {m.postoAbrev} {m.nome}
+                    </span>
+                  </div>
+                  {concluido
+                    ? <Icon name="check-circle" size={14} style={{ color: 'var(--success)', flexShrink: 0 }}/>
+                    : ativo
+                    ? <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--brand-green)', boxShadow: '0 0 6px var(--brand-green)', flexShrink: 0 }}/>
+                    : <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--border)', flexShrink: 0 }}/>
+                  }
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+window.FeriasScreen = FeriasScreen;
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Home/Shell with bottom nav */
+
+const HomeScreen = ({ onNav }) => {
+  const { useStore } = window.SentinelaStore;
+  const me = useStore(s => s.militares.find(x => x.id === s.militarLogadoId));
+  const patrulhaAtual = useStore(s => s.patrulhaAtual);
+  const ordens = useStore(s => s.ordens);
+  const notificacoes = useStore(s => s.notificacoes);
+  const alertas = useStore(s => s.alertas);
+  const diretivas = useStore(s => s.diretivas);
+
+  const novasOS = ordens.filter(o => o.novo).length;
+  const naoLidas = notificacoes.filter(n => !n.lida).length;
+  const alertasPorConfirmar = alertas.filter(a => !a.confirmado).length;
+  const diretivasPendentes = diretivas.filter(d => !d.feito).length;
+
+  if (!me) return null;
+
+  const StatusBanner = patrulhaAtual ? (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <button onClick={() => onNav('scanner')} style={{
+        width: '100%', background: 'linear-gradient(135deg, var(--brand-green) 0%, var(--brand-green-deep) 100%)',
+        color: '#FFF', border: 'none', borderRadius: 12, padding: 14, textAlign: 'left', cursor: 'pointer',
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <div style={{ width: 44, height: 44, background: 'rgba(255,255,255,0.15)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Icon name="radio" size={22}/>
+        </div>
+        <div style={{ flex: 1 }}>
+          <div className="t-overline" style={{ color: '#C9A24B', marginBottom: 2 }}>EM PATRULHA · {patrulhaAtual.indicativo}</div>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16 }}>Scanner ANPR ativo</div>
+          <div style={{ fontSize: 11, opacity: 0.85 }}>{alertasPorConfirmar} alertas por confirmar · {diretivasPendentes} diretivas</div>
+        </div>
+        <Icon name="chevron-right" size={18}/>
+      </button>
+      <button onClick={() => onNav('fecharPatrulha')} style={{
+        width: '100%', background: 'var(--surface)', border: '1px solid var(--border)',
+        borderRadius: 10, padding: '10px 14px', textAlign: 'left', cursor: 'pointer',
+        display: 'flex', alignItems: 'center', gap: 10, color: 'var(--fg)',
+      }}>
+        <Icon name="check-square" size={18} style={{ color: 'var(--brand-green)' }}/>
+        <span style={{ flex: 1, fontSize: 13, fontWeight: 600 }}>Fechar patrulha</span>
+        <Icon name="chevron-right" size={14} style={{ color: 'var(--fg-soft)' }}/>
+      </button>
+    </div>
+  ) : (
+    <button onClick={() => onNav('abrirPatrulha')} style={{
+      width: '100%', background: 'var(--surface)', border: '2px dashed var(--brand-green)', color: 'var(--brand-green)',
+      borderRadius: 12, padding: 16, textAlign: 'left', cursor: 'pointer',
+      display: 'flex', alignItems: 'center', gap: 12,
+    }}>
+      <div style={{ width: 44, height: 44, background: 'var(--brand-green-soft)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name="play" size={22}/>
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16 }}>Abrir patrulha</div>
+        <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>Escolher viatura, parceiro e equipamento</div>
+      </div>
+      <Icon name="chevron-right" size={18}/>
+    </button>
+  );
+
+  const QuickAction = ({ icon, label, badge, onClick, color = 'var(--brand-green)' }) => (
+    <button onClick={onClick} style={{
+      background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10,
+      padding: '12px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+      cursor: 'pointer', position: 'relative',
+    }}>
+      <div style={{
+        width: 40, height: 40, borderRadius: 10, background: color === 'var(--danger)' ? 'rgba(199,50,43,0.10)' : 'rgba(31,77,58,0.08)',
+        color, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <Icon name={icon} size={20}/>
+      </div>
+      <div style={{ fontSize: 11, fontWeight: 600, textAlign: 'center', color: 'var(--fg)' }}>{label}</div>
+      {badge > 0 && (
+        <span style={{ position: 'absolute', top: 8, right: 8, background: 'var(--danger)', color: '#FFF', fontSize: 10, fontWeight: 700, borderRadius: 999, padding: '1px 6px', minWidth: 18, textAlign: 'center' }}>{badge}</span>
+      )}
+    </button>
+  );
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div style={{ height: 60, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 14px', gap: 12, flexShrink: 0 }}>
+        <button onClick={() => onNav('perfil')} style={{ background: 'transparent', border: 'none', padding: 0, cursor: 'pointer' }}>
+          <Avatar name={me.nome} size={36} style={{ border: '2px solid #C9A24B' }}/>
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 14 }}>{me.postoAbrev} {me.nome.split(' ').slice(-1)[0]}</div>
+          <div style={{ fontSize: 11, color: '#C9A24B' }}>{me.indicativo} · {me.secao}</div>
+        </div>
+        <button onClick={() => onNav('notificacoes')} style={{ background: 'transparent', border: 'none', color: '#FFF', cursor: 'pointer', position: 'relative', padding: 4 }}>
+          <Icon name="bell" size={20}/>
+          {naoLidas > 0 && <span style={{ position: 'absolute', top: 0, right: 0, background: 'var(--danger)', color: '#FFF', fontSize: 9, fontWeight: 700, borderRadius: 999, padding: '0 5px', minWidth: 14, textAlign: 'center' }}>{naoLidas}</span>}
+        </button>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 14, background: 'var(--bg)' }}>
+        {StatusBanner}
+
+        <div>
+          <div className="t-overline" style={{ marginBottom: 8 }}>AÇÕES</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+            <QuickAction icon="scan" label="Scanner" onClick={() => onNav('scanner')}/>
+            <QuickAction icon="file-text" label="Auto" onClick={() => onNav('auto')}/>
+            <QuickAction icon="message-square" label="Chat" badge={3} onClick={() => onNav('chats')}/>
+            <QuickAction icon="siren" label="Pânico" color="var(--danger)" onClick={() => onNav('panico')}/>
+          </div>
+        </div>
+
+        <div>
+          <div className="t-overline" style={{ marginBottom: 8 }}>SERVIÇO</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8 }}>
+            <QuickAction icon="file-text" label="OS" badge={novasOS} onClick={() => onNav('ordens')}/>
+            <QuickAction icon="clipboard" label="Briefing" onClick={() => onNav('briefing')}/>
+            <QuickAction icon="calendar" label="Escala" onClick={() => onNav('escalas')}/>
+            <QuickAction icon="users" label="Lista" onClick={() => onNav('lista')}/>
+            <QuickAction icon="sun" label="Férias" onClick={() => onNav('ferias')}/>
+          </div>
+        </div>
+
+        <div>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 8 }}>
+            <div className="t-overline">ÚLTIMAS DETEÇÕES ANPR</div>
+            <button onClick={() => onNav('scanner')} style={{ background: 'transparent', border: 'none', color: 'var(--brand-green)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Ver tudo</button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {alertas.slice(0, 3).map(a => (
+              <div key={a.id} style={{
+                background: 'var(--surface)', border: '1px solid var(--border)',
+                borderLeft: `4px solid ${a.severidade === 'critico' ? 'var(--danger)' : a.severidade === 'aviso' ? 'var(--warning)' : 'var(--info)'}`,
+                borderRadius: 8, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10,
+              }}>
+                <Plate value={a.matricula} size="sm"/>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.motivo}</div>
+                  <div style={{ fontSize: 10, color: 'var(--fg-muted)' }}>{a.hora} · {a.indicativo}</div>
+                </div>
+                {a.confirmado && <Icon name="check" size={14} style={{ color: 'var(--success)' }}/>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const MobileShellV2 = () => {
+  const { useStore } = window.SentinelaStore;
+  const meId = useStore(s => s.militarLogadoId);
+  const panico = useStore(s => s.panico);
+
+  const [route, setRoute] = React.useState('home');
+  const [chatId, setChatId] = React.useState(null);
+
+  if (!meId) return <LoginScreen/>;
+
+  // Pânico ativo overrides everything
+  if (panico) return <PanicoScreen onBack={() => setRoute('home')}/>;
+
+  const tabActive = ['home', 'scanner', 'chats', 'ordens', 'perfil'].includes(route);
+
+  let content;
+  if (route === 'home') content = <HomeScreen onNav={setRoute}/>;
+  else if (route === 'scanner') content = <ScannerScreenV2/>;
+  else if (route === 'abrirPatrulha') content = <AbrirPatrulhaScreen onBack={() => setRoute('home')} onDone={() => setRoute('scanner')}/>;
+  else if (route === 'fecharPatrulha') content = <FecharPatrulhaScreen onBack={() => setRoute('home')} onDone={() => setRoute('home')}/>;
+  else if (route === 'auto') content = <AutoNoticiaScreen onBack={() => setRoute('home')} onDone={() => setRoute('home')}/>;
+  else if (route === 'panico') content = <PanicoScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'ordens') content = <OrdensScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'chats') content = chatId ? <ChatThreadScreen chatId={chatId} onBack={() => setChatId(null)}/> : <ChatListScreen onOpen={setChatId} onBack={() => setRoute('home')}/>;
+  else if (route === 'lista') content = <ListaTelefonicaScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'briefing') content = <BriefingScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'escalas') content = <EscalasScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'notificacoes') content = <NotificacoesScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'perfil') content = <PerfilScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'ferias') content = <FeriasScreen onBack={() => setRoute('home')}/>;
+  else content = <HomeScreen onNav={setRoute}/>;
+
+  const TabBtn = ({ id, icon, label }) => {
+    const ativo = route === id || (id === 'chats' && route === 'chats');
+    return (
+      <button onClick={() => { setRoute(id); setChatId(null); }} style={{
+        flex: 1, background: 'transparent', border: 'none', cursor: 'pointer',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '6px 0',
+        color: ativo ? 'var(--brand-green)' : 'var(--fg-muted)',
+      }}>
+        <Icon name={icon} size={20}/>
+        <span style={{ fontSize: 10, fontWeight: ativo ? 700 : 500 }}>{label}</span>
+      </button>
+    );
+  };
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        {content}
+      </div>
+      {tabActive && (
+        <div style={{
+          height: 56, background: 'var(--surface)', borderTop: '1px solid var(--border)',
+          display: 'flex', flexShrink: 0, paddingBottom: 4,
+        }}>
+          <TabBtn id="home" icon="home" label="Início"/>
+          <TabBtn id="scanner" icon="scan" label="Scanner"/>
+          <TabBtn id="chats" icon="message-square" label="Chat"/>
+          <TabBtn id="ordens" icon="file-text" label="OS"/>
+          <TabBtn id="perfil" icon="user" label="Perfil"/>
+        </div>
+      )}
+    </div>
+  );
+};
+
+window.MobileShellV2 = MobileShellV2;
+window.HomeScreen = HomeScreen;
+
+</script>
+
+<script>
+function scenario(kind) {
+  const s = window.SentinelaStore;
+  if (kind === 'alerta-critico') {
+    s.actions.addAlerta({
+      matricula: '12-AB-34', motivo: 'Viatura furtada',
+      severidade: 'critico', origem: 'BNDV — Aveiro 2024-08-14',
+      local: 'Av. Carvalho Araújo', militar: 'Cb. Silva', indicativo: 'VRL-21'
+    });
+  } else if (kind === 'alerta-aviso') {
+    s.actions.addAlerta({
+      matricula: '57-DT-91', motivo: 'Sem seguro válido',
+      severidade: 'aviso', origem: 'ASF — desde 2026-01-12',
+      local: 'EN2, km 14', militar: 'Cb. Silva', indicativo: 'VRL-21'
+    });
+  } else if (kind === 'os-nova') {
+    s.actions.enviarOS({
+      titulo: 'OS 046/2026 — Reforço fim de semana',
+      autor: 'Sarg. Costa Ribeiro', paginas: 2,
+    });
+  } else if (kind === 'mensagem') {
+    s.actions.enviarMensagem('c1', '[Sarg. Marques] Atenção: nova denúncia anónima na zona do Cidral.');
+  } else if (kind === 'panico-cancela') {
+    s.actions.cancelarPanico();
+  } else if (kind === 'toggle-tema') {
+    s.actions.setTema(s.getState().tema === 'noturno' ? 'claro' : 'noturno');
+  }
+}
+</script>
+
+<script type="text/babel">
+const Root = () => {
+  const { useStore } = window.SentinelaStore;
+  const [, setTick] = React.useState(0);
+  React.useEffect(() => window.SentinelaStore.subscribe(() => setTick(t => t+1)), []);
+  const meId = window.SentinelaStore.getState().militarLogadoId;
+  const me = window.SENTINELA_DATA.militares.find(m => m.id === meId);
+  const tema = window.SentinelaStore.useStore(s => s.tema);
+
+  // Apply theme reactively
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', tema === 'noturno' ? 'dark' : 'light');
+    const wm = document.getElementById('wordmark');
+    if (wm) wm.src = tema === 'noturno' ? 'assets/sentinela-wordmark-dark.svg' : 'assets/sentinela-wordmark.svg';
+  }, [tema]);
+
+  // Update statusbar indicativo
+  React.useEffect(() => {
+    const el = document.getElementById('statusInd');
+    if (el) el.textContent = me ? me.indicativo : 'GNR';
+  }, [me]);
+
+  return <MobileShellV2/>;
+};
+ReactDOM.createRoot(document.getElementById('mobileRoot')).render(<Root/>);
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .catch(() => {}); // silently fail — doesn't break the app
+  });
+}
+</script>
+</body>
+</html>

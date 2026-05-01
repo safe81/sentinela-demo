@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sentinela Mobile — GNR</title>
+<meta name="theme-color" content="#1F4D3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sentinela">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/sentinela-shield.svg">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(ellipse at 30% 0%, rgba(31,77,58,0.12), transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(201,162,75,0.08), transparent 50%),
+      var(--bg);
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; gap: 24px;
+    overflow: auto;
+  }
+
+  .stage-label {
+    position: fixed; top: 14px; left: 18px; z-index: 100;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .stage-label img { height: 22px; }
+  .stage-label .pill {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg-muted);
+  }
+  .reset-btn {
+    position: fixed; top: 14px; right: 18px; z-index: 100;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    color: var(--fg-muted); cursor: pointer;
+  }
+  .reset-btn:hover { color: var(--fg); border-color: var(--border-strong); }
+
+  .phone-frame {
+    width: 380px; height: 780px; background: #0a0d0c;
+    border-radius: 44px; padding: 12px; flex-shrink: 0;
+    box-shadow: 0 24px 60px rgba(15,42,32,0.20), 0 4px 12px rgba(15,42,32,0.10);
+    position: relative; border: 1.5px solid #2a3a35;
+  }
+  .phone-screen {
+    width: 100%; height: 100%; background: var(--bg); border-radius: 32px; overflow: hidden;
+    display: flex; flex-direction: column; position: relative;
+  }
+  .phone-statusbar {
+    height: 28px; background: var(--brand-green-deep); color: #FFF;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 22px; font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .phone-notch {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 90px; height: 22px; background: #0a0d0c; border-radius: 16px; z-index: 5;
+  }
+  .phone-home-indicator {
+    position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 4px; background: #FFF; opacity: 0.4; border-radius: 4px; z-index: 5;
+  }
+  .phone-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  .side-panel {
+    width: 280px; max-height: 780px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 18px; box-shadow: var(--shadow-md);
+  }
+  .side-panel h2 { font-family: var(--font-display); font-size: 14px; margin: 0 0 8px; }
+  .side-panel p  { margin: 0 0 12px; font-size: 12px; color: var(--fg-muted); line-height: 18px; }
+  .side-panel .links { display: flex; flex-direction: column; gap: 6px; }
+  .side-panel a {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    padding: 8px 12px; border-radius: 8px; text-decoration: none;
+    font-size: 12px; font-weight: 600; color: var(--fg);
+  }
+  .side-panel a:hover { border-color: var(--brand-green); color: var(--brand-green); }
+  .scenario-list { display: flex; flex-direction: column; gap: 4px; }
+  .scenario-list button {
+    text-align: left; background: var(--surface-2); border: 1px solid var(--border);
+    padding: 8px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; color: var(--fg);
+  }
+  .scenario-list button:hover { border-color: var(--brand-gold); }
+
+  @media (max-width: 720px) {
+    body { padding: 0; }
+    .stage-label, .reset-btn, .side-panel { display: none; }
+    .phone-frame { width: 100vw; height: 100vh; border-radius: 0; padding: 0; border: none; }
+    .phone-screen { border-radius: 0; }
+    .phone-notch, .phone-home-indicator { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage-label">
+  <img src="assets/sentinela-wordmark.svg" alt="Sentinela" id="wordmark"/>
+  <span class="pill">Mobile · Posto Vila Real</span>
+</div>
+<button class="reset-btn" onclick="window.SentinelaStore.actions.reset(); location.reload();">↻ Reset demo</button>
+
+<div class="phone-frame" data-screen-label="Mobile">
+  <div class="phone-notch"></div>
+  <div class="phone-screen">
+    <div class="phone-statusbar">
+      <span id="statusTime">14:32</span>
+      <span style="display:flex; align-items:center; gap:8px;">
+        <span id="statusInd">VRL-21</span>
+        <span>●●●●</span>
+        <span>4G</span>
+        <span>87%</span>
+      </span>
+    </div>
+    <div class="phone-content" id="mobileRoot"></div>
+  </div>
+  <div class="phone-home-indicator"></div>
+</div>
+
+<div class="side-panel" id="sidePanel">
+  <h2>Sentinela — App móvel</h2>
+  <p>Aplicação de patrulha para a GNR. Esta é a vista do telemóvel do militar de serviço — abre patrulha, vê alertas ANPR em tempo real, comunica com o posto.</p>
+
+  <div class="links">
+    <a href="pc.html">→ Abrir vista PC (despacho)</a>
+    <a href="index.html">↩ Hub (mobile + PC)</a>
+  </div>
+
+  <h2 style="margin-top: 18px">Cenários demo</h2>
+  <div class="scenario-list">
+    <button onclick="scenario('alerta-critico')">⚠ Receber alerta crítico (viatura furtada)</button>
+    <button onclick="scenario('alerta-aviso')">⚠ Receber aviso (sem seguro)</button>
+    <button onclick="scenario('os-nova')">✉ Receber nova OS</button>
+    <button onclick="scenario('mensagem')">💬 Receber mensagem do posto</button>
+    <button onclick="scenario('panico-cancela')">🛑 Cancelar pânico ativo</button>
+    <button onclick="scenario('toggle-tema')">🌙 Alternar tema (ronda noturna)</button>
+  </div>
+
+  <p style="margin-top: 14px; font-size: 10px;">Sincroniza com pc.html via BroadcastChannel + localStorage. Abre as duas janelas lado a lado.</p>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.js?v=3"></script>
+<script src="store.js?v=3"></script>
+<script type="text/babel" src="primitives.jsx"></script>
+<script type="text/babel" src="app_mobile/Login.jsx"></script>
+<script type="text/babel" src="app_mobile/Patrulha.jsx"></script>
+<script type="text/babel" src="app_mobile/Ocorrencia.jsx"></script>
+<script type="text/babel" src="app_mobile/Scanner.jsx"></script>
+<script type="text/babel" src="app_mobile/Comms.jsx"></script>
+<script type="text/babel" src="app_mobile/Extras.jsx"></script>
+<script type="text/babel" src="app_mobile/Ferias.jsx"></script>
+<script type="text/babel" src="app_mobile/Shell.jsx"></script>
+
+<script>
+function scenario(kind) {
+  const s = window.SentinelaStore;
+  if (kind === 'alerta-critico') {
+    s.actions.addAlerta({
+      matricula: '12-AB-34', motivo: 'Viatura furtada',
+      severidade: 'critico', origem: 'BNDV — Aveiro 2024-08-14',
+      local: 'Av. Carvalho Araújo', militar: 'Cb. Silva', indicativo: 'VRL-21'
+    });
+  } else if (kind === 'alerta-aviso') {
+    s.actions.addAlerta({
+      matricula: '57-DT-91', motivo: 'Sem seguro válido',
+      severidade: 'aviso', origem: 'ASF — desde 2026-01-12',
+      local: 'EN2, km 14', militar: 'Cb. Silva', indicativo: 'VRL-21'
+    });
+  } else if (kind === 'os-nova') {
+    s.actions.enviarOS({
+      titulo: 'OS 046/2026 — Reforço fim de semana',
+      autor: 'Sarg. Costa Ribeiro', paginas: 2,
+    });
+  } else if (kind === 'mensagem') {
+    s.actions.enviarMensagem('c1', '[Sarg. Marques] Atenção: nova denúncia anónima na zona do Cidral.');
+  } else if (kind === 'panico-cancela') {
+    s.actions.cancelarPanico();
+  } else if (kind === 'toggle-tema') {
+    s.actions.setTema(s.getState().tema === 'noturno' ? 'claro' : 'noturno');
+  }
+}
+</script>
+
+<script type="text/babel">
+const Root = () => {
+  const { useStore } = window.SentinelaStore;
+  const [, setTick] = React.useState(0);
+  React.useEffect(() => window.SentinelaStore.subscribe(() => setTick(t => t+1)), []);
+  const meId = window.SentinelaStore.getState().militarLogadoId;
+  const me = window.SENTINELA_DATA.militares.find(m => m.id === meId);
+  const tema = window.SentinelaStore.useStore(s => s.tema);
+
+  // Apply theme reactively
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', tema === 'noturno' ? 'dark' : 'light');
+    const wm = document.getElementById('wordmark');
+    if (wm) wm.src = tema === 'noturno' ? 'assets/sentinela-wordmark-dark.svg' : 'assets/sentinela-wordmark.svg';
+  }, [tema]);
+
+  // Update statusbar indicativo
+  React.useEffect(() => {
+    const el = document.getElementById('statusInd');
+    if (el) el.textContent = me ? me.indicativo : 'GNR';
+  }, [me]);
+
+  return <MobileShellV2/>;
+};
+ReactDOM.createRoot(document.getElementById('mobileRoot')).render(<Root/>);
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .catch(() => {}); // silently fail — doesn't break the app
+  });
+}
+</script>
+</body>
+</html>

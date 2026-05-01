@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8"/>
+<title>Sentinela — Hub</title>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(ellipse at 30% 0%, rgba(31,77,58,0.10), transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(201,162,75,0.06), transparent 50%),
+      var(--bg);
+    overflow: auto;
+  }
+
+  .hub-header {
+    padding: 36px 40px 24px; display: flex; align-items: center; gap: 16px;
+  }
+  .hub-header img { height: 38px; }
+  .hub-header .pill {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-muted);
+  }
+
+  .hub-tabs {
+    display: flex; gap: 6px; padding: 0 40px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .hub-tab {
+    padding: 12px 18px; cursor: pointer; border: none; background: transparent;
+    font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+    color: var(--fg-muted); border-bottom: 2px solid transparent; margin-bottom: -1px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .hub-tab:hover { color: var(--fg); }
+  .hub-tab.active { color: var(--brand-green); border-bottom-color: var(--brand-gold); }
+
+  .hub-pane { padding: 28px 40px 60px; }
+
+  /* Overview */
+  .overview-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 8px;
+  }
+  .ov-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 14px;
+    box-shadow: var(--shadow-md);
+  }
+  .ov-card h3 {
+    font-family: var(--font-display); font-size: 22px; font-weight: 600;
+    margin: 0; display: flex; align-items: center; gap: 12px;
+  }
+  .ov-card .ov-icon {
+    width: 38px; height: 38px; border-radius: 10px; background: var(--brand-green);
+    color: #FFF; display: flex; align-items: center; justify-content: center;
+  }
+  .ov-card p { font-size: 13px; color: var(--fg-muted); line-height: 1.55; margin: 0; }
+  .ov-card ul { margin: 0; padding: 0 0 0 18px; font-size: 12.5px; color: var(--fg-muted); line-height: 1.7; }
+  .ov-card ul b { color: var(--fg); font-weight: 600; }
+
+  .ov-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .ov-btn {
+    padding: 9px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid var(--brand-green); background: var(--brand-green); color: #FFF;
+  }
+  .ov-btn:hover { background: var(--brand-green-hover); }
+  .ov-btn.secondary {
+    background: var(--surface); color: var(--brand-green); border-color: var(--border-strong);
+  }
+  .ov-btn.secondary:hover { border-color: var(--brand-green); }
+
+  .scenario-bar {
+    margin-top: 28px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px;
+  }
+  .scenario-bar h4 {
+    margin: 0 0 12px; font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-muted);
+  }
+  .scenario-list { display: flex; gap: 8px; flex-wrap: wrap; }
+  .scenario-list button {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--fg); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .scenario-list button:hover { border-color: var(--brand-gold); }
+  .scenario-list .reset {
+    margin-left: auto; background: transparent; color: var(--danger);
+    border-color: var(--danger-soft);
+  }
+
+  /* Side-by-side iframes */
+  .stage {
+    display: flex; gap: 24px; align-items: flex-start; justify-content: center;
+    padding: 24px 0;
+  }
+  .pc-frame {
+    flex: 1; max-width: 1180px; min-width: 760px; height: calc(100vh - 200px); min-height: 620px;
+    background: var(--surface); border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+    display: flex; flex-direction: column;
+  }
+  .pc-chrome {
+    height: 34px; background: var(--surface-2); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 12px; gap: 12px; flex-shrink: 0;
+  }
+  .pc-chrome .dots { display: flex; gap: 6px; }
+  .pc-chrome .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .pc-url {
+    flex: 1; max-width: 360px; height: 22px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 4px;
+    display: flex; align-items: center; padding: 0 8px;
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted);
+    margin: 0 auto;
+  }
+  .pc-iframe { flex: 1; border: none; width: 100%; }
+
+  .phone-frame {
+    width: 380px; height: 780px; background: #0a0d0c; border-radius: 44px;
+    padding: 12px; flex-shrink: 0; position: relative; border: 1.5px solid #2a3a35;
+    box-shadow: 0 24px 60px rgba(15,42,32,0.20), 0 4px 12px rgba(15,42,32,0.10);
+  }
+  .phone-screen {
+    width: 100%; height: 100%; background: var(--bg); border-radius: 32px; overflow: hidden;
+  }
+  .phone-iframe { border: none; width: 100%; height: 100%; }
+  .phone-notch {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 90px; height: 22px; background: #0a0d0c; border-radius: 16px; z-index: 5;
+  }
+  .phone-home-indicator {
+    position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 4px; background: #FFF; opacity: 0.4; border-radius: 4px; z-index: 5;
+  }
+
+  .deck {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;
+  }
+  .deck a {
+    display: block; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px; text-decoration: none; color: var(--fg);
+  }
+  .deck a:hover { border-color: var(--brand-green); }
+  .deck a img {
+    width: 100%; height: 90px; object-fit: contain; background: var(--surface-2);
+    border-radius: 6px; margin-bottom: 10px; padding: 10px; box-sizing: border-box;
+  }
+  .deck a .nm { font-weight: 600; font-size: 13px; }
+  .deck a .ds { font-size: 11px; color: var(--fg-muted); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="hub-header">
+  <img src="assets/sentinela-wordmark.svg" alt="Sentinela" id="wordmark"/>
+  <span class="pill">Plataforma operacional · GNR · Posto Vila Real</span>
+  <div style="flex:1"></div>
+  <button class="ov-btn secondary" onclick="if(confirm('Repor demo? Apaga toda a atividade.')){window.SentinelaStore.actions.reset(); location.reload();}">↻ Reset demo</button>
+</div>
+
+<div class="hub-tabs">
+  <button class="hub-tab active" data-tab="overview">📋 Visão geral</button>
+  <button class="hub-tab" data-tab="split">🖥 + 📱 Mobile + PC lado a lado</button>
+  <button class="hub-tab" data-tab="kit">🎨 Design system</button>
+</div>
+
+<div id="pane-overview" class="hub-pane">
+  <div class="overview-grid">
+
+    <div class="ov-card">
+      <h3>
+        <span class="ov-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M3 10h18"/></svg></span>
+        Comando · Posto VRL
+      </h3>
+      <p>Vista de despacho do Sargento Comandante. Acompanha alertas ANPR em tempo real, posição GPS das viaturas, despacha reforços para pedidos de pânico e difunde ordens de serviço para o efetivo.</p>
+      <ul>
+        <li><b>Dashboard</b> — KPIs do posto e feed de alertas</li>
+        <li><b>Mapa</b> — viaturas em movimento</li>
+        <li><b>Patrulhas, Viaturas, Militares, Escalas</b></li>
+        <li><b>Ordens de serviço</b> — emite e segue leituras</li>
+        <li><b>Mensagens</b> — chat com militares</li>
+      </ul>
+      <div class="ov-actions">
+        <a class="ov-btn" href="pc.html">Abrir vista PC →</a>
+        <a class="ov-btn secondary" href="pc.html" target="_blank">Nova janela ↗</a>
+      </div>
+    </div>
+
+    <div class="ov-card">
+      <h3>
+        <span class="ov-icon" style="background: var(--brand-gold); color: var(--brand-green-deep)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></span>
+        Patrulha · móvel
+      </h3>
+      <p>Aplicação do militar de serviço. Login pessoal, abertura de patrulha (viatura, KM, combustível, parceiro, equipamento), scanner ANPR, botão de pânico, auto de notícia digital, OS, lista telefónica e comunicações.</p>
+      <ul>
+        <li><b>Login</b> — escolha do militar</li>
+        <li><b>Início de patrulha</b> — checklist completo</li>
+        <li><b>Scanner ANPR</b> — câmara + alertas em tempo real</li>
+        <li><b>Auto de notícia</b> — formulário, fotos, assinatura</li>
+        <li><b>OS, Chat, Lista telefónica, Escalas</b></li>
+      </ul>
+      <div class="ov-actions">
+        <a class="ov-btn" href="mobile.html">Abrir vista móvel →</a>
+        <a class="ov-btn secondary" href="mobile.html" target="_blank">Nova janela ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario-bar">
+    <h4>Cenários demo · sincronização ao vivo</h4>
+    <p style="font-size:12px; color: var(--fg-muted); margin: -6px 0 12px">Abre as duas vistas em separadores diferentes (ou usa o tabulador <b>Lado a lado</b>) — o estado sincroniza por <code>BroadcastChannel</code>+<code>localStorage</code>.</p>
+    <div class="scenario-list">
+      <button onclick="scenario('alerta-critico')">⚠ Alerta crítico (viatura furtada)</button>
+      <button onclick="scenario('alerta-aviso')">⚠ Aviso (sem seguro)</button>
+      <button onclick="scenario('os-nova')">✉ Nova OS</button>
+      <button onclick="scenario('mensagem')">💬 Mensagem do posto</button>
+      <button onclick="scenario('panico-cancela')">🛑 Cancelar pânico</button>
+      <button onclick="scenario('toggle-tema')">🌙 Alternar ronda noturna</button>
+      <button class="reset" onclick="if(confirm('Repor demo?')){window.SentinelaStore.actions.reset(); location.reload();}">↻ Reset</button>
+    </div>
+  </div>
+</div>
+
+<div id="pane-split" class="hub-pane" style="display:none">
+  <div class="stage">
+    <div class="pc-frame">
+      <div class="pc-chrome">
+        <div class="dots">
+          <div class="dot" style="background:#FF5F57"></div>
+          <div class="dot" style="background:#FEBC2E"></div>
+          <div class="dot" style="background:#28C840"></div>
+        </div>
+        <div class="pc-url">🔒 sentinela.gnr.local / dashboard</div>
+        <div style="width:60px"></div>
+      </div>
+      <iframe class="pc-iframe" id="pcFrame" src="about:blank"></iframe>
+    </div>
+
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <iframe class="phone-iframe" id="mobileFrame" src="about:blank"></iframe>
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+</div>
+
+<div id="pane-kit" class="hub-pane" style="display:none">
+  <div class="deck">
+    <a href="preview/logo.html"><img src="assets/sentinela-wordmark.svg"/><div class="nm">Logótipo</div><div class="ds">Brasão Sentinela + lockup</div></a>
+    <a href="preview/colors-brand.html"><img src="assets/sentinela-shield.svg"/><div class="nm">Cores · marca</div><div class="ds">Verde GNR, dourado</div></a>
+    <a href="preview/colors-semantic.html"><img src="assets/sentinela-shield.svg"/><div class="nm">Cores · semânticas</div><div class="ds">Crítico, aviso, info, sucesso</div></a>
+    <a href="preview/typography.html"><img src="assets/sentinela-shield.svg"/><div class="nm">Tipografia</div><div class="ds">Inter Tight + Inter + JetBrains</div></a>
+    <a href="preview/icons.html"><img src="assets/sentinela-shield.svg"/><div class="nm">Iconografia</div><div class="ds">Sistema operacional Lucide</div></a>
+    <a href="preview/buttons.html"><img src="assets/sentinela-shield.svg"/><div class="nm">Botões</div><div class="ds">Primário, secundário, perigo</div></a>
+    <a href="preview/badges.html"><img src="assets/sentinela-shield.svg"/><div class="nm">Badges</div><div class="ds">Estados e severidade</div></a>
+    <a href="preview/plates.html"><img src="assets/license-plate-pt.svg"/><div class="nm">Matrículas PT</div><div class="ds">Formato europeu</div></a>
+    <a href="preview/militar-card.html"><img src="assets/sentinela-shield.svg"/><div class="nm">Cartão militar</div><div class="ds">Avatar, posto, NIM, indicativo</div></a>
+    <a href="preview/viatura-card.html"><img src="assets/patrol-vehicle.svg"/><div class="nm">Cartão viatura</div><div class="ds">Combustível, KM, militares</div></a>
+    <a href="preview/anpr-alert.html"><img src="assets/license-plate-pt.svg"/><div class="nm">Alerta ANPR</div><div class="ds">Crítico / aviso / info</div></a>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="store.js"></script>
+<script>
+// Apply theme on load + sync
+(function(){
+  const apply = () => {
+    const t = window.SentinelaStore.getState().tema;
+    document.documentElement.setAttribute('data-theme', t === 'noturno' ? 'dark' : 'light');
+    const wm = document.getElementById('wordmark');
+    if (wm) wm.src = t === 'noturno' ? 'assets/sentinela-wordmark-dark.svg' : 'assets/sentinela-wordmark.svg';
+  };
+  apply();
+  window.SentinelaStore.subscribe(apply);
+})();
+</script>
+<script>
+function scenario(kind) {
+  const s = window.SentinelaStore;
+  if (kind === 'alerta-critico') {
+    s.actions.addAlerta({
+      matricula: '12-AB-34', motivo: 'Viatura furtada',
+      severidade: 'critico', origem: 'BNDV — Aveiro 2024-08-14',
+      local: 'Av. Carvalho Araújo', militar: 'Cb. Silva', indicativo: 'VRL-21'
+    });
+  } else if (kind === 'alerta-aviso') {
+    s.actions.addAlerta({
+      matricula: '57-DT-91', motivo: 'Sem seguro válido',
+      severidade: 'aviso', origem: 'ASF — desde 2026-01-12',
+      local: 'EN2, km 14', militar: 'Cb. Silva', indicativo: 'VRL-21'
+    });
+  } else if (kind === 'os-nova') {
+    s.actions.enviarOS({
+      titulo: 'OS 046/2026 — Reforço fim de semana',
+      autor: 'Sarg. Costa Ribeiro', paginas: 2,
+    });
+  } else if (kind === 'mensagem') {
+    s.actions.enviarMensagem('c1', '[Sarg. Marques] Atenção: nova denúncia anónima na zona do Cidral.');
+  } else if (kind === 'panico-cancela') {
+    s.actions.cancelarPanico();
+  } else if (kind === 'toggle-tema') {
+    s.actions.setTema(s.getState().tema === 'noturno' ? 'claro' : 'noturno');
+    document.documentElement.setAttribute('data-theme', s.getState().tema === 'noturno' ? 'dark' : 'light');
+  }
+}
+
+// Tabs
+document.querySelectorAll('.hub-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.hub-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['overview','split','kit'].forEach(id => {
+      document.getElementById('pane-' + id).style.display = id === btn.dataset.tab ? '' : 'none';
+    });
+    if (btn.dataset.tab === 'split') {
+      // Lazy load iframes
+      const pcF = document.getElementById('pcFrame');
+      const mF  = document.getElementById('mobileFrame');
+      if (pcF.src === 'about:blank' || !pcF.src.includes('pc.html')) pcF.src = 'pc.html';
+      if (mF.src === 'about:blank' || !mF.src.includes('mobile.html')) mF.src = 'mobile.html';
+    }
+  });
+});
+</script>
+</body>
+</html>
