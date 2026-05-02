@@ -6,12 +6,17 @@ const LoginScreen = () => {
   const [numero, setNumero] = React.useState('');
   const [posto, setPosto] = React.useState('');
   const [unidade, setUnidade] = React.useState('Posto Territorial Vila Real');
+  const [error, setError] = React.useState('');
 
-  // Map identity input to a real militar in the demo store.
   const handleEntrar = (e) => {
     e && e.preventDefault();
-    const m = militares.find(x => x.nim === numero) || militares[0];
-    if (m) actions.login(m.id);
+    const m = militares.find(x => x.nim === numero);
+    if (!m) {
+      setError('Número de Ordem inválido. Demo: experimente um nº listado na app.');
+      return;
+    }
+    setError('');
+    actions.login(m.id);
   };
 
   const styles = {
@@ -159,6 +164,14 @@ const LoginScreen = () => {
             />
           </div>
 
+          {error && (
+            <div role="alert" style={{
+              fontSize: 13, padding: '10px 12px', borderRadius: 6,
+              background: 'var(--danger-soft)', color: 'var(--danger-deep)',
+              border: '1px solid var(--danger)', marginTop: 4,
+            }}>{error}</div>
+          )}
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 4 }}>
             <button type="submit" style={styles.btnPrimary}>Entrar</button>
 
@@ -168,9 +181,9 @@ const LoginScreen = () => {
               <span style={styles.dividerLine}/>
             </div>
 
-            <button type="button" onClick={handleEntrar} style={styles.btnGoogle}>
+            <button type="button" onClick={() => militares[0] && actions.login(militares[0].id)} style={styles.btnGoogle}>
               <GoogleIcon/>
-              Acesso via Google
+              Entrar como demo
             </button>
           </div>
         </form>

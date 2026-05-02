@@ -6,12 +6,17 @@ const LoginPCScreen = () => {
   const [numero, setNumero] = React.useState('');
   const [posto, setPosto] = React.useState('');
   const [unidade, setUnidade] = React.useState('Comando Territorial de Vila Real');
+  const [error, setError] = React.useState('');
 
-  // For demo — login picks the first matching militar by NIM, else first
   const handleEntrar = (e) => {
     e && e.preventDefault();
-    const m = militares.find(x => x.nim === numero) || militares[0];
-    if (m) actions.login(m.id);
+    const m = militares.find(x => x.nim === numero);
+    if (!m) {
+      setError('Número de Ordem inválido. Demo: experimente um nº listado na app.');
+      return;
+    }
+    setError('');
+    actions.login(m.id);
   };
 
   const styles = {
@@ -157,6 +162,13 @@ const LoginPCScreen = () => {
                 style={styles.input}
               />
             </div>
+            {error && (
+              <div role="alert" style={{
+                fontSize: 13, padding: '10px 12px', borderRadius: 6,
+                background: 'var(--danger-soft)', color: 'var(--danger-deep)',
+                border: '1px solid var(--danger)',
+              }}>{error}</div>
+            )}
             <button type="submit" style={styles.btnPrimary}>
               <span>ENTRAR</span>
               <Icon name="arrow-right" size={18}/>
@@ -168,9 +180,9 @@ const LoginPCScreen = () => {
             <span style={styles.dividerText}>OU</span>
           </div>
 
-          <button onClick={handleEntrar} style={styles.btnGoogle}>
+          <button onClick={() => militares[0] && actions.login(militares[0].id)} style={styles.btnGoogle}>
             <GoogleIcon/>
-            <span>CONTINUAR COM GOOGLE</span>
+            <span>ENTRAR COMO DEMO</span>
           </button>
         </section>
 
