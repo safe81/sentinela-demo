@@ -3082,6 +3082,1159 @@ window.FeriasScreen = FeriasScreen;
 
 </script>
 <script type="text/babel">
+/* Sentinela Mobile — Registo de Patrulha (Fecho / Finalizar) */
+
+const RegistoPatrulhaScreen = ({ onBack, store }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const patrulhaAtual = useStore(s => s.patrulhaAtual);
+  const viaturas = useStore(s => s.viaturas);
+
+  const viatura = patrulhaAtual ? viaturas.find(v => v.id === patrulhaAtual.viaturaId) : null;
+  const matricula = viatura ? viatura.matricula : 'GNR-—-——';
+
+  const [kmFinais, setKmFinais] = React.useState('');
+  const [litros, setLitros] = React.useState('');
+  const [localAbastecimento, setLocalAbastecimento] = React.useState('');
+  const [temDanos, setTemDanos] = React.useState(false);
+  const [descricaoDanos, setDescricaoDanos] = React.useState('');
+  const [enviando, setEnviando] = React.useState(false);
+  const [enviado, setEnviado] = React.useState(false);
+
+  const handleFinalizar = () => {
+    if (!kmFinais) return;
+    setEnviando(true);
+    setTimeout(() => {
+      setEnviando(false);
+      setEnviado(true);
+      setTimeout(() => onBack(), 1500);
+    }, 1200);
+  };
+
+  if (enviado) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', gap: 16, padding: 24 }}>
+        <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--success-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Icon name="check" size={32} style={{ color: 'var(--success)' }}/>
+        </div>
+        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, textAlign: 'center' }}>Relatório enviado</div>
+        <div style={{ fontSize: 13, color: 'var(--fg-muted)', textAlign: 'center' }}>A patrulha foi fechada com sucesso.</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10, flexShrink: 0 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+          <Icon name="arrow-left" size={20}/>
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Registo de Patrulha</div>
+          <div style={{ fontSize: 10, color: '#C9A24B' }}>Finalizar serviço · {matricula}</div>
+        </div>
+        <Icon name="clipboard" size={18}/>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)', padding: '14px 14px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+        {/* Viatura info */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--brand-green-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="truck" size={20} style={{ color: '#FFF' }}/>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div className="t-overline" style={{ marginBottom: 2 }}>VIATURA EM SERVIÇO</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15 }}>{matricula}</div>
+            {patrulhaAtual && (
+              <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>Km iniciais: {patrulhaAtual.kmInicial?.toLocaleString('pt-PT') ?? '—'} km</div>
+            )}
+          </div>
+        </div>
+
+        {/* Km Finais */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+          <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Icon name="gauge" size={16} style={{ color: 'var(--brand-green)' }}/>
+            <div style={{ fontWeight: 600, fontSize: 13 }}>Km Finais</div>
+          </div>
+          <div style={{ padding: '12px 14px' }}>
+            <input
+              type="number"
+              value={kmFinais}
+              onChange={e => setKmFinais(e.target.value)}
+              placeholder="Ex: 184 500"
+              style={{
+                width: '100%', border: '1px solid var(--border)', borderRadius: 8,
+                padding: '10px 12px', fontSize: 15, fontFamily: 'var(--font-mono)',
+                background: 'var(--bg)', color: 'var(--fg)', outline: 'none', boxSizing: 'border-box',
+              }}
+            />
+            <div style={{ fontSize: 11, color: 'var(--fg-muted)', marginTop: 6 }}>
+              {kmFinais && patrulhaAtual?.kmInicial ? `Percurso: ${(parseInt(kmFinais) - patrulhaAtual.kmInicial).toLocaleString('pt-PT')} km` : 'Introduza a quilometragem final do contador da viatura'}
+            </div>
+          </div>
+        </div>
+
+        {/* Combustível */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+          <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Icon name="fuel" size={16} style={{ color: 'var(--brand-green)' }}/>
+            <div style={{ fontWeight: 600, fontSize: 13 }}>Combustível &amp; Abastecimento</div>
+          </div>
+          <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div>
+              <label style={{ fontSize: 11, color: 'var(--fg-muted)', display: 'block', marginBottom: 4 }}>Litros de Combustível</label>
+              <input
+                type="number"
+                value={litros}
+                onChange={e => setLitros(e.target.value)}
+                placeholder="Ex: 35"
+                style={{
+                  width: '100%', border: '1px solid var(--border)', borderRadius: 8,
+                  padding: '9px 12px', fontSize: 13, fontFamily: 'var(--font-mono)',
+                  background: 'var(--bg)', color: 'var(--fg)', outline: 'none', boxSizing: 'border-box',
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: 11, color: 'var(--fg-muted)', display: 'block', marginBottom: 4 }}>Local do Abastecimento</label>
+              <input
+                type="text"
+                value={localAbastecimento}
+                onChange={e => setLocalAbastecimento(e.target.value)}
+                placeholder="Ex: Galp Alcochete"
+                style={{
+                  width: '100%', border: '1px solid var(--border)', borderRadius: 8,
+                  padding: '9px 12px', fontSize: 13,
+                  background: 'var(--bg)', color: 'var(--fg)', outline: 'none', boxSizing: 'border-box',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Danos */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+          <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Icon name="alert-triangle" size={16} style={{ color: 'var(--warning)' }}/>
+            <div style={{ fontWeight: 600, fontSize: 13 }}>Existência de Danos</div>
+          </div>
+          <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', gap: 10 }}>
+              {[false, true].map(val => (
+                <button key={String(val)} onClick={() => setTemDanos(val)} style={{
+                  flex: 1, padding: '10px 0', borderRadius: 8, border: `2px solid ${temDanos === val ? (val ? 'var(--danger)' : 'var(--success)') : 'var(--border)'}`,
+                  background: temDanos === val ? (val ? 'var(--danger-soft)' : 'var(--success-soft)') : 'var(--bg)',
+                  color: temDanos === val ? (val ? 'var(--danger-deep)' : 'var(--success)') : 'var(--fg-muted)',
+                  fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                }}>
+                  {val ? 'SIM' : 'NÃO'}
+                </button>
+              ))}
+            </div>
+            {temDanos && (
+              <textarea
+                value={descricaoDanos}
+                onChange={e => setDescricaoDanos(e.target.value)}
+                placeholder="Descreva os danos observados na viatura..."
+                rows={3}
+                style={{
+                  width: '100%', border: '1px solid var(--danger)', borderRadius: 8,
+                  padding: '9px 12px', fontSize: 13, fontFamily: 'inherit', resize: 'none',
+                  background: 'var(--danger-soft)', color: 'var(--fg)', outline: 'none', boxSizing: 'border-box',
+                }}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Aviso */}
+        <div style={{ background: 'var(--warning-soft)', border: '1px solid var(--warning)', borderRadius: 10, padding: '12px 14px', display: 'flex', gap: 10 }}>
+          <Icon name="alert-triangle" size={16} style={{ color: 'var(--warning-deep)', flexShrink: 0, marginTop: 1 }}/>
+          <div style={{ fontSize: 12, color: 'var(--warning-deep)', lineHeight: '17px' }}>
+            Os dados submetidos serão enviados para o <strong>Comando Territorial</strong> e não poderão ser alterados após confirmação. Certifique-se que os valores são corretos.
+          </div>
+        </div>
+
+        {/* Botão */}
+        <button onClick={handleFinalizar} disabled={!kmFinais || enviando} style={{
+          width: '100%', background: kmFinais ? 'var(--brand-green)' : 'var(--surface-3)',
+          color: kmFinais ? '#FFF' : 'var(--fg-muted)',
+          border: 'none', borderRadius: 10, padding: '14px 0',
+          fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15,
+          cursor: kmFinais ? 'pointer' : 'not-allowed',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+        }}>
+          <Icon name={enviando ? 'loader' : 'upload-cloud'} size={18}/>
+          {enviando ? 'A enviar…' : 'Finalizar Patrulha e Enviar Relatório'}
+        </button>
+
+        <div style={{ height: 8 }}/>
+      </div>
+    </div>
+  );
+};
+
+window.RegistoPatrulhaScreen = RegistoPatrulhaScreen;
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Checklist de Diretivas Operacionais */
+
+const ChecklistScreen = ({ onBack, store }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const diretivas = useStore(s => s.diretivas);
+  const D = window.SENTINELA_DATA;
+
+  const concluidas = diretivas.filter(d => d.feito).length;
+  const total = diretivas.length;
+  const progresso = total > 0 ? Math.round((concluidas / total) * 100) : 0;
+
+  const hoje = new Date();
+  const dataFormatada = hoje.toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+
+  const turno = D?.briefing?.turno || '08:00 – 16:00';
+  const autor = D?.briefing?.autor || 'Cmdt. Posto';
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10, flexShrink: 0 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+          <Icon name="arrow-left" size={20}/>
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Diretivas e Ordens</div>
+          <div style={{ fontSize: 10, color: '#C9A24B' }}>Comando de Posto · Turno {turno}</div>
+        </div>
+        <Icon name="check-square" size={18}/>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)', display: 'flex', flexDirection: 'column', gap: 0 }}>
+
+        {/* Progress banner */}
+        <div style={{ background: 'var(--brand-green-deep)', color: '#FFF', padding: '14px 14px 16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <Icon name="calendar" size={14} style={{ color: '#C9A24B' }}/>
+            <span style={{ fontSize: 12, color: '#C9A24B', fontFamily: 'var(--font-mono)' }}>{dataFormatada}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+            <div style={{ fontSize: 12, opacity: 0.85 }}>Checklist Operacional</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16 }}>{concluidas}/{total} Concluído</div>
+          </div>
+          {/* Progress bar */}
+          <div style={{ height: 6, background: 'rgba(255,255,255,0.15)', borderRadius: 999, overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${progresso}%`, background: progresso === 100 ? '#2F7D4A' : '#C9A24B', borderRadius: 999, transition: 'width 0.4s ease' }}/>
+          </div>
+        </div>
+
+        {/* Diretivas list */}
+        <div style={{ padding: '14px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="t-overline" style={{ marginBottom: 4 }}>DIRETIVAS PARA ESTA PATRULHA</div>
+
+          {diretivas.map((d, i) => {
+            const corBorda = d.prioridade === 'alta' ? 'var(--danger)' : d.prioridade === 'media' ? 'var(--warning)' : 'var(--info)';
+            const labelPrio = d.prioridade === 'alta' ? 'PRIORITÁRIO' : d.prioridade === 'media' ? 'MÉDIO' : 'NORMAL';
+            const corPrio = d.prioridade === 'alta' ? 'var(--danger)' : d.prioridade === 'media' ? 'var(--warning)' : 'var(--info)';
+            return (
+              <button key={d.id} onClick={() => actions.toggleDiretiva(d.id)} style={{
+                background: d.feito ? 'var(--surface-2)' : 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderLeft: `4px solid ${d.feito ? 'var(--border)' : corBorda}`,
+                borderRadius: 10, padding: '12px 12px',
+                display: 'flex', gap: 12, alignItems: 'flex-start',
+                cursor: 'pointer', textAlign: 'left', width: '100%',
+              }}>
+                {/* Hora / index */}
+                <div style={{ minWidth: 36, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                  <span className="t-mono" style={{ fontSize: 10, color: 'var(--fg-muted)' }}>{d.hora || `${8 + i}:00`}</span>
+                  <div style={{
+                    width: 20, height: 20, borderRadius: '50%', border: `2px solid ${d.feito ? 'var(--success)' : 'var(--brand-green)'}`,
+                    background: d.feito ? 'var(--success)' : 'transparent',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    {d.feito && <Icon name="check" size={11} style={{ color: '#FFF' }}/>}
+                  </div>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, lineHeight: '18px', fontWeight: d.feito ? 400 : 600, textDecoration: d.feito ? 'line-through' : 'none', opacity: d.feito ? 0.55 : 1 }}>
+                    {d.texto}
+                  </div>
+                  {!d.feito && (
+                    <span style={{ display: 'inline-block', marginTop: 5, fontSize: 10, fontWeight: 700, color: corPrio, background: d.prioridade === 'alta' ? 'var(--danger-soft)' : d.prioridade === 'media' ? 'var(--warning-soft)' : 'var(--info-soft)', borderRadius: 4, padding: '2px 6px' }}>
+                      {labelPrio}
+                    </span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Nota do comandante */}
+        <div style={{ margin: '0 14px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderLeft: '4px solid var(--brand-gold)', borderRadius: 10, padding: '12px 14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <Icon name="shield" size={14} style={{ color: 'var(--brand-gold)' }}/>
+            <div className="t-overline">NOTA DO COMANDANTE</div>
+          </div>
+          <div style={{ fontSize: 12, lineHeight: '17px', fontStyle: 'italic', color: 'var(--fg-muted)' }}>
+            "Atenção redobrada na saída sul devido a obras na via. Reforço de visibilidade na zona escolar entre as 11:30 e as 14:00."
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--fg-soft)', marginTop: 8, fontWeight: 600 }}>{autor}</div>
+        </div>
+
+        <div style={{ height: 8 }}/>
+      </div>
+    </div>
+  );
+};
+
+window.ChecklistScreen = ChecklistScreen;
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Escalas de Serviço */
+
+const EscalasFullScreen = ({ onBack, store }) => {
+  const { useStore } = window.SentinelaStore;
+  const me = useStore(s => s.militares.find(x => x.id === s.militarLogadoId));
+  const D = window.SENTINELA_DATA;
+
+  const [tabAtiva, setTabAtiva] = React.useState('minha'); // 'minha' | 'geral'
+  const [semanaOffset, setSemanaOffset] = React.useState(0);
+
+  // Mock schedule data based on store escala
+  const escala = D?.escala;
+  const diasSemana = escala?.dias || ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+
+  const hoje = new Date();
+  const inicioSemana = new Date(hoje);
+  inicioSemana.setDate(hoje.getDate() - hoje.getDay() + 1 + semanaOffset * 7);
+  const fimSemana = new Date(inicioSemana);
+  fimSemana.setDate(inicioSemana.getDate() + 6);
+
+  const formatarIntervalo = (d1, d2) => {
+    const opts = { day: '2-digit', month: 'short' };
+    return `${d1.toLocaleDateString('pt-PT', opts)} – ${d2.toLocaleDateString('pt-PT', opts)}`;
+  };
+
+  // Static upcoming shifts for "Minha Escala"
+  const proximosTurnos = [
+    { dia: 'Amanhã', hora: '08:00', tipo: 'Patrulha Territorial', parceiro: 'Guard. Mendes', estado: 'confirmado' },
+    { dia: 'Quinta', hora: '20:00', tipo: 'Patrulha Noturna', parceiro: 'Cabo Ferreira', estado: 'confirmado' },
+    { dia: 'Sexta', hora: '08:00', tipo: 'Serviço Posto', parceiro: '—', estado: 'pendente' },
+  ];
+
+  const corEstado = e => e === 'confirmado' ? 'var(--success)' : e === 'pendente' ? 'var(--warning)' : 'var(--fg-muted)';
+  const bgEstado = e => e === 'confirmado' ? 'var(--success-soft)' : e === 'pendente' ? 'var(--warning-soft)' : 'var(--surface-2)';
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10, flexShrink: 0 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+          <Icon name="arrow-left" size={20}/>
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Escalas de Serviço</div>
+          <div style={{ fontSize: 10, color: '#C9A24B' }}>Planeamento operacional</div>
+        </div>
+        <Icon name="calendar" size={18}/>
+      </div>
+
+      {/* Profile strip */}
+      {me && (
+        <div style={{ background: 'var(--brand-green)', color: '#FFF', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Avatar name={me.nome} size={38} style={{ border: '2px solid #C9A24B' }}/>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: 13 }}>{me.postoAbrev} {me.nome.split(' ').slice(-1)[0]}</div>
+            <div style={{ fontSize: 11, color: '#C9A24B' }}>{me.secao}</div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div className="t-mono" style={{ fontSize: 13, fontWeight: 700 }}>142/160h</div>
+            <div style={{ fontSize: 10, opacity: 0.8 }}>este mês</div>
+          </div>
+        </div>
+      )}
+
+      {/* Tabs */}
+      <div style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', display: 'flex', flexShrink: 0 }}>
+        {[['minha', 'Minha Escala'], ['geral', 'Escala Geral']].map(([id, label]) => (
+          <button key={id} onClick={() => setTabAtiva(id)} style={{
+            flex: 1, background: 'transparent', border: 'none', padding: '11px 0',
+            fontWeight: tabAtiva === id ? 700 : 500, fontSize: 13, cursor: 'pointer',
+            color: tabAtiva === id ? 'var(--brand-green)' : 'var(--fg-muted)',
+            borderBottom: `2px solid ${tabAtiva === id ? 'var(--brand-green)' : 'transparent'}`,
+          }}>{label}</button>
+        ))}
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)' }}>
+        {tabAtiva === 'minha' ? (
+          <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+            {/* Stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px', textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 22, color: 'var(--brand-green)' }}>4</div>
+                <div className="t-overline" style={{ fontSize: 9 }}>DIAS DE FOLGA ACUM.</div>
+              </div>
+              <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px', textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 22, color: 'var(--info)' }}>3</div>
+                <div className="t-overline" style={{ fontSize: 9 }}>TURNOS ESTA SEMANA</div>
+              </div>
+            </div>
+
+            {/* Próximos turnos */}
+            <div>
+              <div className="t-overline" style={{ marginBottom: 8 }}>PRÓXIMOS TURNOS</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {proximosTurnos.map((t, i) => (
+                  <div key={i} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ textAlign: 'center', minWidth: 44 }}>
+                      <div style={{ fontSize: 10, color: 'var(--fg-muted)' }}>{t.dia}</div>
+                      <div className="t-mono" style={{ fontWeight: 700, fontSize: 14, color: 'var(--brand-green)' }}>{t.hora}</div>
+                    </div>
+                    <div style={{ flex: 1, borderLeft: '1px solid var(--border)', paddingLeft: 12 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600 }}>{t.tipo}</div>
+                      {t.parceiro !== '—' && (
+                        <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>
+                          <Icon name="user" size={11}/> {t.parceiro}
+                        </div>
+                      )}
+                    </div>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: corEstado(t.estado), background: bgEstado(t.estado), borderRadius: 6, padding: '3px 8px' }}>
+                      {t.estado === 'confirmado' ? 'CONF.' : 'PEND.'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Alerta troca */}
+            <div style={{ background: 'var(--warning-soft)', border: '1px solid var(--warning)', borderRadius: 10, padding: '12px 14px', display: 'flex', gap: 10 }}>
+              <Icon name="alert-circle" size={16} style={{ color: 'var(--warning-deep)', flexShrink: 0, marginTop: 1 }}/>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--warning-deep)', marginBottom: 2 }}>Pedido de troca pendente</div>
+                <div style={{ fontSize: 11, color: 'var(--warning-deep)', lineHeight: '16px' }}>Guard. Costa solicitou troca do turno de 30 Out. Responda até amanhã.</div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Escala Geral — Tabela */
+          <div style={{ padding: 12 }}>
+            {/* Navegação semana */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+              <button onClick={() => setSemanaOffset(o => o - 1)} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: 'var(--fg)' }}>
+                <Icon name="chevron-left" size={16}/>
+              </button>
+              <div style={{ flex: 1, textAlign: 'center', fontSize: 12, fontWeight: 600, color: 'var(--fg)' }}>
+                {formatarIntervalo(inicioSemana, fimSemana)}
+              </div>
+              <button onClick={() => setSemanaOffset(o => o + 1)} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: 'var(--fg)' }}>
+                <Icon name="chevron-right" size={16}/>
+              </button>
+            </div>
+
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+                <thead>
+                  <tr style={{ background: 'var(--surface-2)' }}>
+                    <th style={{ padding: '8px 10px', textAlign: 'left', fontSize: 10, color: 'var(--fg-muted)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' }}>Militar</th>
+                    {diasSemana.map(d => (
+                      <th key={d} style={{ padding: '8px 4px', fontSize: 10, color: 'var(--fg-muted)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>{d}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {escala?.linhas?.map(l => (
+                    <tr key={l.militar} style={{ borderBottom: '1px solid var(--border)' }}>
+                      <td style={{ padding: '6px 10px', fontWeight: 600, fontSize: 11, whiteSpace: 'nowrap' }}>{l.militar}</td>
+                      {l.turnos.map((t, i) => (
+                        <td key={i} className="t-mono" style={{
+                          padding: '6px 2px', textAlign: 'center', fontSize: 10, fontWeight: 600,
+                          background: t === 'FOLGA' ? 'var(--surface-2)' : t === '20-08' ? 'rgba(46,92,138,0.10)' : 'rgba(31,77,58,0.08)',
+                          color: t === 'FOLGA' ? 'var(--fg-soft)' : t === '20-08' ? 'var(--info-deep)' : 'var(--brand-green)',
+                        }}>{t}</td>
+                      ))}
+                    </tr>
+                  )) ?? (
+                    <tr>
+                      <td colSpan={diasSemana.length + 1} style={{ padding: '20px', textAlign: 'center', color: 'var(--fg-muted)', fontSize: 12 }}>
+                        Sem dados de escala disponíveis
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+window.EscalasFullScreen = EscalasFullScreen;
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Wiki / Lista Telefónica GNR */
+
+const WikiScreen = ({ onBack, store }) => {
+  const { useStore } = window.SentinelaStore;
+  const militares = useStore(s => s.militares);
+
+  const [filtro, setFiltro] = React.useState('');
+  const [categoriaAtiva, setCategoriaAtiva] = React.useState('geral');
+  const [perfilAberto, setPerfilAberto] = React.useState(null);
+
+  const categorias = [
+    { id: 'geral', icon: 'users', label: 'Geral' },
+    { id: 'transito', icon: 'car', label: 'Trânsito' },
+    { id: 'territorial', icon: 'shield', label: 'Territorial' },
+    { id: 'sepna', icon: 'leaf', label: 'SEPNA' },
+    { id: 'investigacao', icon: 'search', label: 'Invest. Crim.' },
+  ];
+
+  const filtrado = militares.filter(m => {
+    const texto = filtro.toLowerCase();
+    return (
+      m.nome.toLowerCase().includes(texto) ||
+      m.nim.includes(texto) ||
+      m.secao.toLowerCase().includes(texto)
+    );
+  });
+
+  if (perfilAberto) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--bg)' }}>
+        <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+          <button onClick={() => setPerfilAberto(null)} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+            <Icon name="arrow-left" size={20}/>
+          </button>
+          <div style={{ flex: 1, fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Ficha do Militar</div>
+        </div>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 16, display: 'flex', alignItems: 'center', gap: 14 }}>
+            <Avatar name={perfilAberto.nome} size={64}/>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17 }}>{perfilAberto.postoAbrev} {perfilAberto.nome}</div>
+              <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>NIM {perfilAberto.nim}</div>
+              <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginTop: 2 }}>{perfilAberto.secao}</div>
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10 }}>
+            {[
+              ['hash', 'NIM', perfilAberto.nim],
+              ['award', 'Posto / Patente', perfilAberto.postoAbrev],
+              ['map-pin', 'Posto Territorial', 'Posto GNR — Vila Real'],
+              ['radio', 'Indicativo Rádio', perfilAberto.indicativo === '—' ? 'Sem patrulha' : perfilAberto.indicativo],
+              ['phone', 'Telemóvel Serviço', '+351 939 ' + perfilAberto.nim.slice(-6)],
+              ['mail', 'Email Institucional', perfilAberto.nome.toLowerCase().split(' ').slice(-1)[0] + '@gnr.pt'],
+            ].map(([icon, label, val], i) => (
+              <div key={i} style={{ padding: '11px 14px', borderTop: i ? '1px solid var(--border)' : 'none', display: 'flex', alignItems: 'center', gap: 12 }}>
+                <Icon name={icon} size={15} style={{ color: 'var(--brand-green)', flexShrink: 0 }}/>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, color: 'var(--fg-muted)' }}>{label}</div>
+                  <div className="t-mono" style={{ fontSize: 13, fontWeight: 600 }}>{val}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            <Button tone="primary" icon="phone">Ligar</Button>
+            <Button tone="secondary" icon="mail">Email</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10, flexShrink: 0 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+          <Icon name="arrow-left" size={20}/>
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Wiki GNR</div>
+          <div style={{ fontSize: 10, color: '#C9A24B' }}>Directório operacional e lista telefónica</div>
+        </div>
+        <Icon name="book-open" size={18}/>
+      </div>
+
+      {/* Search bar */}
+      <div style={{ padding: '10px 12px', background: 'var(--surface)', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface-2)', borderRadius: 999, padding: '8px 12px' }}>
+          <Icon name="search" size={16} style={{ color: 'var(--fg-soft)' }}/>
+          <input
+            value={filtro}
+            onChange={e => setFiltro(e.target.value)}
+            placeholder="Pesquisar por nome, NIM ou secção…"
+            style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: 13, color: 'var(--fg)' }}
+          />
+          {filtro && (
+            <button onClick={() => setFiltro('')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, color: 'var(--fg-soft)' }}>
+              <Icon name="x" size={14}/>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Categorias */}
+      <div style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', padding: '8px 12px', display: 'flex', gap: 8, overflowX: 'auto', flexShrink: 0 }}>
+        {categorias.map(c => (
+          <button key={c.id} onClick={() => setCategoriaAtiva(c.id)} style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            background: categoriaAtiva === c.id ? 'var(--brand-green)' : 'var(--surface-2)',
+            color: categoriaAtiva === c.id ? '#FFF' : 'var(--fg)',
+            border: 'none', borderRadius: 999, padding: '6px 12px', fontSize: 11, fontWeight: 600,
+            cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+          }}>
+            <Icon name={c.icon} size={13}/>
+            {c.label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)' }}>
+
+        {/* Linha de emergência */}
+        <div style={{ margin: '12px 12px 0', background: 'var(--danger-soft)', border: '1px solid var(--danger)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 8, background: 'var(--danger)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Icon name="phone-call" size={18} style={{ color: '#FFF' }}/>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div className="t-overline" style={{ color: 'var(--danger-deep)', marginBottom: 2 }}>LINHA DE EMERGÊNCIA</div>
+            <div className="t-mono" style={{ fontWeight: 700, fontSize: 16, color: 'var(--danger-deep)' }}>112 / 808 200 200</div>
+          </div>
+          <button style={{ background: 'var(--danger)', color: '#FFF', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+            LIGAR
+          </button>
+        </div>
+
+        {/* Lista de militares */}
+        <div style={{ padding: '12px 12px 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <div className="t-overline">{filtro ? `RESULTADOS (${filtrado.length})` : 'MILITARES'}</div>
+          </div>
+        </div>
+
+        <div style={{ padding: '8px 12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {filtrado.map(m => (
+            <button key={m.id} onClick={() => setPerfilAberto(m)} style={{
+              background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10,
+              padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12,
+              cursor: 'pointer', textAlign: 'left', width: '100%',
+            }}>
+              <Avatar name={m.nome} size={42}/>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 700 }}>{m.postoAbrev} {m.nome}</div>
+                <div style={{ fontSize: 11, color: 'var(--fg-muted)', marginTop: 1 }}>{m.secao}</div>
+                <div className="t-mono" style={{ fontSize: 10, color: 'var(--fg-soft)', marginTop: 1 }}>NIM {m.nim}</div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+                <StatusDot tone={m.estado === 'patrulha' ? 'warning' : m.estado === 'servico' ? 'success' : 'muted'}/>
+                <Icon name="chevron-right" size={14} style={{ color: 'var(--fg-soft)' }}/>
+              </div>
+            </button>
+          ))}
+          {filtrado.length === 0 && (
+            <div style={{ padding: '30px 0', textAlign: 'center', color: 'var(--fg-muted)', fontSize: 13 }}>
+              Nenhum militar encontrado
+            </div>
+          )}
+        </div>
+
+        {/* Solicitar atualização */}
+        <div style={{ margin: '0 12px 20px', padding: '14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, textAlign: 'center' }}>
+          <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginBottom: 8 }}>Não encontrou o que procurava?</div>
+          <button style={{
+            background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8,
+            padding: '8px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--fg)',
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+          }}>
+            <Icon name="edit-2" size={13}/>
+            SOLICITAR ACTUALIZAÇÃO DE DADOS
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+window.WikiScreen = WikiScreen;
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Ordens de Serviço */
+
+const OrdensServicoScreen = ({ onBack, store }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const ordens = useStore(s => s.ordens);
+  const me = useStore(s => s.militares.find(x => x.id === s.militarLogadoId));
+
+  const [tabAtiva, setTabAtiva] = React.useState('recentes'); // 'recentes' | 'arquivo'
+  const [filtro, setFiltro] = React.useState('');
+  const [filtroLidas, setFiltroLidas] = React.useState('todas'); // 'todas' | 'lidas' | 'nao_lidas'
+  const [filtroPrioritario, setFiltroPrioritario] = React.useState(false);
+  const [ordemAberta, setOrdemAberta] = React.useState(null);
+
+  const hoje = new Date().toLocaleDateString('pt-PT', { weekday: 'short', day: '2-digit', month: 'short' }).toUpperCase();
+
+  const ordensVisiveis = ordens.filter(o => {
+    const meId = me?.id;
+    const lida = o.lidoPor?.includes(meId);
+    if (filtroLidas === 'lidas' && !lida) return false;
+    if (filtroLidas === 'nao_lidas' && lida) return false;
+    if (filtroPrioritario && o.prioridade !== 'alta') return false;
+    const t = filtro.toLowerCase();
+    if (t && !o.titulo?.toLowerCase().includes(t) && !o.ref?.toLowerCase().includes(t)) return false;
+    return tabAtiva === 'arquivo' ? o.arquivado : !o.arquivado;
+  });
+
+  const totalMes = ordens.length;
+  const pendentes = ordens.filter(o => !o.lidoPor?.includes(me?.id)).length;
+  const lidasCount = totalMes - pendentes;
+
+  if (ordemAberta) {
+    const lida = ordemAberta.lidoPor?.includes(me?.id);
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--bg)' }}>
+        <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+          <button onClick={() => setOrdemAberta(null)} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+            <Icon name="arrow-left" size={20}/>
+          </button>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 600, fontSize: 13, fontFamily: 'var(--font-display)' }}>{ordemAberta.titulo}</div>
+            <div style={{ fontSize: 10, color: '#C9A24B' }}>{ordemAberta.ref || `OS-${ordemAberta.id}`}</div>
+          </div>
+        </div>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              {ordemAberta.prioridade === 'alta' && (
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--danger)', background: 'var(--danger-soft)', borderRadius: 4, padding: '2px 7px' }}>PRIORITÁRIO</span>
+              )}
+              <span className="t-mono" style={{ fontSize: 10, color: 'var(--fg-muted)' }}>{ordemAberta.data}</span>
+            </div>
+            <div style={{ fontSize: 13, lineHeight: '20px', color: 'var(--fg)' }}>
+              {ordemAberta.conteudo || ordemAberta.texto || 'Sem conteúdo disponível.'}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button style={{
+              flex: 1, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8,
+              padding: '10px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--fg)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}>
+              <Icon name="file-text" size={15}/>
+              ABRIR PDF
+            </button>
+            {!lida && (
+              <button onClick={() => { actions.marcarOSLida(ordemAberta.id); setOrdemAberta(null); }} style={{
+                flex: 1, background: 'var(--brand-green)', color: '#FFF', border: 'none', borderRadius: 8,
+                padding: '10px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              }}>
+                <Icon name="check" size={15}/>
+                MARCAR LIDA
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10, flexShrink: 0 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+          <Icon name="arrow-left" size={20}/>
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Ordens de Serviço</div>
+          <div style={{ fontSize: 10, color: '#C9A24B' }}>Gestão e consulta de ordens operacionais</div>
+        </div>
+        <Icon name="file-text" size={18}/>
+      </div>
+
+      {/* Stats strip */}
+      <div style={{ background: 'var(--brand-green)', color: '#FFF', padding: '10px 14px', display: 'flex', gap: 0, flexShrink: 0 }}>
+        {[
+          [totalMes, 'Ordens Este Mês'],
+          [pendentes, 'Pendentes'],
+          [lidasCount, 'Lidas'],
+        ].map(([n, l], i) => (
+          <div key={l} style={{ flex: 1, textAlign: 'center', borderLeft: i ? '1px solid rgba(255,255,255,0.2)' : 'none' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18 }}>{String(n).padStart(2, '0')}</div>
+            <div style={{ fontSize: 10, opacity: 0.8 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tabs */}
+      <div style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', display: 'flex', flexShrink: 0 }}>
+        {[['recentes', 'Recentes'], ['arquivo', 'Arquivo']].map(([id, label]) => (
+          <button key={id} onClick={() => setTabAtiva(id)} style={{
+            flex: 1, background: 'transparent', border: 'none', padding: '11px 0',
+            fontWeight: tabAtiva === id ? 700 : 500, fontSize: 13, cursor: 'pointer',
+            color: tabAtiva === id ? 'var(--brand-green)' : 'var(--fg-muted)',
+            borderBottom: `2px solid ${tabAtiva === id ? 'var(--brand-green)' : 'transparent'}`,
+          }}>{label}</button>
+        ))}
+      </div>
+
+      {/* Filtros */}
+      <div style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', padding: '8px 12px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface-2)', borderRadius: 999, padding: '7px 12px' }}>
+          <Icon name="search" size={15} style={{ color: 'var(--fg-soft)' }}/>
+          <input value={filtro} onChange={e => setFiltro(e.target.value)} placeholder="Pesquisar ordens…" style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: 13, color: 'var(--fg)' }}/>
+        </div>
+        <div style={{ display: 'flex', gap: 6, overflowX: 'auto' }}>
+          {[['todas', 'Todas'], ['nao_lidas', 'Não Lidas'], ['lidas', 'Lidas']].map(([id, label]) => (
+            <button key={id} onClick={() => setFiltroLidas(id)} style={{
+              background: filtroLidas === id ? 'var(--brand-green)' : 'var(--surface-2)',
+              color: filtroLidas === id ? '#FFF' : 'var(--fg)',
+              border: 'none', borderRadius: 999, padding: '5px 12px', fontSize: 11, fontWeight: 600,
+              cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+            }}>{label}</button>
+          ))}
+          <button onClick={() => setFiltroPrioritario(p => !p)} style={{
+            background: filtroPrioritario ? 'var(--danger)' : 'var(--surface-2)',
+            color: filtroPrioritario ? '#FFF' : 'var(--fg)',
+            border: 'none', borderRadius: 999, padding: '5px 12px', fontSize: 11, fontWeight: 600,
+            cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+            display: 'flex', alignItems: 'center', gap: 4,
+          }}>
+            <Icon name="alert-circle" size={12}/>
+            Prioritário
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: 'var(--surface-2)', borderRadius: 999, fontSize: 11, color: 'var(--fg-muted)', flexShrink: 0 }}>
+            <Icon name="calendar" size={12}/>
+            {hoje}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)' }}>
+        {/* Ordem em destaque */}
+        {tabAtiva === 'recentes' && ordens[0] && (
+          <div style={{ margin: '12px 12px 0' }}>
+            <div className="t-overline" style={{ marginBottom: 6 }}>EM DESTAQUE</div>
+            <button onClick={() => setOrdemAberta(ordens[0])} style={{
+              width: '100%', background: 'var(--surface)', border: '1px solid var(--border)',
+              borderLeft: '4px solid var(--brand-green)', borderRadius: 10, padding: 14,
+              textAlign: 'left', cursor: 'pointer',
+            }}>
+              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{ordens[0].titulo}</div>
+              <div style={{ fontSize: 12, color: 'var(--fg-muted)', lineHeight: '16px', marginBottom: 10 }}>
+                {ordens[0].texto?.slice(0, 100) ?? ''}…
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--surface-2)', borderRadius: 6, padding: '4px 8px', fontSize: 11, color: 'var(--fg)' }}>
+                  <Icon name="file-text" size={12}/>
+                  ABRIR PDF
+                </div>
+                <span className="t-mono" style={{ fontSize: 10, color: 'var(--fg-muted)' }}>{ordens[0].ref || `OS-${ordens[0].id}`}</span>
+              </div>
+            </button>
+          </div>
+        )}
+
+        {/* Lista */}
+        <div style={{ padding: '12px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {ordensVisiveis.slice(tabAtiva === 'recentes' ? 1 : 0).map(o => {
+            const lida = o.lidoPor?.includes(me?.id);
+            return (
+              <button key={o.id} onClick={() => setOrdemAberta(o)} style={{
+                background: 'var(--surface)', border: '1px solid var(--border)',
+                borderLeft: `3px solid ${o.prioridade === 'alta' ? 'var(--danger)' : 'var(--border)'}`,
+                borderRadius: 10, padding: '11px 12px',
+                display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', textAlign: 'left', width: '100%',
+              }}>
+                <div style={{
+                  width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+                  background: lida ? 'var(--fg-soft)' : 'var(--danger)',
+                }}/>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: lida ? 500 : 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{o.titulo}</div>
+                  <div style={{ fontSize: 11, color: 'var(--fg-muted)', marginTop: 1 }} className="t-mono">{o.data}</div>
+                </div>
+                {!lida && (
+                  <span style={{ fontSize: 10, fontWeight: 700, color: '#FFF', background: 'var(--danger)', borderRadius: 4, padding: '2px 6px', flexShrink: 0 }}>NOVO</span>
+                )}
+                <Icon name="chevron-right" size={14} style={{ color: 'var(--fg-soft)', flexShrink: 0 }}/>
+              </button>
+            );
+          })}
+          {ordensVisiveis.length === 0 && (
+            <div style={{ padding: '30px 0', textAlign: 'center', color: 'var(--fg-muted)', fontSize: 13 }}>
+              Sem ordens de serviço disponíveis
+            </div>
+          )}
+        </div>
+
+        {/* Perfil utilizador */}
+        {me && (
+          <div style={{ margin: '0 12px 20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Avatar name={me.nome} size={42}/>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 700 }}>{me.postoAbrev} {me.nome}</div>
+              <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{me.secao}</div>
+              <div className="t-mono" style={{ fontSize: 10, color: 'var(--fg-soft)' }}>NIM {me.nim}</div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+window.OrdensServicoScreen = OrdensServicoScreen;
+
+</script>
+<script type="text/babel">
+/* Sentinela Mobile — Emergência e Reforço */
+
+const EmergenciaScreen = ({ onBack, store }) => {
+  const { useStore, actions } = window.SentinelaStore;
+  const patrulhaAtual = useStore(s => s.patrulhaAtual);
+  const me = useStore(s => s.militares.find(x => x.id === s.militarLogadoId));
+
+  const [modoEmergencia, setModoEmergencia] = React.useState(false);
+  const [pressaoAtiva, setPressaoAtiva] = React.useState(false);
+  const [progresso, setProgresso] = React.useState(0);
+  const [reforcoEnviado, setReforcoEnviado] = React.useState(false);
+  const [timerRef, setTimerRef] = React.useState(null);
+
+  const DURACAO_SEGUNDOS = 2;
+
+  const iniciarPressao = () => {
+    setPressaoAtiva(true);
+    setProgresso(0);
+    const inicio = Date.now();
+    const intervalo = setInterval(() => {
+      const elapsed = (Date.now() - inicio) / 1000;
+      const pct = Math.min((elapsed / DURACAO_SEGUNDOS) * 100, 100);
+      setProgresso(pct);
+      if (pct >= 100) {
+        clearInterval(intervalo);
+        setPressaoAtiva(false);
+        setReforcoEnviado(true);
+        setModoEmergencia(true);
+      }
+    }, 50);
+    setTimerRef(intervalo);
+  };
+
+  const cancelarPressao = () => {
+    if (timerRef) clearInterval(timerRef);
+    setPressaoAtiva(false);
+    setProgresso(0);
+  };
+
+  const cancelarEmergencia = () => {
+    setModoEmergencia(false);
+    setReforcoEnviado(false);
+    setProgresso(0);
+  };
+
+  // Approximate GPS position mock
+  const localizacao = {
+    nome: patrulhaAtual ? 'Localização da Patrulha' : 'Posto GNR — Vila Real',
+    coords: '41.2987° N, 7.7425° W',
+    precisao: '± 5m',
+  };
+
+  const postoMaisProximo = 'Comando Territorial de Vila Real';
+
+  if (reforcoEnviado && modoEmergencia) {
+    return (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--danger-soft)' }}>
+        {/* Header vermelho */}
+        <div style={{ height: 52, background: 'var(--danger)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10 }}>
+          <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+            <Icon name="arrow-left" size={20}/>
+          </button>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: 14, fontFamily: 'var(--font-display)' }}>ESTADO DE ALERTA</div>
+            <div style={{ fontSize: 10 }}>Modo de Emergência Ativo</div>
+          </div>
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#FFF', animation: 'pulse 1s infinite' }}/>
+        </div>
+
+        <div style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+          {/* Confirmação */}
+          <div style={{ background: 'var(--danger)', color: '#FFF', borderRadius: 12, padding: 20, textAlign: 'center' }}>
+            <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', margin: '0 auto 12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="shield" size={30}/>
+            </div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 20, marginBottom: 6 }}>REFORÇO SOLICITADO</div>
+            <div style={{ fontSize: 12, opacity: 0.9 }}>Alerta de pânico enviado para a Central de Comando</div>
+          </div>
+
+          {/* Localização */}
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+              <Icon name="map-pin" size={16} style={{ color: 'var(--danger)' }}/>
+              <div className="t-overline">LOCALIZAÇÃO GPS ATUAL</div>
+            </div>
+            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{localizacao.nome}</div>
+            <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{localizacao.coords} · Precisão: {localizacao.precisao}</div>
+            <div style={{ height: 100, background: 'var(--surface-2)', borderRadius: 8, marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="map" size={32} style={{ color: 'var(--fg-soft)' }}/>
+            </div>
+          </div>
+
+          {/* Timer e posto */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <Icon name="clock" size={14} style={{ color: 'var(--warning)' }}/>
+                <div className="t-overline" style={{ fontSize: 9 }}>TEMPO DE CONFIRMAÇÃO</div>
+              </div>
+              <div className="t-mono" style={{ fontSize: 18, fontWeight: 700, color: 'var(--warning)' }}>~ 45s</div>
+              <div style={{ fontSize: 10, color: 'var(--fg-muted)' }}>ESTIMADO</div>
+            </div>
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <Icon name="radio" size={14} style={{ color: 'var(--brand-green)' }}/>
+                <div className="t-overline" style={{ fontSize: 9 }}>POSTO MAIS PRÓXIMO</div>
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 600, lineHeight: '16px' }}>{postoMaisProximo}</div>
+            </div>
+          </div>
+
+          {/* Cancelar */}
+          <button onClick={cancelarEmergencia} style={{
+            width: '100%', background: 'var(--surface)', border: '2px solid var(--danger)', borderRadius: 10,
+            padding: '13px 0', fontSize: 14, fontWeight: 700, color: 'var(--danger)', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          }}>
+            <Icon name="x-circle" size={18}/>
+            Cancelar Alerta de Emergência
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ height: 52, background: 'var(--brand-green-deep)', color: '#FFF', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 10, flexShrink: 0 }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#FFF', display: 'flex', cursor: 'pointer', padding: 4 }}>
+          <Icon name="arrow-left" size={20}/>
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, fontFamily: 'var(--font-display)' }}>Emergência e Reforço</div>
+          <div style={{ fontSize: 10, color: '#C9A24B' }}>
+            {patrulhaAtual ? `Patrulha ${patrulhaAtual.indicativo} · Em serviço` : 'Fora de patrulha'}
+          </div>
+        </div>
+        <Icon name="alert-triangle" size={18}/>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+        {/* Botão de pânico principal */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, textAlign: 'center' }}>
+          <div className="t-overline" style={{ color: 'var(--danger)', marginBottom: 16 }}>PEDIDO DE REFORÇO IMEDIATO</div>
+
+          <button
+            onMouseDown={iniciarPressao}
+            onMouseUp={cancelarPressao}
+            onMouseLeave={cancelarPressao}
+            onTouchStart={iniciarPressao}
+            onTouchEnd={cancelarPressao}
+            style={{
+              width: 130, height: 130, borderRadius: '50%',
+              background: pressaoAtiva
+                ? `conic-gradient(var(--danger) ${progresso * 3.6}deg, var(--danger-soft) 0deg)`
+                : 'var(--danger)',
+              border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', gap: 8, color: '#FFF',
+              margin: '0 auto 16px', boxShadow: 'var(--shadow-glow-danger)',
+              transition: 'transform 0.1s',
+              transform: pressaoAtiva ? 'scale(0.96)' : 'scale(1)',
+            }}
+          >
+            <Icon name="shield" size={36}/>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1 }}>
+              {pressaoAtiva ? `${Math.round(progresso)}%` : 'PÂNICO'}
+            </span>
+          </button>
+
+          <div style={{ fontSize: 12, color: 'var(--fg-muted)', lineHeight: '17px' }}>
+            Pressione e segure por {DURACAO_SEGUNDOS} segundos para confirmar o envio do alerta de pânico para a Central de Comando
+          </div>
+        </div>
+
+        {/* Localização atual */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+            <Icon name="map-pin" size={15} style={{ color: 'var(--brand-green)' }}/>
+            <div className="t-overline">LOCALIZAÇÃO GPS ATUAL</div>
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{localizacao.nome}</div>
+          <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{localizacao.coords} · Precisão: {localizacao.precisao}</div>
+          <div style={{ height: 80, background: 'var(--surface-2)', borderRadius: 8, marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="map" size={28} style={{ color: 'var(--fg-soft)' }}/>
+          </div>
+        </div>
+
+        {/* Info: Posto próximo */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Icon name="radio" size={18} style={{ color: 'var(--brand-green)', flexShrink: 0 }}/>
+          <div style={{ flex: 1 }}>
+            <div className="t-overline" style={{ marginBottom: 2 }}>POSTO MAIS PRÓXIMO</div>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>{postoMaisProximo}</div>
+          </div>
+        </div>
+
+        {/* Ações secundárias */}
+        <div>
+          <div className="t-overline" style={{ marginBottom: 8 }}>AÇÕES RÁPIDAS</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            {[
+              { icon: 'phone-call', label: 'Ligar 112', cor: 'var(--danger)' },
+              { icon: 'radio', label: 'Contactar Central', cor: 'var(--brand-green)' },
+              { icon: 'users', label: 'Pedir Reforço', cor: 'var(--info)' },
+              { icon: 'message-square', label: 'Enviar Localização', cor: 'var(--warning)' },
+            ].map(({ icon, label, cor }) => (
+              <button key={label} style={{
+                background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10,
+                padding: '14px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+                cursor: 'pointer',
+              }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: cor }}>
+                  <Icon name={icon} size={20}/>
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--fg)', textAlign: 'center' }}>{label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ height: 8 }}/>
+      </div>
+    </div>
+  );
+};
+
+window.EmergenciaScreen = EmergenciaScreen;
+
+</script>
+<script type="text/babel">
 /* Sentinela Mobile — Home/Shell with bottom nav */
 
 const HomeScreen = ({ onNav }) => {

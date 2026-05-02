@@ -63,7 +63,7 @@ const OrdensServicoScreen = ({ onBack, store }) => {
               ABRIR PDF
             </button>
             {!lida && (
-              <button onClick={() => { actions.lerOrdem?.(ordemAberta.id); setOrdemAberta(null); }} style={{
+              <button onClick={() => { actions.marcarOSLida(ordemAberta.id); setOrdemAberta(null); }} style={{
                 flex: 1, background: 'var(--brand-green)', color: '#FFF', border: 'none', borderRadius: 8,
                 padding: '10px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,

@@ -370,6 +370,12 @@ ${inlineJsx(
     'app_mobile/Comms.jsx',
     'app_mobile/Extras.jsx',
     'app_mobile/Ferias.jsx',
+    'app_mobile/RegistoPatrulha.jsx',
+    'app_mobile/Checklist.jsx',
+    'app_mobile/Escalas.jsx',
+    'app_mobile/Wiki.jsx',
+    'app_mobile/OrdensServico.jsx',
+    'app_mobile/Emergencia.jsx',
     'app_mobile/Shell.jsx'
   )}
 ${inlineJsx(
@@ -380,7 +386,14 @@ ${inlineJsx(
     'app_pc/Estatisticas.jsx',
     'app_pc/Cronologia.jsx',
     'app_pc/FeriasPC.jsx',
-    'app_pc/AdminPC.jsx'
+    'app_pc/AdminPC.jsx',
+    'app_pc/LoginPC.jsx',
+    'app_pc/DashboardNew.jsx',
+    'app_pc/CommsPC.jsx',
+    'app_pc/WikiPC.jsx',
+    'app_pc/ScannerPC.jsx',
+    'app_pc/EscalasPC.jsx',
+    'app_pc/OrdensServicoPC.jsx'
   )}
 <script type="text/babel">
 ${pcInline}
