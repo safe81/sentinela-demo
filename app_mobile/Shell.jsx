@@ -120,6 +120,18 @@ const HomeScreen = ({ onNav }) => {
         </div>
 
         <div>
+          <div className="t-overline" style={{ marginBottom: 8 }}>OPERACIONAL</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+            <QuickAction icon="clipboard-list" label="Registo Pat." onClick={() => onNav('registoPatrulha')}/>
+            <QuickAction icon="check-square" label="Diretivas" onClick={() => onNav('checklist')}/>
+            <QuickAction icon="calendar-days" label="Escalas" onClick={() => onNav('escalasFull')}/>
+            <QuickAction icon="book-open" label="Wiki GNR" onClick={() => onNav('wiki')}/>
+            <QuickAction icon="file-text" label="Ordens" onClick={() => onNav('ordensServico')}/>
+            <QuickAction icon="alert-triangle" label="Emergência" color="var(--danger)" onClick={() => onNav('emergencia')}/>
+          </div>
+        </div>
+
+        <div>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 8 }}>
             <div className="t-overline">ÚLTIMAS DETEÇÕES ANPR</div>
             <button onClick={() => onNav('scanner')} style={{ background: 'transparent', border: 'none', color: 'var(--brand-green)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Ver tudo</button>
@@ -176,6 +188,12 @@ const MobileShellV2 = () => {
   else if (route === 'notificacoes') content = <NotificacoesScreen onBack={() => setRoute('home')}/>;
   else if (route === 'perfil') content = <PerfilScreen onBack={() => setRoute('home')}/>;
   else if (route === 'ferias') content = <FeriasScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'registoPatrulha') content = <RegistoPatrulhaScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'checklist') content = <ChecklistScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'escalasFull') content = <EscalasFullScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'wiki') content = <WikiScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'ordensServico') content = <OrdensServicoScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'emergencia') content = <EmergenciaScreen onBack={() => setRoute('home')}/>;
   else content = <HomeScreen onNav={setRoute}/>;
 
   const TabBtn = ({ id, icon, label }) => {
