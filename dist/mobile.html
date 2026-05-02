@@ -15,17 +15,17 @@
    Cores institucionais (verde GNR-inspired) + tipografia + spacing + etc.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  /* ─── BRAND ──────────────────────────────────────────────────────────── */
-  --brand-green:        #1F4D3A;   /* Verde Sentinela (primário) */
-  --brand-green-hover:  #1A4231;
-  --brand-green-deep:   #0F2A20;   /* Verde profundo (headers, sidebars) */
-  --brand-green-soft:   #2D6B52;   /* Verde médio (chips ativos) */
-  --brand-gold:         #C9A24B;   /* Dourado institucional */
-  --brand-gold-soft:    #E8D9A8;
-  --brand-gold-deep:    #8C6F2C;
+  /* ─── BRAND — GNR Institutional Force ───────────────────────────────── */
+  --brand-green:        #002147;   /* Azul Marinho Profundo (primário) */
+  --brand-green-hover:  #001535;
+  --brand-green-deep:   #000a1e;   /* Azul muito escuro (headers) */
+  --brand-green-soft:   #2d476f;   /* Azul médio (chips ativos) */
+  --brand-gold:         #2a6a3f;   /* Verde Floresta (acento secundário) */
+  --brand-gold-soft:    #aef2bb;   /* Verde claro */
+  --brand-gold-deep:    #0b5229;   /* Verde profundo */
 
   /* ─── SEMANTIC ───────────────────────────────────────────────────────── */
   --danger:        #C7322B;        /* Vermelho operacional — furto, mandado */
@@ -53,28 +53,28 @@
   --slate-900: #131814;
 
   /* ─── SURFACES — modo claro (default) ────────────────────────────────── */
-  --bg:           #F4F2EC;          /* Off-white quente */
-  --surface:      #FFFFFF;
-  --surface-2:    #F7F8F7;          /* Cards num bg */
-  --surface-3:    #EFF1EF;          /* Hover de surface-2 */
+  --bg:           #f7fafc;          /* Off-white frio (institutional) */
+  --surface:      #ffffff;
+  --surface-2:    #f1f4f6;          /* Cards num bg */
+  --surface-3:    #ebeef0;          /* Hover de surface-2 */
   --surface-inv:  var(--brand-green-deep);
 
-  --fg:           var(--slate-900);
-  --fg-muted:     var(--slate-600);
-  --fg-soft:      var(--slate-500);
+  --fg:           #181c1e;
+  --fg-muted:     #44474e;
+  --fg-soft:      #74777f;
   --fg-on-brand:  #FFFFFF;
-  --fg-on-gold:   #1A1208;
+  --fg-on-gold:   #00210c;
 
-  --border:       #E2E5E2;
-  --border-strong:#C9CDC9;
+  --border:       #c4c6cf;
+  --border-strong:#74777f;
   --border-on-brand: rgba(255,255,255,0.16);
 
   --focus-ring:   var(--brand-gold);
 
   /* ─── SHADOWS ────────────────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 2px rgba(15,42,32,0.06);
-  --shadow-md: 0 4px 12px rgba(15,42,32,0.08), 0 1px 2px rgba(15,42,32,0.04);
-  --shadow-lg: 0 12px 32px rgba(15,42,32,0.12);
+  --shadow-sm: 0 1px 2px rgba(0,33,71,0.06);
+  --shadow-md: 0 4px 12px rgba(0,33,71,0.08), 0 1px 2px rgba(0,33,71,0.04);
+  --shadow-lg: 0 12px 32px rgba(0,33,71,0.12);
   --shadow-glow-danger: 0 0 0 3px rgba(199,50,43,0.18);
   --shadow-glow-warning: 0 0 0 3px rgba(216,138,42,0.20);
 
@@ -105,7 +105,7 @@
   --ease-in-out:    cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ─── TYPOGRAPHY ─────────────────────────────────────────────────────── */
-  --font-display: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Public Sans', 'Inter', system-ui, -apple-system, sans-serif;
   --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -153,22 +153,24 @@
 
 /* ═══ DARK MODE ═══════════════════════════════════════════════════════════ */
 [data-theme="dark"] {
-  --bg:           #0E1A14;          /* Verde-noite */
-  --surface:      #14241C;
-  --surface-2:    #1A2D24;
-  --surface-3:    #22382D;
-  --surface-inv:  #F4F2EC;
+  --bg:           #181c1e;          /* Neutral dark */
+  --surface:      #2d3133;
+  --surface-2:    #2d3133;
+  --surface-3:    #353a3d;
+  --surface-inv:  #eef1f3;
 
-  --fg:           #ECEEEC;
-  --fg-muted:     #A8B0AA;
-  --fg-soft:      #7A847E;
+  --fg:           #eef1f3;
+  --fg-muted:     #9da3a8;
+  --fg-soft:      #74777f;
   --fg-on-brand:  #FFFFFF;
 
-  --border:       #243A2F;
-  --border-strong:#34503F;
+  --border:       #44474e;
+  --border-strong:#5a5e66;
   --border-on-brand: rgba(255,255,255,0.10);
 
-  --brand-green-hover: #2A6048;
+  --brand-green:       #aec7f6;     /* Azul claro no escuro */
+  --brand-green-hover: #c8d9f8;
+  --brand-gold:        #aef2bb;     /* Verde claro no escuro */
 
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.32);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.24);
@@ -1143,69 +1145,199 @@ Object.assign(window, { Icon, Avatar, Plate, StatusDot, Badge, Button });
 
 </script>
 <script type="text/babel">
-/* Sentinela Mobile — Login screen (escolher militar) */
+/* Sentinela Mobile — Login (Stitch design — Número de Ordem + posto + unidade + Google) */
 
 const LoginScreen = () => {
-  const { useStore, actions } = window.SentinelaStore;
-  const militares = useStore(s => s.militares);
-  const [filtro, setFiltro] = React.useState('');
+  const { actions } = window.SentinelaStore;
+  const militares = window.SentinelaStore.useStore(s => s.militares);
+  const [numero, setNumero] = React.useState('');
+  const [posto, setPosto] = React.useState('');
+  const [unidade, setUnidade] = React.useState('Posto Territorial Vila Real');
+  const [error, setError] = React.useState('');
 
-  const visiveis = militares.filter(m =>
-    m.nome.toLowerCase().includes(filtro.toLowerCase()) ||
-    m.nim.includes(filtro)
+  const handleEntrar = (e) => {
+    e && e.preventDefault();
+    const m = militares.find(x => x.nim === numero);
+    if (!m) {
+      setError('Número de Ordem inválido. Demo: experimente um nº listado na app.');
+      return;
+    }
+    setError('');
+    actions.login(m.id);
+  };
+
+  const styles = {
+    page: {
+      flex: 1, background: 'var(--bg)', color: 'var(--fg)',
+      minHeight: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 24, fontFamily: 'var(--font-ui)',
+    },
+    card: {
+      width: '100%', maxWidth: 380,
+      background: 'var(--surface)', border: '1px solid var(--surface-3)',
+      borderRadius: 12, padding: 32,
+      boxShadow: '0 4px 12px rgba(0,33,71,0.08)',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+    },
+    headerWrap: {
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      marginBottom: 32, textAlign: 'center',
+    },
+    shield: {
+      color: 'var(--brand-green)', marginBottom: 12,
+    },
+    title: {
+      fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 700,
+      color: 'var(--brand-green)', letterSpacing: '-0.02em', margin: '0 0 4px',
+    },
+    subtitle: { fontSize: 14, color: 'var(--fg-muted)', margin: 0 },
+    form: { width: '100%', display: 'flex', flexDirection: 'column', gap: 24 },
+    label: {
+      fontSize: 12, fontWeight: 600, letterSpacing: '0.05em',
+      color: 'var(--fg-muted)', textTransform: 'uppercase',
+    },
+    input: {
+      width: '100%', padding: 12, fontSize: 16,
+      border: '1px solid var(--border)', borderRadius: 4,
+      background: 'var(--surface)', color: 'var(--fg)',
+      outline: 'none', boxSizing: 'border-box',
+      fontFamily: 'var(--font-ui)',
+    },
+    select: {
+      width: '100%', padding: 12, paddingRight: 36, fontSize: 16,
+      border: '1px solid var(--border)', borderRadius: 4,
+      background: 'var(--surface)', color: 'var(--fg)',
+      outline: 'none', boxSizing: 'border-box',
+      appearance: 'none', cursor: 'pointer',
+      fontFamily: 'var(--font-ui)',
+    },
+    btnPrimary: {
+      width: '100%', background: 'var(--brand-green)', color: '#FFF',
+      fontWeight: 600, fontSize: 12, letterSpacing: '0.05em',
+      padding: 12, borderRadius: 4, border: 'none', cursor: 'pointer',
+      textTransform: 'uppercase',
+    },
+    divider: {
+      display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0',
+    },
+    dividerLine: { height: 1, background: 'var(--surface-3)', flex: 1 },
+    dividerText: {
+      fontSize: 11, fontWeight: 700, letterSpacing: '0.08em',
+      color: 'var(--border-strong)', textTransform: 'uppercase',
+    },
+    btnGoogle: {
+      width: '100%', background: 'var(--surface)',
+      border: '1px solid var(--border)', color: 'var(--fg)',
+      fontWeight: 600, fontSize: 12, letterSpacing: '0.05em',
+      padding: 12, borderRadius: 4, cursor: 'pointer',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+      textTransform: 'uppercase',
+    },
+    footer: {
+      marginTop: 32, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      gap: 4, color: 'var(--border-strong)',
+    },
+    footerText: {
+      fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+    },
+  };
+
+  const GoogleIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
   );
 
   return (
-    <div style={{
-      flex: 1, display: 'flex', flexDirection: 'column',
-      background: 'linear-gradient(180deg, var(--brand-green-deep) 0%, var(--brand-green) 50%, var(--bg) 50%)',
-    }}>
-      <div style={{ padding: '32px 22px 24px', textAlign: 'center', color: '#FFF' }}>
-        <img src="assets/sentinela-shield.svg" alt="" style={{ width: 56, height: 64, margin: '0 auto 12px' }}/>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, letterSpacing: '-0.01em' }}>SENTINELA</div>
-        <div style={{ fontSize: 11, color: '#C9A24B', fontWeight: 600, letterSpacing: '0.14em', marginTop: 2 }}>PLATAFORMA OPERACIONAL</div>
-        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 14 }}>Posto Territorial de Vila Real</div>
-      </div>
-
-      <div style={{
-        flex: 1, background: 'var(--bg)', borderTopLeftRadius: 20, borderTopRightRadius: 20,
-        padding: '18px 14px', overflowY: 'auto',
-      }}>
-        <div className="t-overline" style={{ marginBottom: 8 }}>ENTRAR — ESCOLHE O TEU PERFIL</div>
-
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 8,
-          background: 'var(--surface)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-pill)', padding: '8px 12px', marginBottom: 12,
-        }}>
-          <Icon name="search" size={16} style={{ color: 'var(--fg-soft)' }}/>
-          <input
-            value={filtro}
-            onChange={e => setFiltro(e.target.value)}
-            placeholder="Pesquisar nome ou NIM"
-            style={{ flex: 1, border: 'none', outline: 'none', fontSize: 13, background: 'transparent', color: 'var(--fg)' }}
-          />
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <div style={styles.headerWrap}>
+          <div style={styles.shield}>
+            <Icon name="shield" size={56}/>
+          </div>
+          <h1 style={styles.title}>Sentinela</h1>
+          <p style={styles.subtitle}>Sistema Operacional GNR</p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {visiveis.map(m => (
-            <button key={m.id} onClick={() => actions.login(m.id)} style={{
-              background: 'var(--surface)', border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-md)', padding: 10, textAlign: 'left',
-              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
-            }}>
-              <Avatar name={m.nome} size={42}/>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600 }}>{m.postoAbrev} {m.nome}</div>
-                <div className="t-mono" style={{ fontSize: 11, color: 'var(--fg-muted)' }}>NIM {m.nim} · {m.indicativo}</div>
-              </div>
-              <Icon name="chevron-right" size={16} style={{ color: 'var(--fg-soft)' }}/>
+        <form onSubmit={handleEntrar} style={styles.form}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <label htmlFor="numero_ordem" style={styles.label}>Número de Ordem</label>
+            <input
+              id="numero_ordem"
+              type="text"
+              inputMode="numeric"
+              placeholder="2060588"
+              value={numero}
+              onChange={e => setNumero(e.target.value)}
+              style={styles.input}
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <label htmlFor="posto" style={styles.label}>Posto</label>
+            <div style={{ position: 'relative' }}>
+              <select
+                id="posto"
+                value={posto}
+                onChange={e => setPosto(e.target.value)}
+                style={styles.select}
+              >
+                <option value="" disabled>Selecione o posto...</option>
+                <option value="guarda">Guarda</option>
+                <option value="cabo">Cabo</option>
+                <option value="sargento">Sargento</option>
+                <option value="oficial">Oficial</option>
+              </select>
+              <span style={{
+                position: 'absolute', right: 12, top: '50%',
+                transform: 'translateY(-50%)', pointerEvents: 'none',
+                color: 'var(--border-strong)',
+              }}><Icon name="chevron-down" size={16}/></span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <label htmlFor="unidade" style={styles.label}>Unidade</label>
+            <input
+              id="unidade"
+              type="text"
+              placeholder="Destacamento Territorial"
+              value={unidade}
+              onChange={e => setUnidade(e.target.value)}
+              style={styles.input}
+            />
+          </div>
+
+          {error && (
+            <div role="alert" style={{
+              fontSize: 13, padding: '10px 12px', borderRadius: 6,
+              background: 'var(--danger-soft)', color: 'var(--danger-deep)',
+              border: '1px solid var(--danger)', marginTop: 4,
+            }}>{error}</div>
+          )}
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 4 }}>
+            <button type="submit" style={styles.btnPrimary}>Entrar</button>
+
+            <div style={styles.divider}>
+              <span style={styles.dividerLine}/>
+              <span style={styles.dividerText}>OU</span>
+              <span style={styles.dividerLine}/>
+            </div>
+
+            <button type="button" onClick={() => militares[0] && actions.login(militares[0].id)} style={styles.btnGoogle}>
+              <GoogleIcon/>
+              Entrar como demo
             </button>
-          ))}
-        </div>
+          </div>
+        </form>
 
-        <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--fg-muted)', marginTop: 18 }}>
-          Versão demo · sem palavra-passe
+        <div style={styles.footer}>
+          <Icon name="shield" size={14}/>
+          <span style={styles.footerText}>Acesso restrito a militares GNR</span>
         </div>
       </div>
     </div>
@@ -3072,6 +3204,18 @@ const HomeScreen = ({ onNav }) => {
         </div>
 
         <div>
+          <div className="t-overline" style={{ marginBottom: 8 }}>OPERACIONAL</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+            <QuickAction icon="clipboard-list" label="Registo Pat." onClick={() => onNav('registoPatrulha')}/>
+            <QuickAction icon="check-square" label="Diretivas" onClick={() => onNav('checklist')}/>
+            <QuickAction icon="calendar-days" label="Escalas" onClick={() => onNav('escalasFull')}/>
+            <QuickAction icon="book-open" label="Wiki GNR" onClick={() => onNav('wiki')}/>
+            <QuickAction icon="file-text" label="Ordens" onClick={() => onNav('ordensServico')}/>
+            <QuickAction icon="alert-triangle" label="Emergência" color="var(--danger)" onClick={() => onNav('emergencia')}/>
+          </div>
+        </div>
+
+        <div>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 8 }}>
             <div className="t-overline">ÚLTIMAS DETEÇÕES ANPR</div>
             <button onClick={() => onNav('scanner')} style={{ background: 'transparent', border: 'none', color: 'var(--brand-green)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Ver tudo</button>
@@ -3128,6 +3272,12 @@ const MobileShellV2 = () => {
   else if (route === 'notificacoes') content = <NotificacoesScreen onBack={() => setRoute('home')}/>;
   else if (route === 'perfil') content = <PerfilScreen onBack={() => setRoute('home')}/>;
   else if (route === 'ferias') content = <FeriasScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'registoPatrulha') content = <RegistoPatrulhaScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'checklist') content = <ChecklistScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'escalasFull') content = <EscalasFullScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'wiki') content = <WikiScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'ordensServico') content = <OrdensServicoScreen onBack={() => setRoute('home')}/>;
+  else if (route === 'emergencia') content = <EmergenciaScreen onBack={() => setRoute('home')}/>;
   else content = <HomeScreen onNav={setRoute}/>;
 
   const TabBtn = ({ id, icon, label }) => {
