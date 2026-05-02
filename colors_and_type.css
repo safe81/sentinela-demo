@@ -3,17 +3,17 @@
    Cores institucionais (verde GNR-inspired) + tipografia + spacing + etc.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  /* ─── BRAND ──────────────────────────────────────────────────────────── */
-  --brand-green:        #1F4D3A;   /* Verde Sentinela (primário) */
-  --brand-green-hover:  #1A4231;
-  --brand-green-deep:   #0F2A20;   /* Verde profundo (headers, sidebars) */
-  --brand-green-soft:   #2D6B52;   /* Verde médio (chips ativos) */
-  --brand-gold:         #C9A24B;   /* Dourado institucional */
-  --brand-gold-soft:    #E8D9A8;
-  --brand-gold-deep:    #8C6F2C;
+  /* ─── BRAND — GNR Institutional Force ───────────────────────────────── */
+  --brand-green:        #002147;   /* Azul Marinho Profundo (primário) */
+  --brand-green-hover:  #001535;
+  --brand-green-deep:   #000a1e;   /* Azul muito escuro (headers) */
+  --brand-green-soft:   #2d476f;   /* Azul médio (chips ativos) */
+  --brand-gold:         #2a6a3f;   /* Verde Floresta (acento secundário) */
+  --brand-gold-soft:    #aef2bb;   /* Verde claro */
+  --brand-gold-deep:    #0b5229;   /* Verde profundo */
 
   /* ─── SEMANTIC ───────────────────────────────────────────────────────── */
   --danger:        #C7322B;        /* Vermelho operacional — furto, mandado */
@@ -41,28 +41,28 @@
   --slate-900: #131814;
 
   /* ─── SURFACES — modo claro (default) ────────────────────────────────── */
-  --bg:           #F4F2EC;          /* Off-white quente */
-  --surface:      #FFFFFF;
-  --surface-2:    #F7F8F7;          /* Cards num bg */
-  --surface-3:    #EFF1EF;          /* Hover de surface-2 */
+  --bg:           #f7fafc;          /* Off-white frio (institutional) */
+  --surface:      #ffffff;
+  --surface-2:    #f1f4f6;          /* Cards num bg */
+  --surface-3:    #ebeef0;          /* Hover de surface-2 */
   --surface-inv:  var(--brand-green-deep);
 
-  --fg:           var(--slate-900);
-  --fg-muted:     var(--slate-600);
-  --fg-soft:      var(--slate-500);
+  --fg:           #181c1e;
+  --fg-muted:     #44474e;
+  --fg-soft:      #74777f;
   --fg-on-brand:  #FFFFFF;
-  --fg-on-gold:   #1A1208;
+  --fg-on-gold:   #00210c;
 
-  --border:       #E2E5E2;
-  --border-strong:#C9CDC9;
+  --border:       #c4c6cf;
+  --border-strong:#74777f;
   --border-on-brand: rgba(255,255,255,0.16);
 
   --focus-ring:   var(--brand-gold);
 
   /* ─── SHADOWS ────────────────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 2px rgba(15,42,32,0.06);
-  --shadow-md: 0 4px 12px rgba(15,42,32,0.08), 0 1px 2px rgba(15,42,32,0.04);
-  --shadow-lg: 0 12px 32px rgba(15,42,32,0.12);
+  --shadow-sm: 0 1px 2px rgba(0,33,71,0.06);
+  --shadow-md: 0 4px 12px rgba(0,33,71,0.08), 0 1px 2px rgba(0,33,71,0.04);
+  --shadow-lg: 0 12px 32px rgba(0,33,71,0.12);
   --shadow-glow-danger: 0 0 0 3px rgba(199,50,43,0.18);
   --shadow-glow-warning: 0 0 0 3px rgba(216,138,42,0.20);
 
@@ -93,7 +93,7 @@
   --ease-in-out:    cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ─── TYPOGRAPHY ─────────────────────────────────────────────────────── */
-  --font-display: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Public Sans', 'Inter', system-ui, -apple-system, sans-serif;
   --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -141,22 +141,24 @@
 
 /* ═══ DARK MODE ═══════════════════════════════════════════════════════════ */
 [data-theme="dark"] {
-  --bg:           #0E1A14;          /* Verde-noite */
-  --surface:      #14241C;
-  --surface-2:    #1A2D24;
-  --surface-3:    #22382D;
-  --surface-inv:  #F4F2EC;
+  --bg:           #181c1e;          /* Neutral dark */
+  --surface:      #2d3133;
+  --surface-2:    #2d3133;
+  --surface-3:    #353a3d;
+  --surface-inv:  #eef1f3;
 
-  --fg:           #ECEEEC;
-  --fg-muted:     #A8B0AA;
-  --fg-soft:      #7A847E;
+  --fg:           #eef1f3;
+  --fg-muted:     #9da3a8;
+  --fg-soft:      #74777f;
   --fg-on-brand:  #FFFFFF;
 
-  --border:       #243A2F;
-  --border-strong:#34503F;
+  --border:       #44474e;
+  --border-strong:#5a5e66;
   --border-on-brand: rgba(255,255,255,0.10);
 
-  --brand-green-hover: #2A6048;
+  --brand-green:       #aec7f6;     /* Azul claro no escuro */
+  --brand-green-hover: #c8d9f8;
+  --brand-gold:        #aef2bb;     /* Verde claro no escuro */
 
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.32);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.24);
