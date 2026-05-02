@@ -3,11 +3,19 @@
  */
 
 const CommsPCScreen = () => {
-  const { useStore } = window.SentinelaStore;
+  const { useStore, actions } = window.SentinelaStore;
   const me = useStore(s => {
     const id = s.militarLogadoId;
     return s.militares.find(m => m.id === id);
   });
+
+  const [mensagem, setMensagem] = React.useState('');
+  const enviarAtual = () => {
+    const txt = mensagem.trim();
+    if (!txt) return;
+    actions.enviarMensagem('c1', txt);
+    setMensagem('');
+  };
 
   const channels = [
     { id: 'posto-vrl',   icon: 'map-pin',  title: 'Chat de Posto - Vila Real', preview: 'Sgt. Pires: Confirmar patrulha na EN11...', meta: 'ESTÁTICO / PERMANENTE', active: true,  badge: 3 },
@@ -169,7 +177,7 @@ const CommsPCScreen = () => {
           ))}
         </nav>
         <div style={styles.sideFooter}>
-          <button style={styles.btnNova}>Nova Comunicação</button>
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={styles.btnNova}>Nova Comunicação</button>
           {footerItems.map(it => (
             <button key={it.id} onClick={() => goTo(it.id)} style={styles.sideLink(false)}>
               <Icon name={it.icon} size={20}/><span>{it.label}</span>
@@ -187,8 +195,8 @@ const CommsPCScreen = () => {
               <input type="text" placeholder="Pesquisar mensagens..." style={styles.searchInput}/>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--brand-green)' }}>
-              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: 4 }}><Icon name="bell" size={20}/></button>
-              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: 4 }}><Icon name="user" size={20}/></button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: 4 }}><Icon name="bell" size={20}/></button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: 4 }}><Icon name="user" size={20}/></button>
             </div>
           </div>
         </header>
@@ -255,8 +263,8 @@ const CommsPCScreen = () => {
                 </h3>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(255,255,255,0.8)' }}>
-                <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit' }}><Icon name="alert-triangle" size={18}/></button>
-                <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit' }}><Icon name="menu" size={18}/></button>
+                <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit' }}><Icon name="alert-triangle" size={18}/></button>
+                <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit' }}><Icon name="menu" size={18}/></button>
               </div>
             </header>
 
@@ -331,18 +339,21 @@ const CommsPCScreen = () => {
 
             <footer style={styles.inputBar}>
               <div style={styles.inputBox}>
-                <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--border-strong)', padding: 4 }}>
+                <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--border-strong)', padding: 4 }}>
                   <Icon name="paperclip" size={20}/>
                 </button>
                 <input
                   type="text"
                   placeholder="Escreva uma mensagem..."
+                  value={mensagem}
+                  onChange={e => setMensagem(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') enviarAtual(); }}
                   style={{
                     flex: 1, background: 'transparent', border: 'none', outline: 'none',
                     fontSize: 16, padding: 12, color: 'var(--fg)', fontFamily: 'var(--font-ui)',
                   }}
                 />
-                <button style={styles.sendBtn} aria-label="Enviar">
+                <button onClick={enviarAtual} style={styles.sendBtn} aria-label="Enviar">
                   <Icon name="send" size={18}/>
                 </button>
               </div>

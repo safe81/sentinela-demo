@@ -3642,7 +3642,7 @@ const WikiScreen = ({ onBack, store }) => {
             <div className="t-overline" style={{ color: 'var(--danger-deep)', marginBottom: 2 }}>LINHA DE EMERGÊNCIA</div>
             <div className="t-mono" style={{ fontWeight: 700, fontSize: 16, color: 'var(--danger-deep)' }}>112 / 808 200 200</div>
           </div>
-          <button style={{ background: 'var(--danger)', color: '#FFF', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+          <button onClick={() => { window.location.href = 'tel:112'; }} style={{ background: 'var(--danger)', color: '#FFF', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
             LIGAR
           </button>
         </div>
@@ -3683,7 +3683,7 @@ const WikiScreen = ({ onBack, store }) => {
         {/* Solicitar atualização */}
         <div style={{ margin: '0 12px 20px', padding: '14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, textAlign: 'center' }}>
           <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginBottom: 8 }}>Não encontrou o que procurava?</div>
-          <button style={{
+          <button onClick={() => alert('Pedido enviado: Solicitar actualização de dados')} style={{
             background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8,
             padding: '8px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--fg)',
             display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -3757,7 +3757,7 @@ const OrdensServicoScreen = ({ onBack, store }) => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button style={{
+            <button onClick={() => window.print()} style={{
               flex: 1, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8,
               padding: '10px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--fg)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -4080,6 +4080,7 @@ const EmergenciaScreen = ({ onBack, store }) => {
           <div className="t-overline" style={{ color: 'var(--danger)', marginBottom: 16 }}>PEDIDO DE REFORÇO IMEDIATO</div>
 
           <button
+            type="button"
             onMouseDown={iniciarPressao}
             onMouseUp={cancelarPressao}
             onMouseLeave={cancelarPressao}
@@ -4135,12 +4136,12 @@ const EmergenciaScreen = ({ onBack, store }) => {
           <div className="t-overline" style={{ marginBottom: 8 }}>AÇÕES RÁPIDAS</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {[
-              { icon: 'phone-call', label: 'Ligar 112', cor: 'var(--danger)' },
-              { icon: 'radio', label: 'Contactar Central', cor: 'var(--brand-green)' },
-              { icon: 'users', label: 'Pedir Reforço', cor: 'var(--info)' },
-              { icon: 'message-square', label: 'Enviar Localização', cor: 'var(--warning)' },
-            ].map(({ icon, label, cor }) => (
-              <button key={label} style={{
+              { icon: 'phone-call', label: 'Ligar 112', cor: 'var(--danger)', action: () => { window.location.href = 'tel:112'; } },
+              { icon: 'radio', label: 'Contactar Central', cor: 'var(--brand-green)', action: () => alert('Pedido enviado: Contactar Central') },
+              { icon: 'users', label: 'Pedir Reforço', cor: 'var(--info)', action: () => actions.activarPanico() },
+              { icon: 'message-square', label: 'Enviar Localização', cor: 'var(--warning)', action: () => alert('Pedido enviado: Enviar Localização') },
+            ].map(({ icon, label, cor, action }) => (
+              <button key={label} onClick={action} style={{
                 background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10,
                 padding: '14px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
                 cursor: 'pointer',
@@ -7182,8 +7183,8 @@ const LoginPCScreen = () => {
         <footer style={styles.footer}>
           <span style={styles.footTagline}>ACESSO RESTRITO A MILITARES DA GNR</span>
           <div style={styles.footLinks}>
-            <a href="#" style={styles.footLink}>Termos de Serviço</a>
-            <a href="#" style={styles.footLink}>Segurança Operacional</a>
+            <span style={styles.footLink}>Termos de Serviço</span>
+            <span style={styles.footLink}>Segurança Operacional</span>
           </div>
           <p style={styles.copyright}>© 2026 GUARDA NACIONAL REPUBLICANA — PORTUGAL</p>
         </footer>
@@ -7316,14 +7317,14 @@ const NewTopBar = ({ title = 'Operational Dashboard' }) => {
           <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{me?.posto || 'Posto Territorial Vila Real'}</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8, position: 'relative' }} aria-label="Notificações">
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8, position: 'relative' }} aria-label="Notificações">
             <Icon name="bell" size={20}/>
             <span style={{ position: 'absolute', top: 6, right: 6, width: 8, height: 8, background: 'var(--danger)', borderRadius: '50%' }}/>
           </button>
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }} aria-label="Ajuda">
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }} aria-label="Ajuda">
             <Icon name="search" size={20}/>
           </button>
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }} aria-label="Conta">
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }} aria-label="Conta">
             <Icon name="user" size={20}/>
           </button>
         </div>
@@ -7457,7 +7458,7 @@ const NewAlertasFeed = () => {
         <h2 style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', color: 'var(--brand-green)', margin: 0, textTransform: 'uppercase' }}>
           Alertas ALPR Recentes
         </h2>
-        <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--brand-green-soft)' }} aria-label="Abrir">
+        <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--brand-green-soft)' }} aria-label="Abrir">
           <Icon name="arrow-right" size={16}/>
         </button>
       </div>
@@ -7603,11 +7604,19 @@ Object.assign(window, { DashboardPCScreen, NewSideNav, NewTopBar });
  */
 
 const CommsPCScreen = () => {
-  const { useStore } = window.SentinelaStore;
+  const { useStore, actions } = window.SentinelaStore;
   const me = useStore(s => {
     const id = s.militarLogadoId;
     return s.militares.find(m => m.id === id);
   });
+
+  const [mensagem, setMensagem] = React.useState('');
+  const enviarAtual = () => {
+    const txt = mensagem.trim();
+    if (!txt) return;
+    actions.enviarMensagem('c1', txt);
+    setMensagem('');
+  };
 
   const channels = [
     { id: 'posto-vrl',   icon: 'map-pin',  title: 'Chat de Posto - Vila Real', preview: 'Sgt. Pires: Confirmar patrulha na EN11...', meta: 'ESTÁTICO / PERMANENTE', active: true,  badge: 3 },
@@ -7769,7 +7778,7 @@ const CommsPCScreen = () => {
           ))}
         </nav>
         <div style={styles.sideFooter}>
-          <button style={styles.btnNova}>Nova Comunicação</button>
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={styles.btnNova}>Nova Comunicação</button>
           {footerItems.map(it => (
             <button key={it.id} onClick={() => goTo(it.id)} style={styles.sideLink(false)}>
               <Icon name={it.icon} size={20}/><span>{it.label}</span>
@@ -7787,8 +7796,8 @@ const CommsPCScreen = () => {
               <input type="text" placeholder="Pesquisar mensagens..." style={styles.searchInput}/>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--brand-green)' }}>
-              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: 4 }}><Icon name="bell" size={20}/></button>
-              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: 4 }}><Icon name="user" size={20}/></button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: 4 }}><Icon name="bell" size={20}/></button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: 4 }}><Icon name="user" size={20}/></button>
             </div>
           </div>
         </header>
@@ -7855,8 +7864,8 @@ const CommsPCScreen = () => {
                 </h3>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(255,255,255,0.8)' }}>
-                <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit' }}><Icon name="alert-triangle" size={18}/></button>
-                <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit' }}><Icon name="menu" size={18}/></button>
+                <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit' }}><Icon name="alert-triangle" size={18}/></button>
+                <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit' }}><Icon name="menu" size={18}/></button>
               </div>
             </header>
 
@@ -7931,18 +7940,21 @@ const CommsPCScreen = () => {
 
             <footer style={styles.inputBar}>
               <div style={styles.inputBox}>
-                <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--border-strong)', padding: 4 }}>
+                <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--border-strong)', padding: 4 }}>
                   <Icon name="paperclip" size={20}/>
                 </button>
                 <input
                   type="text"
                   placeholder="Escreva uma mensagem..."
+                  value={mensagem}
+                  onChange={e => setMensagem(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') enviarAtual(); }}
                   style={{
                     flex: 1, background: 'transparent', border: 'none', outline: 'none',
                     fontSize: 16, padding: 12, color: 'var(--fg)', fontFamily: 'var(--font-ui)',
                   }}
                 />
-                <button style={styles.sendBtn} aria-label="Enviar">
+                <button onClick={enviarAtual} style={styles.sendBtn} aria-label="Enviar">
                   <Icon name="send" size={18}/>
                 </button>
               </div>
@@ -7963,7 +7975,7 @@ window.CommsPCScreen = CommsPCScreen;
  */
 
 const WikiPCScreen = () => {
-  const { useStore } = window.SentinelaStore;
+  const { useStore, actions } = window.SentinelaStore;
   const militares = useStore(s => s.militares);
   const [filtro, setFiltro] = React.useState('');
   const [seccao, setSeccao] = React.useState('todos');
@@ -8077,7 +8089,7 @@ const WikiPCScreen = () => {
               112 / 808 200 200
             </span>
           </div>
-          <button style={{
+          <button onClick={() => actions.activarPanico()} style={{
             background: 'var(--danger)', color: '#FFF',
             fontSize: 12, fontWeight: 600, letterSpacing: '0.05em',
             padding: '4px 16px', borderRadius: 8, border: 'none', cursor: 'pointer',
@@ -8111,7 +8123,7 @@ const WikiPCScreen = () => {
             />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginLeft: 'auto' }}>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}>
               <Icon name="bell" size={20}/>
             </button>
             <div style={{
@@ -8264,7 +8276,7 @@ const WikiPCScreen = () => {
                     color: 'var(--fg-muted)', margin: '0 0 12px', padding: '0 4px', textTransform: 'uppercase',
                   }}>CONTACTOS DIRECTOS</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-                    <button style={{
+                    <button onClick={() => { const num = '+351 939 ' + (selecionado?.nim || '000000').slice(-6); window.location.href = 'tel:' + num.replace(/\s+/g, ''); }} style={{
                       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                       padding: 16, background: 'var(--brand-green)', color: '#FFF',
                       borderRadius: 12, border: 'none', cursor: 'pointer', gap: 8,
@@ -8272,7 +8284,7 @@ const WikiPCScreen = () => {
                       <Icon name="phone" size={20}/>
                       <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em' }}>LIGAR</span>
                     </button>
-                    <button style={{
+                    <button onClick={() => { const email = selecionado?.email || `${(selecionado?.nome || '').split(' ').slice(-1)[0].toLowerCase()}@gnr.pt`; window.location.href = 'mailto:' + email; }} style={{
                       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                       padding: 16, background: 'var(--surface-3)', color: 'var(--brand-green)',
                       borderRadius: 12, border: '1px solid var(--border)', cursor: 'pointer', gap: 8,
@@ -8315,7 +8327,7 @@ const WikiPCScreen = () => {
                 background: 'var(--surface-2)',
               }}>
                 <span style={{ fontSize: 10, fontWeight: 500, color: 'var(--fg-muted)', letterSpacing: '0.05em' }}>DADOS ATUALIZADOS HÁ 4H</span>
-                <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--brand-green)', fontSize: 12, fontWeight: 700 }}>
+                <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--brand-green)', fontSize: 12, fontWeight: 700 }}>
                   HISTÓRICO
                 </button>
               </div>
@@ -8336,8 +8348,9 @@ window.WikiPCScreen = WikiPCScreen;
  */
 
 const ScannerPCScreen = () => {
-  const { useStore } = window.SentinelaStore;
+  const { useStore, actions } = window.SentinelaStore;
   const alertas = useStore(s => s.alertas);
+  const [activeTab, setActiveTab] = React.useState('Dashboard');
 
   const detecoes = alertas.length ? alertas.slice(0, 4).map(a => ({
     matricula: a.matricula,
@@ -8455,11 +8468,11 @@ const ScannerPCScreen = () => {
             GNR Scanner ALPR
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 24, fontSize: 14 }}>
-            {tabs.map((t, i) => (
-              <a key={t} href="#" style={{
-                color: i === 0 ? 'var(--brand-green)' : 'var(--fg-muted)',
-                borderBottom: i === 0 ? '2px solid var(--brand-green)' : 'none',
-                paddingBottom: 4, textDecoration: 'none',
+            {tabs.map((t) => (
+              <a key={t} href="#" onClick={(e) => { e.preventDefault(); setActiveTab(t); }} style={{
+                color: activeTab === t ? 'var(--brand-green)' : 'var(--fg-muted)',
+                borderBottom: activeTab === t ? '2px solid var(--brand-green)' : 'none',
+                paddingBottom: 4, textDecoration: 'none', cursor: 'pointer',
               }}>{t}</a>
             ))}
           </div>
@@ -8474,8 +8487,8 @@ const ScannerPCScreen = () => {
               color: 'var(--fg)', fontFamily: 'var(--font-ui)',
             }}
           />
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}><Icon name="bell" size={18}/></button>
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}><Icon name="settings" size={18}/></button>
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}><Icon name="bell" size={18}/></button>
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}><Icon name="settings" size={18}/></button>
           <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--surface-3)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="user" size={16}/>
           </div>
@@ -8599,7 +8612,7 @@ const ScannerPCScreen = () => {
                     <span style={{ fontWeight: 600 }}>PSP — Comando Lisboa</span>
                   </div>
                 </div>
-                <button style={{
+                <button onClick={() => actions.activarPanico()} style={{
                   width: '100%', background: 'var(--brand-green)', color: '#FFF',
                   padding: 12, borderRadius: 4, border: 'none', cursor: 'pointer',
                   fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -8641,8 +8654,8 @@ const ScannerPCScreen = () => {
           }}>
             <h3 style={{ fontWeight: 700, color: 'var(--brand-green)', margin: 0 }}>Últimas Deteções</h3>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button style={{ fontSize: 12, background: 'var(--surface)', border: '1px solid var(--border)', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}>Exportar CSV</button>
-              <button style={{ fontSize: 12, background: 'var(--surface)', border: '1px solid var(--border)', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}>Filtros</button>
+              <button onClick={() => window.print()} style={{ fontSize: 12, background: 'var(--surface)', border: '1px solid var(--border)', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}>Exportar CSV</button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ fontSize: 12, background: 'var(--surface)', border: '1px solid var(--border)', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}>Filtros</button>
             </div>
           </div>
           <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
@@ -8678,8 +8691,8 @@ const ScannerPCScreen = () => {
                     <td style={{ padding: 16, fontSize: 14, color: 'var(--fg-muted)' }}>{d.hora}</td>
                     <td style={{ padding: 16 }}>
                       {d.severidade === 'critico'
-                        ? <button style={{ background: 'var(--danger)', color: '#FFF', fontSize: 10, fontWeight: 700, padding: '6px 12px', borderRadius: 4, border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}>INTERCETAR</button>
-                        : <button style={{ background: 'var(--brand-green)', color: '#FFF', fontSize: 10, fontWeight: 700, padding: '6px 12px', borderRadius: 4, border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}>DETALHES</button>}
+                        ? <button onClick={() => actions.activarPanico()} style={{ background: 'var(--danger)', color: '#FFF', fontSize: 10, fontWeight: 700, padding: '6px 12px', borderRadius: 4, border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}>INTERCETAR</button>
+                        : <button onClick={() => alert(`Detalhes: ${d.matricula} (${d.estado})`)} style={{ background: 'var(--brand-green)', color: '#FFF', fontSize: 10, fontWeight: 700, padding: '6px 12px', borderRadius: 4, border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}>DETALHES</button>}
                     </td>
                   </tr>
                 );
@@ -8687,7 +8700,7 @@ const ScannerPCScreen = () => {
             </tbody>
           </table>
           <div style={{ padding: 16, background: 'var(--surface-2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: 'var(--brand-green)' }}>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: 'var(--brand-green)' }}>
               Ver Histórico Completo
             </button>
           </div>
@@ -8710,9 +8723,10 @@ const EscalasPCScreen = () => {
   const militares = useStore(s => s.militares);
 
   // Build a 5-row calendar grid for the current month (May 2026)
+  const [monthOffset, setMonthOffset] = React.useState(0);
   const today = new Date();
   const ano = today.getFullYear();
-  const mes = today.getMonth();
+  const mes = today.getMonth() + monthOffset;
   const primeiro = new Date(ano, mes, 1);
   const ultimo = new Date(ano, mes + 1, 0);
   // Monday-first week index: 0..6 from Mon..Sun
@@ -8845,7 +8859,7 @@ const EscalasPCScreen = () => {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <button style={{
+            <button onClick={() => window.print()} style={{
               display: 'flex', alignItems: 'center', gap: 8,
               background: 'var(--brand-green)', color: '#FFF',
               padding: '8px 16px', borderRadius: 8, border: 'none',
@@ -8855,8 +8869,8 @@ const EscalasPCScreen = () => {
               Imprimir Escala
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 16, borderLeft: '1px solid var(--border)' }}>
-              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 4 }}><Icon name="bell" size={20}/></button>
-              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 4 }}><Icon name="search" size={20}/></button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 4 }}><Icon name="bell" size={20}/></button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 4 }}><Icon name="search" size={20}/></button>
               <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(0,33,71,0.10)', color: 'var(--brand-green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name="user" size={16}/>
               </div>
@@ -8875,8 +8889,8 @@ const EscalasPCScreen = () => {
                   color: 'var(--brand-green)', letterSpacing: '0.16em', textTransform: 'uppercase', margin: 0,
                 }}>{monthLabel}</h3>
                 <div style={{ display: 'flex', gap: 4 }}>
-                  <button style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="chevron-down" size={18} style={{ transform: 'rotate(90deg)' }}/></button>
-                  <button style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="chevron-down" size={18} style={{ transform: 'rotate(-90deg)' }}/></button>
+                  <button onClick={() => setMonthOffset(o => o - 1)} aria-label="Mês anterior" style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="chevron-down" size={18} style={{ transform: 'rotate(90deg)' }}/></button>
+                  <button onClick={() => setMonthOffset(o => o + 1)} aria-label="Próximo mês" style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="chevron-down" size={18} style={{ transform: 'rotate(-90deg)' }}/></button>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 16 }}>
@@ -9046,7 +9060,7 @@ const EscalasPCScreen = () => {
             </div>
 
             <div style={{ padding: 24, borderTop: '1px solid var(--border)' }}>
-              <button style={{
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{
                 width: '100%', padding: 12,
                 background: 'var(--surface-3)', border: '1px solid var(--border)',
                 color: 'var(--brand-green)', fontSize: 12, fontWeight: 600, letterSpacing: '0.05em',
@@ -9073,7 +9087,7 @@ window.EscalasPCScreen = EscalasPCScreen;
  */
 
 const OrdensServicoPCScreen = () => {
-  const { useStore } = window.SentinelaStore;
+  const { useStore, actions } = window.SentinelaStore;
   const ordens = useStore(s => s.ordens);
   const [selId, setSelId] = React.useState(ordens[0]?.id);
   const [filter, setFilter] = React.useState('todas');
@@ -9211,9 +9225,9 @@ const OrdensServicoPCScreen = () => {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="bell" size={20}/></button>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="search" size={20}/></button>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="user" size={20}/></button>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="bell" size={20}/></button>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="search" size={20}/></button>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="user" size={20}/></button>
           </div>
         </header>
 
@@ -9338,7 +9352,7 @@ const OrdensServicoPCScreen = () => {
                       }}>{sel.titulo}</h2>
                     </div>
                     <div style={{ display: 'flex', gap: 12 }}>
-                      <button style={{
+                      <button onClick={() => window.print()} style={{
                         display: 'flex', alignItems: 'center', gap: 4,
                         padding: '8px 12px', border: '1px solid var(--border)',
                         color: 'var(--fg)', fontSize: 12, fontWeight: 700,
@@ -9347,7 +9361,7 @@ const OrdensServicoPCScreen = () => {
                         <Icon name="upload" size={14}/>
                         Imprimir
                       </button>
-                      <button style={{
+                      <button onClick={() => sel && actions.marcarOSLida(sel.id)} style={{
                         display: 'flex', alignItems: 'center', gap: 4,
                         padding: '8px 24px', background: 'var(--brand-green)', color: '#FFF',
                         fontSize: 12, fontWeight: 700, borderRadius: 4, border: 'none', cursor: 'pointer',

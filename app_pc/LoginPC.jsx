@@ -189,8 +189,8 @@ const LoginPCScreen = () => {
         <footer style={styles.footer}>
           <span style={styles.footTagline}>ACESSO RESTRITO A MILITARES DA GNR</span>
           <div style={styles.footLinks}>
-            <a href="#" style={styles.footLink}>Termos de Serviço</a>
-            <a href="#" style={styles.footLink}>Segurança Operacional</a>
+            <span style={styles.footLink}>Termos de Serviço</span>
+            <span style={styles.footLink}>Segurança Operacional</span>
           </div>
           <p style={styles.copyright}>© 2026 GUARDA NACIONAL REPUBLICANA — PORTUGAL</p>
         </footer>

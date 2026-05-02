@@ -147,6 +147,7 @@ const EmergenciaScreen = ({ onBack, store }) => {
           <div className="t-overline" style={{ color: 'var(--danger)', marginBottom: 16 }}>PEDIDO DE REFORÇO IMEDIATO</div>
 
           <button
+            type="button"
             onMouseDown={iniciarPressao}
             onMouseUp={cancelarPressao}
             onMouseLeave={cancelarPressao}
@@ -202,12 +203,12 @@ const EmergenciaScreen = ({ onBack, store }) => {
           <div className="t-overline" style={{ marginBottom: 8 }}>AÇÕES RÁPIDAS</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {[
-              { icon: 'phone-call', label: 'Ligar 112', cor: 'var(--danger)' },
-              { icon: 'radio', label: 'Contactar Central', cor: 'var(--brand-green)' },
-              { icon: 'users', label: 'Pedir Reforço', cor: 'var(--info)' },
-              { icon: 'message-square', label: 'Enviar Localização', cor: 'var(--warning)' },
-            ].map(({ icon, label, cor }) => (
-              <button key={label} style={{
+              { icon: 'phone-call', label: 'Ligar 112', cor: 'var(--danger)', action: () => { window.location.href = 'tel:112'; } },
+              { icon: 'radio', label: 'Contactar Central', cor: 'var(--brand-green)', action: () => alert('Pedido enviado: Contactar Central') },
+              { icon: 'users', label: 'Pedir Reforço', cor: 'var(--info)', action: () => actions.activarPanico() },
+              { icon: 'message-square', label: 'Enviar Localização', cor: 'var(--warning)', action: () => alert('Pedido enviado: Enviar Localização') },
+            ].map(({ icon, label, cor, action }) => (
+              <button key={label} onClick={action} style={{
                 background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10,
                 padding: '14px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
                 cursor: 'pointer',

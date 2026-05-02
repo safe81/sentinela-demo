@@ -3,7 +3,7 @@
  */
 
 const OrdensServicoPCScreen = () => {
-  const { useStore } = window.SentinelaStore;
+  const { useStore, actions } = window.SentinelaStore;
   const ordens = useStore(s => s.ordens);
   const [selId, setSelId] = React.useState(ordens[0]?.id);
   const [filter, setFilter] = React.useState('todas');
@@ -141,9 +141,9 @@ const OrdensServicoPCScreen = () => {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="bell" size={20}/></button>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="search" size={20}/></button>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="user" size={20}/></button>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="bell" size={20}/></button>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="search" size={20}/></button>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="user" size={20}/></button>
           </div>
         </header>
 
@@ -268,7 +268,7 @@ const OrdensServicoPCScreen = () => {
                       }}>{sel.titulo}</h2>
                     </div>
                     <div style={{ display: 'flex', gap: 12 }}>
-                      <button style={{
+                      <button onClick={() => window.print()} style={{
                         display: 'flex', alignItems: 'center', gap: 4,
                         padding: '8px 12px', border: '1px solid var(--border)',
                         color: 'var(--fg)', fontSize: 12, fontWeight: 700,
@@ -277,7 +277,7 @@ const OrdensServicoPCScreen = () => {
                         <Icon name="upload" size={14}/>
                         Imprimir
                       </button>
-                      <button style={{
+                      <button onClick={() => sel && actions.marcarOSLida(sel.id)} style={{
                         display: 'flex', alignItems: 'center', gap: 4,
                         padding: '8px 24px', background: 'var(--brand-green)', color: '#FFF',
                         fontSize: 12, fontWeight: 700, borderRadius: 4, border: 'none', cursor: 'pointer',

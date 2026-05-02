@@ -131,7 +131,7 @@ const WikiScreen = ({ onBack, store }) => {
             <div className="t-overline" style={{ color: 'var(--danger-deep)', marginBottom: 2 }}>LINHA DE EMERGÊNCIA</div>
             <div className="t-mono" style={{ fontWeight: 700, fontSize: 16, color: 'var(--danger-deep)' }}>112 / 808 200 200</div>
           </div>
-          <button style={{ background: 'var(--danger)', color: '#FFF', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+          <button onClick={() => { window.location.href = 'tel:112'; }} style={{ background: 'var(--danger)', color: '#FFF', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
             LIGAR
           </button>
         </div>
@@ -172,7 +172,7 @@ const WikiScreen = ({ onBack, store }) => {
         {/* Solicitar atualização */}
         <div style={{ margin: '0 12px 20px', padding: '14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, textAlign: 'center' }}>
           <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginBottom: 8 }}>Não encontrou o que procurava?</div>
-          <button style={{
+          <button onClick={() => alert('Pedido enviado: Solicitar actualização de dados')} style={{
             background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8,
             padding: '8px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--fg)',
             display: 'inline-flex', alignItems: 'center', gap: 6,

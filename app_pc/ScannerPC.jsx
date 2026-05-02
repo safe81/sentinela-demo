@@ -3,8 +3,9 @@
  */
 
 const ScannerPCScreen = () => {
-  const { useStore } = window.SentinelaStore;
+  const { useStore, actions } = window.SentinelaStore;
   const alertas = useStore(s => s.alertas);
+  const [activeTab, setActiveTab] = React.useState('Dashboard');
 
   const detecoes = alertas.length ? alertas.slice(0, 4).map(a => ({
     matricula: a.matricula,
@@ -122,11 +123,11 @@ const ScannerPCScreen = () => {
             GNR Scanner ALPR
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 24, fontSize: 14 }}>
-            {tabs.map((t, i) => (
-              <a key={t} href="#" style={{
-                color: i === 0 ? 'var(--brand-green)' : 'var(--fg-muted)',
-                borderBottom: i === 0 ? '2px solid var(--brand-green)' : 'none',
-                paddingBottom: 4, textDecoration: 'none',
+            {tabs.map((t) => (
+              <a key={t} href="#" onClick={(e) => { e.preventDefault(); setActiveTab(t); }} style={{
+                color: activeTab === t ? 'var(--brand-green)' : 'var(--fg-muted)',
+                borderBottom: activeTab === t ? '2px solid var(--brand-green)' : 'none',
+                paddingBottom: 4, textDecoration: 'none', cursor: 'pointer',
               }}>{t}</a>
             ))}
           </div>
@@ -141,8 +142,8 @@ const ScannerPCScreen = () => {
               color: 'var(--fg)', fontFamily: 'var(--font-ui)',
             }}
           />
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}><Icon name="bell" size={18}/></button>
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}><Icon name="settings" size={18}/></button>
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}><Icon name="bell" size={18}/></button>
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}><Icon name="settings" size={18}/></button>
           <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--surface-3)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="user" size={16}/>
           </div>
@@ -266,7 +267,7 @@ const ScannerPCScreen = () => {
                     <span style={{ fontWeight: 600 }}>PSP — Comando Lisboa</span>
                   </div>
                 </div>
-                <button style={{
+                <button onClick={() => actions.activarPanico()} style={{
                   width: '100%', background: 'var(--brand-green)', color: '#FFF',
                   padding: 12, borderRadius: 4, border: 'none', cursor: 'pointer',
                   fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -308,8 +309,8 @@ const ScannerPCScreen = () => {
           }}>
             <h3 style={{ fontWeight: 700, color: 'var(--brand-green)', margin: 0 }}>Últimas Deteções</h3>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button style={{ fontSize: 12, background: 'var(--surface)', border: '1px solid var(--border)', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}>Exportar CSV</button>
-              <button style={{ fontSize: 12, background: 'var(--surface)', border: '1px solid var(--border)', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}>Filtros</button>
+              <button onClick={() => window.print()} style={{ fontSize: 12, background: 'var(--surface)', border: '1px solid var(--border)', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}>Exportar CSV</button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ fontSize: 12, background: 'var(--surface)', border: '1px solid var(--border)', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}>Filtros</button>
             </div>
           </div>
           <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
@@ -345,8 +346,8 @@ const ScannerPCScreen = () => {
                     <td style={{ padding: 16, fontSize: 14, color: 'var(--fg-muted)' }}>{d.hora}</td>
                     <td style={{ padding: 16 }}>
                       {d.severidade === 'critico'
-                        ? <button style={{ background: 'var(--danger)', color: '#FFF', fontSize: 10, fontWeight: 700, padding: '6px 12px', borderRadius: 4, border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}>INTERCETAR</button>
-                        : <button style={{ background: 'var(--brand-green)', color: '#FFF', fontSize: 10, fontWeight: 700, padding: '6px 12px', borderRadius: 4, border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}>DETALHES</button>}
+                        ? <button onClick={() => actions.activarPanico()} style={{ background: 'var(--danger)', color: '#FFF', fontSize: 10, fontWeight: 700, padding: '6px 12px', borderRadius: 4, border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}>INTERCETAR</button>
+                        : <button onClick={() => alert(`Detalhes: ${d.matricula} (${d.estado})`)} style={{ background: 'var(--brand-green)', color: '#FFF', fontSize: 10, fontWeight: 700, padding: '6px 12px', borderRadius: 4, border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}>DETALHES</button>}
                     </td>
                   </tr>
                 );
@@ -354,7 +355,7 @@ const ScannerPCScreen = () => {
             </tbody>
           </table>
           <div style={{ padding: 16, background: 'var(--surface-2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: 'var(--brand-green)' }}>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: 'var(--brand-green)' }}>
               Ver Histórico Completo
             </button>
           </div>

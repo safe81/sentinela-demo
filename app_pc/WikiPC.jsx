@@ -3,7 +3,7 @@
  */
 
 const WikiPCScreen = () => {
-  const { useStore } = window.SentinelaStore;
+  const { useStore, actions } = window.SentinelaStore;
   const militares = useStore(s => s.militares);
   const [filtro, setFiltro] = React.useState('');
   const [seccao, setSeccao] = React.useState('todos');
@@ -117,7 +117,7 @@ const WikiPCScreen = () => {
               112 / 808 200 200
             </span>
           </div>
-          <button style={{
+          <button onClick={() => actions.activarPanico()} style={{
             background: 'var(--danger)', color: '#FFF',
             fontSize: 12, fontWeight: 600, letterSpacing: '0.05em',
             padding: '4px 16px', borderRadius: 8, border: 'none', cursor: 'pointer',
@@ -151,7 +151,7 @@ const WikiPCScreen = () => {
             />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginLeft: 'auto' }}>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}>
+            <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }}>
               <Icon name="bell" size={20}/>
             </button>
             <div style={{
@@ -304,7 +304,7 @@ const WikiPCScreen = () => {
                     color: 'var(--fg-muted)', margin: '0 0 12px', padding: '0 4px', textTransform: 'uppercase',
                   }}>CONTACTOS DIRECTOS</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-                    <button style={{
+                    <button onClick={() => { const num = '+351 939 ' + (selecionado?.nim || '000000').slice(-6); window.location.href = 'tel:' + num.replace(/\s+/g, ''); }} style={{
                       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                       padding: 16, background: 'var(--brand-green)', color: '#FFF',
                       borderRadius: 12, border: 'none', cursor: 'pointer', gap: 8,
@@ -312,7 +312,7 @@ const WikiPCScreen = () => {
                       <Icon name="phone" size={20}/>
                       <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em' }}>LIGAR</span>
                     </button>
-                    <button style={{
+                    <button onClick={() => { const email = selecionado?.email || `${(selecionado?.nome || '').split(' ').slice(-1)[0].toLowerCase()}@gnr.pt`; window.location.href = 'mailto:' + email; }} style={{
                       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                       padding: 16, background: 'var(--surface-3)', color: 'var(--brand-green)',
                       borderRadius: 12, border: '1px solid var(--border)', cursor: 'pointer', gap: 8,
@@ -355,7 +355,7 @@ const WikiPCScreen = () => {
                 background: 'var(--surface-2)',
               }}>
                 <span style={{ fontSize: 10, fontWeight: 500, color: 'var(--fg-muted)', letterSpacing: '0.05em' }}>DADOS ATUALIZADOS HÁ 4H</span>
-                <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--brand-green)', fontSize: 12, fontWeight: 700 }}>
+                <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--brand-green)', fontSize: 12, fontWeight: 700 }}>
                   HISTÓRICO
                 </button>
               </div>

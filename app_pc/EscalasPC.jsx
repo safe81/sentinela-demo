@@ -7,9 +7,10 @@ const EscalasPCScreen = () => {
   const militares = useStore(s => s.militares);
 
   // Build a 5-row calendar grid for the current month (May 2026)
+  const [monthOffset, setMonthOffset] = React.useState(0);
   const today = new Date();
   const ano = today.getFullYear();
-  const mes = today.getMonth();
+  const mes = today.getMonth() + monthOffset;
   const primeiro = new Date(ano, mes, 1);
   const ultimo = new Date(ano, mes + 1, 0);
   // Monday-first week index: 0..6 from Mon..Sun
@@ -142,7 +143,7 @@ const EscalasPCScreen = () => {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <button style={{
+            <button onClick={() => window.print()} style={{
               display: 'flex', alignItems: 'center', gap: 8,
               background: 'var(--brand-green)', color: '#FFF',
               padding: '8px 16px', borderRadius: 8, border: 'none',
@@ -152,8 +153,8 @@ const EscalasPCScreen = () => {
               Imprimir Escala
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 16, borderLeft: '1px solid var(--border)' }}>
-              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 4 }}><Icon name="bell" size={20}/></button>
-              <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 4 }}><Icon name="search" size={20}/></button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 4 }}><Icon name="bell" size={20}/></button>
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 4 }}><Icon name="search" size={20}/></button>
               <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(0,33,71,0.10)', color: 'var(--brand-green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name="user" size={16}/>
               </div>
@@ -172,8 +173,8 @@ const EscalasPCScreen = () => {
                   color: 'var(--brand-green)', letterSpacing: '0.16em', textTransform: 'uppercase', margin: 0,
                 }}>{monthLabel}</h3>
                 <div style={{ display: 'flex', gap: 4 }}>
-                  <button style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="chevron-down" size={18} style={{ transform: 'rotate(90deg)' }}/></button>
-                  <button style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="chevron-down" size={18} style={{ transform: 'rotate(-90deg)' }}/></button>
+                  <button onClick={() => setMonthOffset(o => o - 1)} aria-label="Mês anterior" style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="chevron-down" size={18} style={{ transform: 'rotate(90deg)' }}/></button>
+                  <button onClick={() => setMonthOffset(o => o + 1)} aria-label="Próximo mês" style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)' }}><Icon name="chevron-down" size={18} style={{ transform: 'rotate(-90deg)' }}/></button>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 16 }}>
@@ -343,7 +344,7 @@ const EscalasPCScreen = () => {
             </div>
 
             <div style={{ padding: 24, borderTop: '1px solid var(--border)' }}>
-              <button style={{
+              <button onClick={() => alert('Funcionalidade demo — em breve')} style={{
                 width: '100%', padding: 12,
                 background: 'var(--surface-3)', border: '1px solid var(--border)',
                 color: 'var(--brand-green)', fontSize: 12, fontWeight: 600, letterSpacing: '0.05em',

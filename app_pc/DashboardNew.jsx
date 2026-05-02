@@ -114,14 +114,14 @@ const NewTopBar = ({ title = 'Operational Dashboard' }) => {
           <div style={{ fontSize: 11, color: 'var(--fg-muted)' }}>{me?.posto || 'Posto Territorial Vila Real'}</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8, position: 'relative' }} aria-label="Notificações">
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8, position: 'relative' }} aria-label="Notificações">
             <Icon name="bell" size={20}/>
             <span style={{ position: 'absolute', top: 6, right: 6, width: 8, height: 8, background: 'var(--danger)', borderRadius: '50%' }}/>
           </button>
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }} aria-label="Ajuda">
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }} aria-label="Ajuda">
             <Icon name="search" size={20}/>
           </button>
-          <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }} aria-label="Conta">
+          <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', padding: 8 }} aria-label="Conta">
             <Icon name="user" size={20}/>
           </button>
         </div>
@@ -255,7 +255,7 @@ const NewAlertasFeed = () => {
         <h2 style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', color: 'var(--brand-green)', margin: 0, textTransform: 'uppercase' }}>
           Alertas ALPR Recentes
         </h2>
-        <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--brand-green-soft)' }} aria-label="Abrir">
+        <button onClick={() => alert('Funcionalidade demo — em breve')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--brand-green-soft)' }} aria-label="Abrir">
           <Icon name="arrow-right" size={16}/>
         </button>
       </div>

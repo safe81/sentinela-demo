@@ -54,7 +54,7 @@ const OrdensServicoScreen = ({ onBack, store }) => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button style={{
+            <button onClick={() => window.print()} style={{
               flex: 1, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8,
               padding: '10px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--fg)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,

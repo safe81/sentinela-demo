@@ -3713,7 +3713,7 @@ const WikiScreen = ({ onBack, store }) => {
             <div className="t-overline" style={{ color: 'var(--danger-deep)', marginBottom: 2 }}>LINHA DE EMERGÊNCIA</div>
             <div className="t-mono" style={{ fontWeight: 700, fontSize: 16, color: 'var(--danger-deep)' }}>112 / 808 200 200</div>
           </div>
-          <button style={{ background: 'var(--danger)', color: '#FFF', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+          <button onClick={() => { window.location.href = 'tel:112'; }} style={{ background: 'var(--danger)', color: '#FFF', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
             LIGAR
           </button>
         </div>
@@ -3754,7 +3754,7 @@ const WikiScreen = ({ onBack, store }) => {
         {/* Solicitar atualização */}
         <div style={{ margin: '0 12px 20px', padding: '14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, textAlign: 'center' }}>
           <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginBottom: 8 }}>Não encontrou o que procurava?</div>
-          <button style={{
+          <button onClick={() => alert('Pedido enviado: Solicitar actualização de dados')} style={{
             background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8,
             padding: '8px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--fg)',
             display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -3828,7 +3828,7 @@ const OrdensServicoScreen = ({ onBack, store }) => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button style={{
+            <button onClick={() => window.print()} style={{
               flex: 1, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8,
               padding: '10px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--fg)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -4151,6 +4151,7 @@ const EmergenciaScreen = ({ onBack, store }) => {
           <div className="t-overline" style={{ color: 'var(--danger)', marginBottom: 16 }}>PEDIDO DE REFORÇO IMEDIATO</div>
 
           <button
+            type="button"
             onMouseDown={iniciarPressao}
             onMouseUp={cancelarPressao}
             onMouseLeave={cancelarPressao}
@@ -4206,12 +4207,12 @@ const EmergenciaScreen = ({ onBack, store }) => {
           <div className="t-overline" style={{ marginBottom: 8 }}>AÇÕES RÁPIDAS</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {[
-              { icon: 'phone-call', label: 'Ligar 112', cor: 'var(--danger)' },
-              { icon: 'radio', label: 'Contactar Central', cor: 'var(--brand-green)' },
-              { icon: 'users', label: 'Pedir Reforço', cor: 'var(--info)' },
-              { icon: 'message-square', label: 'Enviar Localização', cor: 'var(--warning)' },
-            ].map(({ icon, label, cor }) => (
-              <button key={label} style={{
+              { icon: 'phone-call', label: 'Ligar 112', cor: 'var(--danger)', action: () => { window.location.href = 'tel:112'; } },
+              { icon: 'radio', label: 'Contactar Central', cor: 'var(--brand-green)', action: () => alert('Pedido enviado: Contactar Central') },
+              { icon: 'users', label: 'Pedir Reforço', cor: 'var(--info)', action: () => actions.activarPanico() },
+              { icon: 'message-square', label: 'Enviar Localização', cor: 'var(--warning)', action: () => alert('Pedido enviado: Enviar Localização') },
+            ].map(({ icon, label, cor, action }) => (
+              <button key={label} onClick={action} style={{
                 background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10,
                 padding: '14px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
                 cursor: 'pointer',
