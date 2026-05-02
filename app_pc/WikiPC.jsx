@@ -23,14 +23,22 @@ const WikiPCScreen = () => {
     { id: 'sepna',       label: 'SEPNA' },
   ];
 
+  const active = 'wikiPc';
   const navItems = [
-    { id: 'geral',       icon: 'list',         label: 'Geral',        active: true },
-    { id: 'transito',    icon: 'car',          label: 'Trânsito' },
-    { id: 'territorial', icon: 'map',          label: 'Territorial' },
-    { id: 'sepna',       icon: 'flag',         label: 'SEPNA' },
-    { id: 'investiga',   icon: 'search',       label: 'Investigação' },
-    { id: 'favoritos',   icon: 'star',         label: 'Favoritos' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
 
   return (
     <div style={{
@@ -55,36 +63,38 @@ const WikiPCScreen = () => {
         </div>
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {navItems.map(it => (
-            <a key={it.id} href="#" style={{
-              display: 'flex', alignItems: 'center', padding: '12px 24px',
-              textDecoration: 'none',
-              color: it.active ? '#FFF' : 'rgba(255,255,255,0.7)',
-              background: it.active ? 'rgba(255,255,255,0.1)' : 'transparent',
-              borderLeft: it.active ? '4px solid #FFF' : '4px solid transparent',
-              transition: 'all 0.2s',
-            }}>
-              <span style={{ marginRight: 12 }}><Icon name={it.icon} size={18}/></span>
-              <span style={{ fontSize: 14, fontFamily: 'var(--font-display)' }}>{it.label}</span>
-            </a>
-          ))}
+          {navItems.map(it => {
+            const isActive = active === it.id;
+            return (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', padding: '12px 24px',
+                textDecoration: 'none',
+                color: isActive ? '#FFF' : 'rgba(255,255,255,0.7)',
+                background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
+                borderTop: 'none', borderRight: 'none', borderBottom: 'none',
+                borderLeft: isActive ? '4px solid #FFF' : '4px solid transparent',
+                transition: 'all 0.2s',
+                cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <span style={{ marginRight: 12 }}><Icon name={it.icon} size={18}/></span>
+                <span style={{ fontSize: 14, fontFamily: 'var(--font-display)' }}>{it.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         <div style={{ padding: '24px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <a href="#" style={{
-            display: 'flex', alignItems: 'center', padding: '8px 0',
-            color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: 14,
-          }}>
-            <span style={{ marginRight: 12 }}><Icon name="settings" size={18}/></span>
-            <span>Configurações</span>
-          </a>
-          <a href="#" style={{
-            display: 'flex', alignItems: 'center', padding: '8px 0',
-            color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: 14,
-          }}>
-            <span style={{ marginRight: 12 }}><Icon name="log-out" size={18}/></span>
-            <span>Sair</span>
-          </a>
+          {footerItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={{
+              display: 'flex', alignItems: 'center', padding: '8px 0',
+              color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: 14,
+              background: 'transparent', border: 'none',
+              cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+            }}>
+              <span style={{ marginRight: 12 }}><Icon name={it.icon} size={18}/></span>
+              <span>{it.label}</span>
+            </button>
+          ))}
         </div>
       </aside>
 

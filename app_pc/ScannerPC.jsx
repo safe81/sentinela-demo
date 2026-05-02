@@ -19,13 +19,22 @@ const ScannerPCScreen = () => {
     { matricula: '01-AA-02', tipo: 'Pesado Mercadorias',  estado: 'Válido',     severidade: 'ok',      hora: '14:20:55' },
   ];
 
+  const active = 'scannerPc';
   const navItems = [
-    { id: 'ops',     icon: 'shield',         label: 'Operations',        active: true },
-    { id: 'cams',    icon: 'video',          label: 'Camera Management' },
-    { id: 'sync',    icon: 'database',       label: 'Hotlist Sync' },
-    { id: 'analytics', icon: 'activity',     label: 'Analytics' },
-    { id: 'support', icon: 'message-circle', label: 'Support' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
 
   const tabs = ['Dashboard', 'Live Feeds', 'Alert History', 'Database'];
 
@@ -55,21 +64,26 @@ const ScannerPCScreen = () => {
         </div>
 
         <nav style={{ flex: 1, padding: '16px 0', overflowY: 'auto' }}>
-          <div style={{ padding: '0 12px 8px', fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--border-strong)', textTransform: 'uppercase' }}>NAVIGATION</div>
-          {navItems.map(it => (
-            <div key={it.id} style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: '12px 24px', cursor: 'pointer',
-              fontSize: 14, fontWeight: it.active ? 700 : 400,
-              background: it.active ? 'var(--surface)' : 'transparent',
-              color: it.active ? 'var(--brand-green)' : 'var(--fg-muted)',
-              borderLeft: it.active ? '4px solid var(--brand-green)' : '4px solid transparent',
-              boxShadow: it.active ? 'var(--shadow-sm)' : 'none',
-            }}>
-              <Icon name={it.icon} size={18}/>
-              <span>{it.label}</span>
-            </div>
-          ))}
+          <div style={{ padding: '0 12px 8px', fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--border-strong)', textTransform: 'uppercase' }}>NAVEGAÇÃO</div>
+          {navItems.map(it => {
+            const isActive = active === it.id;
+            return (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: '12px 24px', cursor: 'pointer',
+                fontSize: 14, fontWeight: isActive ? 700 : 400,
+                background: isActive ? 'var(--surface)' : 'transparent',
+                color: isActive ? 'var(--brand-green)' : 'var(--fg-muted)',
+                borderTop: 'none', borderRight: 'none', borderBottom: 'none',
+                borderLeft: isActive ? '4px solid var(--brand-green)' : '4px solid transparent',
+                boxShadow: isActive ? 'var(--shadow-sm)' : 'none',
+                textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <Icon name={it.icon} size={18}/>
+                <span>{it.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         <div style={{ padding: 16, borderTop: '1px solid var(--border)' }}>
@@ -78,17 +92,21 @@ const ScannerPCScreen = () => {
             padding: 12, background: 'var(--brand-gold-soft)', color: 'var(--brand-gold-deep)',
             borderRadius: 8, fontSize: 12, fontWeight: 700, marginBottom: 16,
           }}>
-            <span>System Online</span>
+            <span>Sistema Online</span>
             <span style={{ width: 8, height: 8, background: 'var(--success)', borderRadius: '50%' }}/>
           </div>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '12px 24px', cursor: 'pointer', color: 'var(--fg-muted)',
-            fontSize: 14,
-          }}>
-            <Icon name="log-out" size={18}/>
-            <span>Logout</span>
-          </div>
+          {footerItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '12px 24px', cursor: 'pointer', color: 'var(--fg-muted)',
+              fontSize: 14,
+              background: 'transparent', border: 'none',
+              textAlign: 'left', width: '100%', font: 'inherit',
+            }}>
+              <Icon name={it.icon} size={18}/>
+              <span>{it.label}</span>
+            </button>
+          ))}
         </div>
       </aside>
 

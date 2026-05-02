@@ -19,12 +19,22 @@ const OrdensServicoPCScreen = () => {
                  : lista.filter(o => o.prioridade === 'alta');
   const sel = filtrada.find(o => o.id === selId) || filtrada[0] || lista[0];
 
+  const active = 'ordensServicoPc';
   const navItems = [
-    { id: 'painel',  icon: 'home',       label: 'Painel' },
-    { id: 'ordens',  icon: 'file-text',  label: 'Ordens de Serviço', active: true },
-    { id: 'desp',    icon: 'gauge',      label: 'Despacho' },
-    { id: 'efet',    icon: 'users',      label: 'Efetivo' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
 
   const tagFor = (p) => {
     if (p === 'alta') return { bg: 'var(--danger)', fg: '#FFF', label: 'Alta' };
@@ -58,25 +68,37 @@ const OrdensServicoPCScreen = () => {
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 24, padding: '0 12px', gap: 4 }}>
-          {navItems.map(it => (
-            <a key={it.id} href="#" style={{
-              display: 'flex', alignItems: 'center', gap: 12, padding: 12,
-              fontSize: 14, fontWeight: it.active ? 700 : 600, textDecoration: 'none',
-              color: it.active ? 'var(--brand-green)' : 'var(--fg-muted)',
-              background: it.active ? 'var(--surface)' : 'transparent',
-              borderLeft: it.active ? '4px solid var(--brand-green)' : '4px solid transparent',
-              boxShadow: it.active ? 'var(--shadow-sm)' : 'none',
-            }}>
-              <Icon name={it.icon} size={18}/>
-              <span>{it.label}</span>
-            </a>
-          ))}
+          {navItems.map(it => {
+            const isActive = active === it.id;
+            return (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 12, padding: 12,
+                fontSize: 14, fontWeight: isActive ? 700 : 600, textDecoration: 'none',
+                color: isActive ? 'var(--brand-green)' : 'var(--fg-muted)',
+                background: isActive ? 'var(--surface)' : 'transparent',
+                borderTop: 'none', borderRight: 'none', borderBottom: 'none',
+                borderLeft: isActive ? '4px solid var(--brand-green)' : '4px solid transparent',
+                boxShadow: isActive ? 'var(--shadow-sm)' : 'none',
+                cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <Icon name={it.icon} size={18}/>
+                <span>{it.label}</span>
+              </button>
+            );
+          })}
 
           <div style={{ marginTop: 'auto', marginBottom: 24 }}>
-            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 12, fontSize: 14, fontWeight: 600, textDecoration: 'none', color: 'var(--fg-muted)' }}>
-              <Icon name="settings" size={18}/>
-              <span>Definições</span>
-            </a>
+            {footerItems.map(it => (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 12, padding: 12,
+                fontSize: 14, fontWeight: 600, textDecoration: 'none', color: 'var(--fg-muted)',
+                background: 'transparent', border: 'none',
+                cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <Icon name={it.icon} size={18}/>
+                <span>{it.label}</span>
+              </button>
+            ))}
           </div>
         </div>
 

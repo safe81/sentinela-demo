@@ -131,6 +131,9 @@ const App = () => {
   const [active, setActive] = useState('dashboardPc');
   const isRedesign = !!REDESIGN_SCREENS[active];
 
+  // Expose to redesign screens' internal sidebars so they can navigate.
+  React.useEffect(() => { window.__setRedesignScreen = setActive; }, []);
+
   // Redesign screens render standalone (own sidebar/topbar) on the full root.
   if (isRedesign) {
     const C = REDESIGN_SCREENS[active].component;

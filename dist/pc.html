@@ -3571,18 +3571,22 @@ window.LoginPCScreen = LoginPCScreen;
  * (registered as DashboardNewView so the host page can pick which one to render).
  */
 
-const NewSideNav = ({ active = 'operations' }) => {
+const NewSideNav = ({ active = 'dashboardPc' }) => {
   const items = [
-    { id: 'operations', icon: 'activity',         label: 'Operations' },
-    { id: 'alpr',       icon: 'alert-triangle',   label: 'ALPR Alerts' },
-    { id: 'patrols',    icon: 'shield',           label: 'Patrols' },
-    { id: 'orders',     icon: 'file-text',        label: 'Service Orders' },
-    { id: 'fleet',      icon: 'car',              label: 'Fleet' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
   const footer = [
-    { id: 'settings', icon: 'settings', label: 'Settings' },
-    { id: 'logout',   icon: 'log-out',  label: 'Logout' },
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
   ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
   return (
     <nav style={{
       position: 'fixed', left: 0, top: 0, height: '100vh', width: 256,
@@ -3606,7 +3610,7 @@ const NewSideNav = ({ active = 'operations' }) => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
         {items.map(it => (
-          <a key={it.id} href="#" style={{
+          <button key={it.id} onClick={() => goTo(it.id)} style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '8px 12px', borderRadius: 8,
             textDecoration: 'none', fontSize: 12, fontWeight: 600, letterSpacing: '0.05em',
@@ -3614,23 +3618,27 @@ const NewSideNav = ({ active = 'operations' }) => {
             background: active === it.id ? 'var(--surface-3)' : 'transparent',
             borderRight: active === it.id ? '4px solid var(--brand-green)' : '4px solid transparent',
             transition: 'all 0.15s',
+            cursor: 'pointer', border: 'none', borderTop: 'none', borderBottom: 'none', borderLeft: 'none',
+            textAlign: 'left', width: '100%', font: 'inherit',
           }}>
             <Icon name={it.icon} size={20}/>
             <span>{it.label}</span>
-          </a>
+          </button>
         ))}
       </div>
 
       <div style={{ marginTop: 'auto', paddingTop: 32, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 4 }}>
         {footer.map(it => (
-          <a key={it.id} href="#" style={{
+          <button key={it.id} onClick={() => goTo(it.id)} style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '8px 12px', borderRadius: 8, textDecoration: 'none',
             fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', color: 'var(--fg-muted)',
+            background: 'transparent',
+            cursor: 'pointer', border: 'none', textAlign: 'left', width: '100%', font: 'inherit',
           }}>
             <Icon name={it.icon} size={20}/>
             <span>{it.label}</span>
-          </a>
+          </button>
         ))}
       </div>
     </nav>
@@ -3918,7 +3926,7 @@ const DashboardPCScreen = () => {
       minHeight: '100vh', background: 'var(--surface-3)', color: 'var(--fg)',
       fontFamily: 'var(--font-ui)', display: 'flex',
     }}>
-      <NewSideNav active="operations"/>
+      <NewSideNav active="dashboardPc"/>
 
       <div style={{ flex: 1, marginLeft: 256, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <NewTopBar title="Operational Dashboard"/>
@@ -3972,6 +3980,23 @@ const CommsPCScreen = () => {
     { id: 'distrital',   icon: 'users',    title: 'Coordenação Distrital',     preview: 'Aguardando reporte de ocorrência...' },
   ];
 
+  const active = 'commsPc';
+  const navItems = [
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
+  ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
+
   const styles = {
     page: {
       display: 'flex', height: '100vh', overflow: 'hidden',
@@ -3992,14 +4017,16 @@ const CommsPCScreen = () => {
     sideTitle: { fontSize: 20, fontWeight: 700, color: '#FFF', letterSpacing: '-0.01em', margin: 0 },
     sideSub: { fontSize: 11, color: 'rgba(255,255,255,0.65)', margin: 0 },
     sideNav: { flex: 1, marginTop: 24, padding: '0 4px' },
-    sideLink: (active) => ({
+    sideLink: (isActive) => ({
       display: 'flex', alignItems: 'center', gap: 12,
       padding: '12px', textDecoration: 'none',
       fontSize: 13, fontWeight: 500,
-      color: active ? '#FFF' : 'rgba(255,255,255,0.75)',
-      background: active ? '#001535' : 'transparent',
-      borderLeft: active ? '4px solid #FFF' : '4px solid transparent',
+      color: isActive ? '#FFF' : 'rgba(255,255,255,0.75)',
+      background: isActive ? '#001535' : 'transparent',
+      borderTop: 'none', borderRight: 'none', borderBottom: 'none',
+      borderLeft: isActive ? '4px solid #FFF' : '4px solid transparent',
       transition: 'all 0.2s',
+      cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
     }),
     sideFooter: { padding: 12, marginTop: 'auto' },
     btnNova: {
@@ -4100,15 +4127,19 @@ const CommsPCScreen = () => {
           </div>
         </div>
         <nav style={styles.sideNav}>
-          <a href="#" style={styles.sideLink(false)}><Icon name="file-text" size={20}/><span>Operações</span></a>
-          <a href="#" style={styles.sideLink(true)}><Icon name="message-circle" size={20}/><span>Mensagens</span></a>
-          <a href="#" style={styles.sideLink(false)}><Icon name="map" size={20}/><span>Mapas</span></a>
-          <a href="#" style={styles.sideLink(false)}><Icon name="clipboard-list" size={20}/><span>Relatórios</span></a>
-          <a href="#" style={styles.sideLink(false)}><Icon name="settings" size={20}/><span>Configurações</span></a>
+          {navItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={styles.sideLink(active === it.id)}>
+              <Icon name={it.icon} size={20}/><span>{it.label}</span>
+            </button>
+          ))}
         </nav>
         <div style={styles.sideFooter}>
           <button style={styles.btnNova}>Nova Comunicação</button>
-          <a href="#" style={styles.sideLink(false)}><Icon name="log-out" size={20}/><span>Sair</span></a>
+          {footerItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={styles.sideLink(false)}>
+              <Icon name={it.icon} size={20}/><span>{it.label}</span>
+            </button>
+          ))}
         </div>
       </aside>
 
@@ -4317,14 +4348,22 @@ const WikiPCScreen = () => {
     { id: 'sepna',       label: 'SEPNA' },
   ];
 
+  const active = 'wikiPc';
   const navItems = [
-    { id: 'geral',       icon: 'list',         label: 'Geral',        active: true },
-    { id: 'transito',    icon: 'car',          label: 'Trânsito' },
-    { id: 'territorial', icon: 'map',          label: 'Territorial' },
-    { id: 'sepna',       icon: 'flag',         label: 'SEPNA' },
-    { id: 'investiga',   icon: 'search',       label: 'Investigação' },
-    { id: 'favoritos',   icon: 'star',         label: 'Favoritos' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
 
   return (
     <div style={{
@@ -4349,36 +4388,38 @@ const WikiPCScreen = () => {
         </div>
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {navItems.map(it => (
-            <a key={it.id} href="#" style={{
-              display: 'flex', alignItems: 'center', padding: '12px 24px',
-              textDecoration: 'none',
-              color: it.active ? '#FFF' : 'rgba(255,255,255,0.7)',
-              background: it.active ? 'rgba(255,255,255,0.1)' : 'transparent',
-              borderLeft: it.active ? '4px solid #FFF' : '4px solid transparent',
-              transition: 'all 0.2s',
-            }}>
-              <span style={{ marginRight: 12 }}><Icon name={it.icon} size={18}/></span>
-              <span style={{ fontSize: 14, fontFamily: 'var(--font-display)' }}>{it.label}</span>
-            </a>
-          ))}
+          {navItems.map(it => {
+            const isActive = active === it.id;
+            return (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', padding: '12px 24px',
+                textDecoration: 'none',
+                color: isActive ? '#FFF' : 'rgba(255,255,255,0.7)',
+                background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
+                borderTop: 'none', borderRight: 'none', borderBottom: 'none',
+                borderLeft: isActive ? '4px solid #FFF' : '4px solid transparent',
+                transition: 'all 0.2s',
+                cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <span style={{ marginRight: 12 }}><Icon name={it.icon} size={18}/></span>
+                <span style={{ fontSize: 14, fontFamily: 'var(--font-display)' }}>{it.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         <div style={{ padding: '24px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <a href="#" style={{
-            display: 'flex', alignItems: 'center', padding: '8px 0',
-            color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: 14,
-          }}>
-            <span style={{ marginRight: 12 }}><Icon name="settings" size={18}/></span>
-            <span>Configurações</span>
-          </a>
-          <a href="#" style={{
-            display: 'flex', alignItems: 'center', padding: '8px 0',
-            color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: 14,
-          }}>
-            <span style={{ marginRight: 12 }}><Icon name="log-out" size={18}/></span>
-            <span>Sair</span>
-          </a>
+          {footerItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={{
+              display: 'flex', alignItems: 'center', padding: '8px 0',
+              color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: 14,
+              background: 'transparent', border: 'none',
+              cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+            }}>
+              <span style={{ marginRight: 12 }}><Icon name={it.icon} size={18}/></span>
+              <span>{it.label}</span>
+            </button>
+          ))}
         </div>
       </aside>
 
@@ -4676,13 +4717,22 @@ const ScannerPCScreen = () => {
     { matricula: '01-AA-02', tipo: 'Pesado Mercadorias',  estado: 'Válido',     severidade: 'ok',      hora: '14:20:55' },
   ];
 
+  const active = 'scannerPc';
   const navItems = [
-    { id: 'ops',     icon: 'shield',         label: 'Operations',        active: true },
-    { id: 'cams',    icon: 'video',          label: 'Camera Management' },
-    { id: 'sync',    icon: 'database',       label: 'Hotlist Sync' },
-    { id: 'analytics', icon: 'activity',     label: 'Analytics' },
-    { id: 'support', icon: 'message-circle', label: 'Support' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
 
   const tabs = ['Dashboard', 'Live Feeds', 'Alert History', 'Database'];
 
@@ -4712,21 +4762,26 @@ const ScannerPCScreen = () => {
         </div>
 
         <nav style={{ flex: 1, padding: '16px 0', overflowY: 'auto' }}>
-          <div style={{ padding: '0 12px 8px', fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--border-strong)', textTransform: 'uppercase' }}>NAVIGATION</div>
-          {navItems.map(it => (
-            <div key={it.id} style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: '12px 24px', cursor: 'pointer',
-              fontSize: 14, fontWeight: it.active ? 700 : 400,
-              background: it.active ? 'var(--surface)' : 'transparent',
-              color: it.active ? 'var(--brand-green)' : 'var(--fg-muted)',
-              borderLeft: it.active ? '4px solid var(--brand-green)' : '4px solid transparent',
-              boxShadow: it.active ? 'var(--shadow-sm)' : 'none',
-            }}>
-              <Icon name={it.icon} size={18}/>
-              <span>{it.label}</span>
-            </div>
-          ))}
+          <div style={{ padding: '0 12px 8px', fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--border-strong)', textTransform: 'uppercase' }}>NAVEGAÇÃO</div>
+          {navItems.map(it => {
+            const isActive = active === it.id;
+            return (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: '12px 24px', cursor: 'pointer',
+                fontSize: 14, fontWeight: isActive ? 700 : 400,
+                background: isActive ? 'var(--surface)' : 'transparent',
+                color: isActive ? 'var(--brand-green)' : 'var(--fg-muted)',
+                borderTop: 'none', borderRight: 'none', borderBottom: 'none',
+                borderLeft: isActive ? '4px solid var(--brand-green)' : '4px solid transparent',
+                boxShadow: isActive ? 'var(--shadow-sm)' : 'none',
+                textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <Icon name={it.icon} size={18}/>
+                <span>{it.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         <div style={{ padding: 16, borderTop: '1px solid var(--border)' }}>
@@ -4735,17 +4790,21 @@ const ScannerPCScreen = () => {
             padding: 12, background: 'var(--brand-gold-soft)', color: 'var(--brand-gold-deep)',
             borderRadius: 8, fontSize: 12, fontWeight: 700, marginBottom: 16,
           }}>
-            <span>System Online</span>
+            <span>Sistema Online</span>
             <span style={{ width: 8, height: 8, background: 'var(--success)', borderRadius: '50%' }}/>
           </div>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '12px 24px', cursor: 'pointer', color: 'var(--fg-muted)',
-            fontSize: 14,
-          }}>
-            <Icon name="log-out" size={18}/>
-            <span>Logout</span>
-          </div>
+          {footerItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '12px 24px', cursor: 'pointer', color: 'var(--fg-muted)',
+              fontSize: 14,
+              background: 'transparent', border: 'none',
+              textAlign: 'left', width: '100%', font: 'inherit',
+            }}>
+              <Icon name={it.icon} size={18}/>
+              <span>{it.label}</span>
+            </button>
+          ))}
         </div>
       </aside>
 
@@ -5040,13 +5099,22 @@ const EscalasPCScreen = () => {
 
   const monthLabel = primeiro.toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' }).toUpperCase();
 
+  const active = 'escalasPc';
   const navItems = [
-    { id: 'ops',     icon: 'activity',         label: 'Operations' },
-    { id: 'alpr',    icon: 'alert-triangle',   label: 'ALPR Alerts' },
-    { id: 'patrols', icon: 'shield',           label: 'Patrols' },
-    { id: 'escalas', icon: 'calendar',         label: 'Escalas de Serviço', active: true },
-    { id: 'fleet',   icon: 'car',              label: 'Fleet' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
 
   // Tag colors (ranked by turno)
   const tagDia = { bg: 'var(--brand-gold-soft)', fg: 'var(--brand-gold-deep)' };
@@ -5077,31 +5145,39 @@ const EscalasPCScreen = () => {
         </div>
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {navItems.map(it => (
-            <a key={it.id} href="#" style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: it.active ? '16px 12px' : '8px 12px',
-              fontSize: 12, fontWeight: it.active ? 700 : 600, letterSpacing: '0.05em',
-              textDecoration: 'none',
-              color: it.active ? 'var(--brand-green)' : 'var(--fg-muted)',
-              background: it.active ? 'var(--surface-3)' : 'transparent',
-              borderRight: it.active ? '4px solid var(--brand-green)' : '4px solid transparent',
-            }}>
-              <Icon name={it.icon} size={18}/>
-              <span>{it.label}</span>
-            </a>
-          ))}
+          {navItems.map(it => {
+            const isActive = active === it.id;
+            return (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: isActive ? '16px 12px' : '8px 12px',
+                fontSize: 12, fontWeight: isActive ? 700 : 600, letterSpacing: '0.05em',
+                textDecoration: 'none',
+                color: isActive ? 'var(--brand-green)' : 'var(--fg-muted)',
+                background: isActive ? 'var(--surface-3)' : 'transparent',
+                borderTop: 'none', borderLeft: 'none', borderBottom: 'none',
+                borderRight: isActive ? '4px solid var(--brand-green)' : '4px solid transparent',
+                cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <Icon name={it.icon} size={18}/>
+                <span>{it.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border)', paddingTop: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', textDecoration: 'none', color: 'var(--fg-muted)', fontSize: 12, fontWeight: 600 }}>
-            <Icon name="settings" size={18}/>
-            <span>Settings</span>
-          </a>
-          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', textDecoration: 'none', color: 'var(--fg-muted)', fontSize: 12, fontWeight: 600 }}>
-            <Icon name="log-out" size={18}/>
-            <span>Logout</span>
-          </a>
+          {footerItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={{
+              display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px',
+              textDecoration: 'none', color: 'var(--fg-muted)', fontSize: 12, fontWeight: 600,
+              background: 'transparent', border: 'none',
+              cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+            }}>
+              <Icon name={it.icon} size={18}/>
+              <span>{it.label}</span>
+            </button>
+          ))}
         </div>
       </aside>
 
@@ -5378,12 +5454,22 @@ const OrdensServicoPCScreen = () => {
                  : lista.filter(o => o.prioridade === 'alta');
   const sel = filtrada.find(o => o.id === selId) || filtrada[0] || lista[0];
 
+  const active = 'ordensServicoPc';
   const navItems = [
-    { id: 'painel',  icon: 'home',       label: 'Painel' },
-    { id: 'ordens',  icon: 'file-text',  label: 'Ordens de Serviço', active: true },
-    { id: 'desp',    icon: 'gauge',      label: 'Despacho' },
-    { id: 'efet',    icon: 'users',      label: 'Efetivo' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
 
   const tagFor = (p) => {
     if (p === 'alta') return { bg: 'var(--danger)', fg: '#FFF', label: 'Alta' };
@@ -5417,25 +5503,37 @@ const OrdensServicoPCScreen = () => {
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 24, padding: '0 12px', gap: 4 }}>
-          {navItems.map(it => (
-            <a key={it.id} href="#" style={{
-              display: 'flex', alignItems: 'center', gap: 12, padding: 12,
-              fontSize: 14, fontWeight: it.active ? 700 : 600, textDecoration: 'none',
-              color: it.active ? 'var(--brand-green)' : 'var(--fg-muted)',
-              background: it.active ? 'var(--surface)' : 'transparent',
-              borderLeft: it.active ? '4px solid var(--brand-green)' : '4px solid transparent',
-              boxShadow: it.active ? 'var(--shadow-sm)' : 'none',
-            }}>
-              <Icon name={it.icon} size={18}/>
-              <span>{it.label}</span>
-            </a>
-          ))}
+          {navItems.map(it => {
+            const isActive = active === it.id;
+            return (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 12, padding: 12,
+                fontSize: 14, fontWeight: isActive ? 700 : 600, textDecoration: 'none',
+                color: isActive ? 'var(--brand-green)' : 'var(--fg-muted)',
+                background: isActive ? 'var(--surface)' : 'transparent',
+                borderTop: 'none', borderRight: 'none', borderBottom: 'none',
+                borderLeft: isActive ? '4px solid var(--brand-green)' : '4px solid transparent',
+                boxShadow: isActive ? 'var(--shadow-sm)' : 'none',
+                cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <Icon name={it.icon} size={18}/>
+                <span>{it.label}</span>
+              </button>
+            );
+          })}
 
           <div style={{ marginTop: 'auto', marginBottom: 24 }}>
-            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 12, fontSize: 14, fontWeight: 600, textDecoration: 'none', color: 'var(--fg-muted)' }}>
-              <Icon name="settings" size={18}/>
-              <span>Definições</span>
-            </a>
+            {footerItems.map(it => (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 12, padding: 12,
+                fontSize: 14, fontWeight: 600, textDecoration: 'none', color: 'var(--fg-muted)',
+                background: 'transparent', border: 'none',
+                cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <Icon name={it.icon} size={18}/>
+                <span>{it.label}</span>
+              </button>
+            ))}
           </div>
         </div>
 
@@ -5779,6 +5877,9 @@ const App = () => {
   // Use the bottom switcher to compare with the original UI ('dashboard').
   const [active, setActive] = useState('dashboardPc');
   const isRedesign = !!REDESIGN_SCREENS[active];
+
+  // Expose to redesign screens' internal sidebars so they can navigate.
+  React.useEffect(() => { window.__setRedesignScreen = setActive; }, []);
 
   // Redesign screens render standalone (own sidebar/topbar) on the full root.
   if (isRedesign) {

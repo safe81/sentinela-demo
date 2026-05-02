@@ -15,6 +15,23 @@ const CommsPCScreen = () => {
     { id: 'distrital',   icon: 'users',    title: 'Coordenação Distrital',     preview: 'Aguardando reporte de ocorrência...' },
   ];
 
+  const active = 'commsPc';
+  const navItems = [
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
+  ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
+
   const styles = {
     page: {
       display: 'flex', height: '100vh', overflow: 'hidden',
@@ -35,14 +52,16 @@ const CommsPCScreen = () => {
     sideTitle: { fontSize: 20, fontWeight: 700, color: '#FFF', letterSpacing: '-0.01em', margin: 0 },
     sideSub: { fontSize: 11, color: 'rgba(255,255,255,0.65)', margin: 0 },
     sideNav: { flex: 1, marginTop: 24, padding: '0 4px' },
-    sideLink: (active) => ({
+    sideLink: (isActive) => ({
       display: 'flex', alignItems: 'center', gap: 12,
       padding: '12px', textDecoration: 'none',
       fontSize: 13, fontWeight: 500,
-      color: active ? '#FFF' : 'rgba(255,255,255,0.75)',
-      background: active ? '#001535' : 'transparent',
-      borderLeft: active ? '4px solid #FFF' : '4px solid transparent',
+      color: isActive ? '#FFF' : 'rgba(255,255,255,0.75)',
+      background: isActive ? '#001535' : 'transparent',
+      borderTop: 'none', borderRight: 'none', borderBottom: 'none',
+      borderLeft: isActive ? '4px solid #FFF' : '4px solid transparent',
       transition: 'all 0.2s',
+      cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
     }),
     sideFooter: { padding: 12, marginTop: 'auto' },
     btnNova: {
@@ -143,15 +162,19 @@ const CommsPCScreen = () => {
           </div>
         </div>
         <nav style={styles.sideNav}>
-          <a href="#" style={styles.sideLink(false)}><Icon name="file-text" size={20}/><span>Operações</span></a>
-          <a href="#" style={styles.sideLink(true)}><Icon name="message-circle" size={20}/><span>Mensagens</span></a>
-          <a href="#" style={styles.sideLink(false)}><Icon name="map" size={20}/><span>Mapas</span></a>
-          <a href="#" style={styles.sideLink(false)}><Icon name="clipboard-list" size={20}/><span>Relatórios</span></a>
-          <a href="#" style={styles.sideLink(false)}><Icon name="settings" size={20}/><span>Configurações</span></a>
+          {navItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={styles.sideLink(active === it.id)}>
+              <Icon name={it.icon} size={20}/><span>{it.label}</span>
+            </button>
+          ))}
         </nav>
         <div style={styles.sideFooter}>
           <button style={styles.btnNova}>Nova Comunicação</button>
-          <a href="#" style={styles.sideLink(false)}><Icon name="log-out" size={20}/><span>Sair</span></a>
+          {footerItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={styles.sideLink(false)}>
+              <Icon name={it.icon} size={20}/><span>{it.label}</span>
+            </button>
+          ))}
         </div>
       </aside>
 

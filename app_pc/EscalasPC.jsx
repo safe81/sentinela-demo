@@ -31,13 +31,22 @@ const EscalasPCScreen = () => {
 
   const monthLabel = primeiro.toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' }).toUpperCase();
 
+  const active = 'escalasPc';
   const navItems = [
-    { id: 'ops',     icon: 'activity',         label: 'Operations' },
-    { id: 'alpr',    icon: 'alert-triangle',   label: 'ALPR Alerts' },
-    { id: 'patrols', icon: 'shield',           label: 'Patrols' },
-    { id: 'escalas', icon: 'calendar',         label: 'Escalas de Serviço', active: true },
-    { id: 'fleet',   icon: 'car',              label: 'Fleet' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
+  const footerItems = [
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
+  ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
 
   // Tag colors (ranked by turno)
   const tagDia = { bg: 'var(--brand-gold-soft)', fg: 'var(--brand-gold-deep)' };
@@ -68,31 +77,39 @@ const EscalasPCScreen = () => {
         </div>
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {navItems.map(it => (
-            <a key={it.id} href="#" style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: it.active ? '16px 12px' : '8px 12px',
-              fontSize: 12, fontWeight: it.active ? 700 : 600, letterSpacing: '0.05em',
-              textDecoration: 'none',
-              color: it.active ? 'var(--brand-green)' : 'var(--fg-muted)',
-              background: it.active ? 'var(--surface-3)' : 'transparent',
-              borderRight: it.active ? '4px solid var(--brand-green)' : '4px solid transparent',
-            }}>
-              <Icon name={it.icon} size={18}/>
-              <span>{it.label}</span>
-            </a>
-          ))}
+          {navItems.map(it => {
+            const isActive = active === it.id;
+            return (
+              <button key={it.id} onClick={() => goTo(it.id)} style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: isActive ? '16px 12px' : '8px 12px',
+                fontSize: 12, fontWeight: isActive ? 700 : 600, letterSpacing: '0.05em',
+                textDecoration: 'none',
+                color: isActive ? 'var(--brand-green)' : 'var(--fg-muted)',
+                background: isActive ? 'var(--surface-3)' : 'transparent',
+                borderTop: 'none', borderLeft: 'none', borderBottom: 'none',
+                borderRight: isActive ? '4px solid var(--brand-green)' : '4px solid transparent',
+                cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+              }}>
+                <Icon name={it.icon} size={18}/>
+                <span>{it.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border)', paddingTop: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', textDecoration: 'none', color: 'var(--fg-muted)', fontSize: 12, fontWeight: 600 }}>
-            <Icon name="settings" size={18}/>
-            <span>Settings</span>
-          </a>
-          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', textDecoration: 'none', color: 'var(--fg-muted)', fontSize: 12, fontWeight: 600 }}>
-            <Icon name="log-out" size={18}/>
-            <span>Logout</span>
-          </a>
+          {footerItems.map(it => (
+            <button key={it.id} onClick={() => goTo(it.id)} style={{
+              display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px',
+              textDecoration: 'none', color: 'var(--fg-muted)', fontSize: 12, fontWeight: 600,
+              background: 'transparent', border: 'none',
+              cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit',
+            }}>
+              <Icon name={it.icon} size={18}/>
+              <span>{it.label}</span>
+            </button>
+          ))}
         </div>
       </aside>
 

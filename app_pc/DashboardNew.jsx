@@ -4,18 +4,22 @@
  * (registered as DashboardNewView so the host page can pick which one to render).
  */
 
-const NewSideNav = ({ active = 'operations' }) => {
+const NewSideNav = ({ active = 'dashboardPc' }) => {
   const items = [
-    { id: 'operations', icon: 'activity',         label: 'Operations' },
-    { id: 'alpr',       icon: 'alert-triangle',   label: 'ALPR Alerts' },
-    { id: 'patrols',    icon: 'shield',           label: 'Patrols' },
-    { id: 'orders',     icon: 'file-text',        label: 'Service Orders' },
-    { id: 'fleet',      icon: 'car',              label: 'Fleet' },
+    { id: 'dashboardPc',     icon: 'activity',       label: 'Dashboard' },
+    { id: 'scannerPc',       icon: 'alert-triangle', label: 'Scanner ALPR' },
+    { id: 'ordensServicoPc', icon: 'file-text',      label: 'Ordens de Serviço' },
+    { id: 'escalasPc',       icon: 'calendar',       label: 'Escalas' },
+    { id: 'commsPc',         icon: 'message-circle', label: 'Comunicações' },
+    { id: 'wikiPc',          icon: 'users',          label: 'Lista Telefónica' },
   ];
   const footer = [
-    { id: 'settings', icon: 'settings', label: 'Settings' },
-    { id: 'logout',   icon: 'log-out',  label: 'Logout' },
+    { id: 'logout', icon: 'log-out', label: 'Sair' },
   ];
+  const goTo = (id) => {
+    if (id === 'logout') { window.SentinelaStore.actions.logout(); return; }
+    if (window.__setRedesignScreen) window.__setRedesignScreen(id);
+  };
   return (
     <nav style={{
       position: 'fixed', left: 0, top: 0, height: '100vh', width: 256,
@@ -39,7 +43,7 @@ const NewSideNav = ({ active = 'operations' }) => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
         {items.map(it => (
-          <a key={it.id} href="#" style={{
+          <button key={it.id} onClick={() => goTo(it.id)} style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '8px 12px', borderRadius: 8,
             textDecoration: 'none', fontSize: 12, fontWeight: 600, letterSpacing: '0.05em',
@@ -47,23 +51,27 @@ const NewSideNav = ({ active = 'operations' }) => {
             background: active === it.id ? 'var(--surface-3)' : 'transparent',
             borderRight: active === it.id ? '4px solid var(--brand-green)' : '4px solid transparent',
             transition: 'all 0.15s',
+            cursor: 'pointer', border: 'none', borderTop: 'none', borderBottom: 'none', borderLeft: 'none',
+            textAlign: 'left', width: '100%', font: 'inherit',
           }}>
             <Icon name={it.icon} size={20}/>
             <span>{it.label}</span>
-          </a>
+          </button>
         ))}
       </div>
 
       <div style={{ marginTop: 'auto', paddingTop: 32, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 4 }}>
         {footer.map(it => (
-          <a key={it.id} href="#" style={{
+          <button key={it.id} onClick={() => goTo(it.id)} style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '8px 12px', borderRadius: 8, textDecoration: 'none',
             fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', color: 'var(--fg-muted)',
+            background: 'transparent',
+            cursor: 'pointer', border: 'none', textAlign: 'left', width: '100%', font: 'inherit',
           }}>
             <Icon name={it.icon} size={20}/>
             <span>{it.label}</span>
-          </a>
+          </button>
         ))}
       </div>
     </nav>
@@ -351,7 +359,7 @@ const DashboardPCScreen = () => {
       minHeight: '100vh', background: 'var(--surface-3)', color: 'var(--fg)',
       fontFamily: 'var(--font-ui)', display: 'flex',
     }}>
-      <NewSideNav active="operations"/>
+      <NewSideNav active="dashboardPc"/>
 
       <div style={{ flex: 1, marginLeft: 256, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <NewTopBar title="Operational Dashboard"/>
