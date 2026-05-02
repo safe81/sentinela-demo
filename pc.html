@@ -28,6 +28,14 @@
 <script type="text/babel" src="app_pc/Cronologia.jsx"></script>
 <script type="text/babel" src="app_pc/FeriasPC.jsx"></script>
 <script type="text/babel" src="app_pc/AdminPC.jsx"></script>
+<!-- Stitch redesign screens -->
+<script type="text/babel" src="app_pc/LoginPC.jsx"></script>
+<script type="text/babel" src="app_pc/DashboardNew.jsx"></script>
+<script type="text/babel" src="app_pc/CommsPC.jsx"></script>
+<script type="text/babel" src="app_pc/WikiPC.jsx"></script>
+<script type="text/babel" src="app_pc/ScannerPC.jsx"></script>
+<script type="text/babel" src="app_pc/EscalasPC.jsx"></script>
+<script type="text/babel" src="app_pc/OrdensServicoPC.jsx"></script>
 
 <script type="text/babel">
 const { useState, useEffect } = React;
@@ -77,9 +85,63 @@ const titles = {
   admin:        ['Administração', 'Configuração do posto, efectivo, viaturas e sistema'],
 };
 
+// Stitch redesign screens — render standalone (own chrome).
+const REDESIGN_SCREENS = {
+  loginPc:        { component: () => window.LoginPCScreen        && <LoginPCScreen/>,        label: 'Login (PC)' },
+  dashboardPc:    { component: () => window.DashboardPCScreen    && <DashboardPCScreen/>,    label: 'Dashboard (novo)' },
+  commsPc:        { component: () => window.CommsPCScreen        && <CommsPCScreen/>,        label: 'Comunicações (novo)' },
+  wikiPc:         { component: () => window.WikiPCScreen         && <WikiPCScreen/>,         label: 'Wiki / Lista (novo)' },
+  scannerPc:      { component: () => window.ScannerPCScreen      && <ScannerPCScreen/>,      label: 'Scanner ALPR (novo)' },
+  escalasPc:      { component: () => window.EscalasPCScreen      && <EscalasPCScreen/>,      label: 'Escalas (novo)' },
+  ordensServicoPc:{ component: () => window.OrdensServicoPCScreen&& <OrdensServicoPCScreen/>,label: 'Ordens de Serviço (novo)' },
+};
+
+// Mini bar to switch between the redesign screens (only visible when one is active).
+const RedesignSwitcher = ({ active, setActive }) => {
+  const keys = Object.keys(REDESIGN_SCREENS);
+  return (
+    <div style={{
+      position: 'fixed', bottom: 12, left: '50%', transform: 'translateX(-50%)',
+      background: 'rgba(0,10,30,0.92)', color: '#FFF',
+      padding: '6px 8px', borderRadius: 999, zIndex: 9999,
+      display: 'flex', gap: 4, alignItems: 'center',
+      boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+      fontFamily: 'var(--font-ui)', fontSize: 11,
+    }}>
+      <button onClick={() => setActive('dashboard')} style={{
+        background: 'transparent', border: 'none', color: '#FFF', cursor: 'pointer',
+        padding: '4px 10px', fontSize: 11, fontWeight: 600, opacity: 0.7,
+      }}>← original</button>
+      <span style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.2)' }}/>
+      {keys.map(k => (
+        <button key={k} onClick={() => setActive(k)} style={{
+          background: active === k ? 'rgba(255,255,255,0.16)' : 'transparent',
+          border: 'none', color: '#FFF', cursor: 'pointer',
+          padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 600,
+        }}>{REDESIGN_SCREENS[k].label}</button>
+      ))}
+    </div>
+  );
+};
+
 const App = () => {
   useTheme();
-  const [active, setActive] = useState('dashboard');
+  // Default opens the new dashboard ('dashboardPc') so the redesign is the front door.
+  // Use the bottom switcher to compare with the original UI ('dashboard').
+  const [active, setActive] = useState('dashboardPc');
+  const isRedesign = !!REDESIGN_SCREENS[active];
+
+  // Redesign screens render standalone (own sidebar/topbar) on the full root.
+  if (isRedesign) {
+    const C = REDESIGN_SCREENS[active].component;
+    return (
+      <>
+        {C()}
+        <RedesignSwitcher active={active} setActive={setActive}/>
+      </>
+    );
+  }
+
   const [t, sub] = titles[active] || titles.dashboard;
   return (
     <>
@@ -102,6 +164,7 @@ const App = () => {
         {active === 'ferias'       && <FeriasView/>}
         {active === 'admin'        && <AdminView/>}
       </div>
+      <RedesignSwitcher active={active} setActive={setActive}/>
     </>
   );
 };
